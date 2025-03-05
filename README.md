@@ -2,7 +2,7 @@
 
 # Threadit 💬
 
-Reddit Clone for the Cloud Computing Project
+Cloud Computing Project - Reddit Clone
 
 ![Contributors](https://img.shields.io/github/contributors/ThreaditApp/Threadit)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ThreaditApp/Threadit)
@@ -12,7 +12,7 @@ Reddit Clone for the Cloud Computing Project
 
 ---
 
-### 📅 Cloud Computing (2024/2025) - Group 8
+### ☁️ Cloud Computing - Group 8
 - 57551 Eduardo Proença
 - 58555 Manuel Goncalves
 - 64371 Ricardo Costa
@@ -61,14 +61,14 @@ The database(s) will be populated with the following datasets:
 
 #### 🌍 Communities
 - A user creates a new community.
-- A user joins an existing community.
+- A user joins a community.
 - A user leaves a community.
 - A user views a community's threads and members.
 - A moderator deletes a community.
 
 #### 📝 Threads
 - A user creates a thread.
-- A user edits or deletes their own existing thread.
+- A user edits or deletes their own thread.
 - A user views a thread and its comments.
 - A moderator deletes a thread.
 
@@ -78,8 +78,8 @@ The database(s) will be populated with the following datasets:
 - A user edits or deletes their comment.
 
 #### ⬆️ Voting System
-- A user upvotes a thread or comment.
-- A user downvotes a thread or comment.
+- A user upvotes or downvotes a thread.
+- A user upvotes or downvotes a comment.
 
 #### 🔗 Social Connectivity
 - A user follows or unfollows another user.
@@ -88,6 +88,7 @@ The database(s) will be populated with the following datasets:
 #### 🛡️ Moderation
 - A moderator promotes another user to a moderator role.
 - A moderator demotes another user from a moderator role.
+- A moderator bans a user from a community.
 
 #### 🏠 Personalized Feed
 - A user views a feed of threads from followed users and communities.
