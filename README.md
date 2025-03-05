@@ -12,15 +12,23 @@ Reddit Clone for the Cloud Computing Project
 
 ---
 
-### 📅 Mobile Computing (2024/2025) - Group 8
+### 📅 Cloud Computing (2024/2025) - Group 8
 - 57551 Eduardo Proença
 - 58555 Manuel Goncalves
 - 64371 Ricardo Costa
 - 64597 Leonardo Fernandes 
 
+## 🚀 Overview
+
+*Threadit* is cloud native application that offers a set of services that provide users the ability to connect, share and engage in discussions within communities through a REST API.
+Its architecture will follow a microservices model and be deployed on Google Cloud Platform (GCP).
+
 ## 🔍 Phase 1 - Datasets, Business Capabilities and Use Cases
 
 ### 📂 Datasets
+
+The database(s) will be populated with the following datasets:
+
 - 📊 [Reddit Top 2.5 Million](https://github.com/umbrae/reddit-top-2.5-million) - Aug 2013 (1.66GB)
 - 🐦 [Twitter Friends](https://www.kaggle.com/datasets/hwassner/TwitterFriends) - Sep 2016 (448.48MB)
 
