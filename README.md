@@ -43,7 +43,6 @@ The database(s) will be populated with the following datasets:
 - 💬 **Comments** - Commenting, replying, and engaging in conversations within threads and communities.
 - ⬆️ **Voting System** - Upvote or downvote threads and comments to indicate quality and relevance.
 - 🔗 **Social Connectivity** - Follow users and communities to stay updated on their activity.
-- 🛡️ **Moderation** - Manage communities with user roles and permissions.
 - 🏠 **Personalized Feed** - Feed of threads from followed users and communities.
 - 🔎 **Search & Discovery** - Search for threads, users or communities by keyword.
 
@@ -64,13 +63,11 @@ The database(s) will be populated with the following datasets:
 - A user joins a community.
 - A user leaves a community.
 - A user views a community's threads and members.
-- A moderator deletes a community.
 
 #### 📝 Threads
 - A user creates a thread.
 - A user edits or deletes their own thread.
 - A user views a thread and its comments.
-- A moderator deletes a thread.
 
 #### 💬 Comments
 - A user comments on a thread.
@@ -85,11 +82,6 @@ The database(s) will be populated with the following datasets:
 - A user follows or unfollows another user.
 - A user follows or unfollows a community.
 
-#### 🛡️ Moderation
-- A moderator promotes another user to a moderator role.
-- A moderator demotes another user from a moderator role.
-- A moderator bans a user from a community.
-
 #### 🏠 Personalized Feed
 - A user views a feed of threads from followed users and communities.
 
@@ -98,3 +90,7 @@ The database(s) will be populated with the following datasets:
 - A user searches for communities by keyword.
 - A user searches for other users by keyword.
 - A user searches all content by keyword.
+
+### 📦 Microservices Architecture
+
+![](./diagram.png)
