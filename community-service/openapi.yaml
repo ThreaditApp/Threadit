@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  title: CommunityService API
+  description: API for managing communities in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+paths:
+  /communities:
+    get:
+      summary: List all communities
+      operationId: listCommunities
+      tags:
+        - Communities
+      responses:
+        "200":
+          description: List of communities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Community"
+    post:
+      summary: Create a new community
+      operationId: createCommunity
+      tags:
+        - Communities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityCreate"
+      responses:
+        "201":
+          description: Community successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+  /communities/{id}:
+    get:
+      summary: Get details of a specific community
+      operationId: getCommunity
+      tags:
+        - Communities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Community details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "404":
+          description: Community not found
+    put:
+      summary: Update an existing community
+      operationId: updateCommunity
+      tags:
+        - Communities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityUpdate"
+      responses:
+        "200":
+          description: Community updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+    delete:
+      summary: Remove a community
+      operationId: deleteCommunity
+      tags:
+        - Communities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Community successfully removed
+        "404":
+          description: Community not found
+components:
+  schemas:
+    Community:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CommunityCreate:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    CommunityUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
