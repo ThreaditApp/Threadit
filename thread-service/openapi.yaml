@@ -1,0 +1,149 @@
+openapi: 3.1.0
+info:
+  title: ThreadService API
+  description: API for managing threads in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+paths:
+  /threads:
+    get:
+      summary: List all threads
+      operationId: listThreads
+      tags:
+        - Threads
+      responses:
+        "200":
+          description: List of threads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Thread"
+    post:
+      summary: Create a new thread
+      operationId: createThread
+      tags:
+        - Threads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadCreate"
+      responses:
+        "201":
+          description: Thread successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+  /threads/{id}:
+    get:
+      summary: Get details of a specific thread
+      operationId: getThread
+      tags:
+        - Threads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Thread details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+        "404":
+          description: Thread not found
+    put:
+      summary: Update an existing thread
+      operationId: updateThread
+      tags:
+        - Threads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreadUpdate"
+      responses:
+        "200":
+          description: Thread updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+    delete:
+      summary: Remove a thread
+      operationId: deleteThread
+      tags:
+        - Threads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Thread successfully removed
+        "404":
+          description: Thread not found
+components:
+  schemas:
+    Thread:
+      type: object
+      properties:
+        id:
+          type: string
+        communityId:
+          type: string
+        authorId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ThreadCreate:
+      type: object
+      required:
+        - title
+        - content
+        - authorId
+        - communityId
+      properties:
+        title:
+          type: string
+        communityId:
+          type: string
+        authorId:
+          type: string
+        content:
+          type: string
+    ThreadUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
