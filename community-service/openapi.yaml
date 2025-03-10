@@ -257,6 +257,33 @@ paths:
           description: Community not found or user not in community
         "409":
           description: User is the owner of the community
+  /communities/{id}/members:
+    get:
+      summary: Get a paginated list of community members
+      operationId: listCommunityMembers
+      tags:
+        - Communities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: List of community members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Member"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
 components:
   schemas:
     Pagination:
@@ -309,6 +336,23 @@ components:
           type: string
         description:
           type: string
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
+        joined_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
   securitySchemes:
     bearerAuth:
       type: http
