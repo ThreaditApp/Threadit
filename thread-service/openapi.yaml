@@ -8,27 +8,52 @@ servers:
     description: Production server
   - url: http://localhost:8000
     description: Local server
+tags:
+  - name: Threads
+    description: Operations related to threads
 paths:
   /threads:
     get:
-      summary: List all threads
+      summary: Get a pagination list of threads
       operationId: listThreads
       tags:
         - Threads
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: List of threads
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Thread"
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Thread"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
     post:
       summary: Create a new thread
       operationId: createThread
       tags:
         - Threads
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -37,11 +62,17 @@ paths:
               $ref: "#/components/schemas/ThreadCreate"
       responses:
         "201":
-          description: Thread successfully created
+          description: Thread created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Thread"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "422":
+          description: Data validation failed
   /threads/{id}:
     get:
       summary: Get details of a specific thread
@@ -54,6 +85,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "200":
           description: Thread details
@@ -68,12 +100,15 @@ paths:
       operationId: updateThread
       tags:
         - Threads
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -87,33 +122,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Thread"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Thread not found
+        "422":
+          description: Data validation failed
     delete:
-      summary: Remove a thread
+      summary: Delete a thread
       operationId: deleteThread
       tags:
         - Threads
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "204":
-          description: Thread successfully removed
+          description: Thread deleted
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
         "404":
           description: Thread not found
 components:
   schemas:
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
     Thread:
       type: object
       properties:
         id:
           type: string
+          format: uuid
         communityId:
           type: string
+          format: uuid
         authorId:
           type: string
+          format: uuid
         title:
           type: string
         content:
@@ -127,16 +193,14 @@ components:
     ThreadCreate:
       type: object
       required:
+        - communityId
         - title
         - content
-        - authorId
-        - communityId
       properties:
-        title:
-          type: string
         communityId:
           type: string
-        authorId:
+          format: uuid
+        title:
           type: string
         content:
           type: string
@@ -147,3 +211,8 @@ components:
           type: string
         content:
           type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
