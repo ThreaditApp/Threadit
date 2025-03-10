@@ -8,6 +8,9 @@ servers:
     description: Production server
   - url: http://localhost:8000
     description: Local server
+tags:
+  - name: Communities
+    description: Operations related to communities
 paths:
   /communities:
     get:
