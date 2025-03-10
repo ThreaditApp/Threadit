@@ -10,20 +10,40 @@ servers:
     description: Local server
 paths:
   /communities:
-    get: # TODO: Add pagination
+    get:
       summary: List all communities
       operationId: listCommunities
       tags:
         - Communities
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: List of communities
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Community"
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Community"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
     post:
       summary: Create a new community
       operationId: createCommunity
@@ -236,6 +256,17 @@ paths:
           description: User is the owner of the community
 components:
   schemas:
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
     Community:
       type: object
       properties:
