@@ -15,6 +15,8 @@ paths:
       operationId: listCommunities
       tags:
         - Communities
+        - Reads
+        - Lists
       responses:
         "200":
           description: List of communities
@@ -29,6 +31,7 @@ paths:
       operationId: createCommunity
       tags:
         - Communities
+        - Creations
       requestBody:
         required: true
         content:
@@ -37,7 +40,7 @@ paths:
               $ref: "#/components/schemas/CommunityCreate"
       responses:
         "201":
-          description: Community successfully created
+          description: Community created
           content:
             application/json:
               schema:
@@ -48,6 +51,7 @@ paths:
       operationId: getCommunity
       tags:
         - Communities
+        - Reads
       parameters:
         - name: id
           in: path
@@ -68,6 +72,7 @@ paths:
       operationId: updateCommunity
       tags:
         - Communities
+        - Updates
       parameters:
         - name: id
           in: path
@@ -87,11 +92,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Community"
+        "404":
+          description: Community not found
     delete:
-      summary: Remove a community
+      summary: Delete a community
       operationId: deleteCommunity
       tags:
         - Communities
+        - Deletions
       parameters:
         - name: id
           in: path
@@ -100,7 +108,40 @@ paths:
             type: string
       responses:
         "204":
-          description: Community successfully removed
+          description: Community deleted
+        "404":
+          description: Community not found
+  /communities/{id}/icon:
+    post:
+      summary: Upload an icon for a community
+      operationId: uploadCommunityIcon
+      tags:
+        - Communities
+        - Icons
+        - Uploads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                icon:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Community icon uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
         "404":
           description: Community not found
 components:
@@ -114,6 +155,9 @@ components:
           type: string
         description:
           type: string
+        icon_url:
+          type: string
+          format: uri
         created_at:
           type: string
           format: date-time
