@@ -10,7 +10,7 @@ servers:
     description: Local server
 paths:
   /communities:
-    get:
+    get: # TODO: Add pagination
       summary: List all communities
       operationId: listCommunities
       tags:
@@ -174,6 +174,66 @@ paths:
           description: Community not found
         "422":
           description: Data validation failed
+  /communities/{id}/join:
+    post:
+      summary: Join a community
+      operationId: joinCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User joined community
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+        "409":
+          description: User already in community
+  /communities/{id}/leave:
+    post:
+      summary: Leave a community
+      operationId: leaveCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User left community
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found or user not in community
+        "409":
+          description: User is the owner of the community
 components:
   schemas:
     Community:
