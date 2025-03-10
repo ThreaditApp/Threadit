@@ -263,6 +263,8 @@ paths:
       operationId: listCommunityMembers
       tags:
         - Communities
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -270,6 +272,20 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: List of community members
@@ -284,6 +300,12 @@ paths:
                       $ref: "#/components/schemas/Member"
                   pagination:
                     $ref: "#/components/schemas/Pagination"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
 components:
   schemas:
     Pagination:
