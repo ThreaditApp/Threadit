@@ -15,8 +15,6 @@ paths:
       operationId: listCommunities
       tags:
         - Communities
-        - Reads
-        - Lists
       responses:
         "200":
           description: List of communities
@@ -31,7 +29,8 @@ paths:
       operationId: createCommunity
       tags:
         - Communities
-        - Creations
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -45,19 +44,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "422":
+          description: Data validation failed
   /communities/{id}:
     get:
       summary: Get details of a specific community
       operationId: getCommunity
       tags:
         - Communities
-        - Reads
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "200":
           description: Community details
@@ -72,13 +77,15 @@ paths:
       operationId: updateCommunity
       tags:
         - Communities
-        - Updates
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -92,23 +99,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
         "404":
           description: Community not found
+        "422":
+          description: Data validation failed
     delete:
       summary: Delete a community
       operationId: deleteCommunity
       tags:
         - Communities
-        - Deletions
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "204":
           description: Community deleted
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
         "404":
           description: Community not found
   /communities/{id}/icon:
@@ -117,14 +138,15 @@ paths:
       operationId: uploadCommunityIcon
       tags:
         - Communities
-        - Icons
-        - Uploads
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -142,8 +164,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
         "404":
           description: Community not found
+        "422":
+          description: Data validation failed
 components:
   schemas:
     Community:
@@ -151,6 +181,10 @@ components:
       properties:
         id:
           type: string
+          format: uuid
+        owner_id:
+          type: string
+          format: uuid
         name:
           type: string
         description:
@@ -181,3 +215,8 @@ components:
           type: string
         description:
           type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
