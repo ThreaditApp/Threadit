@@ -14,7 +14,7 @@ tags:
 paths:
   /communities:
     get:
-      summary: List all communities
+      summary: Get a paginated list of communities
       operationId: listCommunities
       tags:
         - Communities
