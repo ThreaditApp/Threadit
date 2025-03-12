@@ -33,6 +33,35 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: owner_id
+          in: query
+          description: Filter by owner ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: search
+          in: query
+          description: Search by name or description
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by field
+          required: false
+          schema:
+            type: string
+            enum: [created_at, updated_at]
+            default: created_at
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
       responses:
         "200":
           description: List of communities
@@ -71,6 +100,8 @@ paths:
           description: Request syntax is invalid
         "401":
           description: Token missing or invalid
+        "409":
+          description: Community name already exists
         "422":
           description: Data validation failed
   /communities/{id}:
