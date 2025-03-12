@@ -33,6 +33,42 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: community_id
+          in: query
+          description: Filter by community ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: author_id
+          in: query
+          description: Filter by author ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: search
+          in: query
+          description: Search by title or content
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by field
+          required: false
+          schema:
+            type: string
+            enum: [created_at, updated_at]
+            default: created_at
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
       responses:
         "200":
           description: List of threads
