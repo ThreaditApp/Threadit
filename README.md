@@ -94,3 +94,62 @@ The database(s) will be populated with the following datasets:
 ### 📦 Microservices Architecture
 
 ![](./diagram.png)
+
+## 🔍 Phase 2 – API specification
+**TODO: add links to openapi files**
+
+## 🔍 Phase 3 – Functional requirements and application architecture
+
+### 📌 Functional requirements
+
+#### 🔑 User Management & Authentication
+- **FR1.1:** TODO
+
+#### 🧑‍💻 User Profiles
+- **FR2.1:** TODO
+
+#### 🌍 Communities
+- **FR3.1:** The system shall allow users to retrieve a list of communities.
+- **FR3.2:** The system shall allow users to retrieve a list of communities they are members of.
+- **FR3.3:** The system shall allow users to retrieve a list of communities another user is a member of.
+- **FR3.4:** The system shall allow users to view the details of a specific community, including its name, description, icon, owner, and creation date.
+- **FR3.5:** The system shall allow users to create a new community by providing a name and description.
+- **FR3.6:** The system shall allow community owners to update the community name.
+- **FR3.7:** The system shall allow community owners to update the community description.
+- **FR3.8:** The system shall allow community owners to delete the community.
+- **FR3.9:** The system shall allow community owners to update the community icon by uploading an image file.
+- **FR3.10:** The system shall allow users to join a community.
+- **FR3.11:** The system shall allow users to leave a community.
+- **FR3.12:** The system shall allow users to retrieve a list of members in a specific community.
+
+#### 📝 Threads
+- **FR4.1:** The system shall allow users to retrieve a list of threads.
+- **FR4.2:** The system shall allow users to retrieve a list of threads in a specific community.
+- **FR4.3:** The system shall allow users to retrieve a list of threads they have published.
+- **FR4.4:** The system shall allow users to retrieve a list of threads they have published in a specific community.
+- **FR4.5:** The system shall allow users to retrieve a list of threads published by another user.
+- **FR4.6:** The system shall allow users to retrieve a list of threads published by another user in a specific community.
+- **FR4.7:** The system shall allow users to view the details of a specific thread, including its title, content, author, creation date, update date, and associated community.
+- **FR4.8:** The system shall allow users to create a new thread by providing a title, content, and selecting a community.
+- **FR4.9:** The system shall allow users to update the title of a thread they have published.
+- **FR4.10:** The system shall allow users to update the content of a thread they have published.
+- **FR4.11:** The system shall allow users to delete a thread they have published.
+- **FR4.12:** The system shall allow community owners to delete any thread in their community.
+
+#### 💬 Comments
+- **FR5.1:** TODO
+
+#### ⬆️ Voting System
+- **FR6.1:** TODO
+
+#### 🔗 Social Connectivity
+- **FR7.1:** TODO
+
+#### 🏠 Personalized Feed
+- **FR8.1:** TODO
+
+#### 🔎 Search & Discovery
+- **FR9.1:** TODO
+
+#### 🔗 Microservices Communication
+- **FR10.1:** The system shall enforce that all inter-service communication between microservices uses gRPC.
