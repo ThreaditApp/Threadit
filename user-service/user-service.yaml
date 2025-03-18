@@ -1,0 +1,247 @@
+openapi: 3.1.0
+info:
+  title: User Service
+  version: 1.0.0
+  description: User Service API specification
+servers:
+  - url: https://api.threadit.com/v1/users
+    description: Production server
+paths:
+  /me:
+    get:
+      operationId: getYourProfile
+      tags:
+        - user-service
+      summary: Get your profile
+      responses:
+        "200":
+          description: Returns a JSON object containing your user profile data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - BearerBasic: []
+      parameters: []
+      description: Fetches your user profile data
+    delete:
+      operationId: deleteYourAccount
+      tags:
+        - user-service
+      summary: Delete your account
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - BearerBasic: []
+      parameters: []
+      description: Deletes your account and all its data
+    patch:
+      operationId: updateYourProfile
+      tags:
+        - user-service
+      summary: Update your profile
+      responses:
+        "200":
+          description: Returns a JSON object containing your updated user profile data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      requestBody:
+        required: true
+        description: A JSON containing user profile details
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+      security:
+        - BearerBasic: []
+      parameters: []
+      description: Updates your user profile details
+  /{user_id}:
+    get:
+      operationId: getAUserProfile
+      tags:
+        - user-service
+      summary: Get a user profile
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "200":
+          description: Returns a JSON object containing the user profile data of the id
+            given
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - BearerBasic: []
+      description: Fetches a user profile data, according to the id given
+components:
+  responses:
+    BadRequest:
+      description: The server could not understand the request due to invalid syntax.
+        The client should modify the request and try again.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                  required:
+                    - message
+            required:
+              - message
+    InternalServerError:
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request. Report the issue to the support team if it
+        persists.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    NotFound:
+      description: The server cannot find the requested resource. The endpoint may be
+        invalid or the resource may no longer exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    Unauthorized:
+      description: Authentication is required to access the requested resource. The
+        client must include the appropriate credentials.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    NoContent:
+      description: The request was successful, but there is no content to return in
+        the response.
+      content:
+        application/json:
+          schema:
+            type: "null"
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: number
+          examples:
+            - 1234
+        displayName:
+          type: string
+          examples:
+            - John Doe
+        username:
+          type: string
+          examples:
+            - john.doe
+        bio:
+          type: string
+          examples:
+            - This is a example bio
+      required:
+        - id
+        - displayName
+        - username
+        - bio
+      description: Public user profile details
+    UpdateProfileRequest:
+      type: object
+      properties:
+        bio:
+          type: string
+          examples:
+            - This is a example bio
+        displayName:
+          type: string
+          examples:
+            - John Doe
+        username:
+          type: string
+          examples:
+            - john.doe
+      required:
+        - bio
+        - displayName
+        - username
+      description: A payload for updating a user profile
+  securitySchemes:
+    BearerBasic:
+      type: http
+      bearerFormat: Basic Access Authentication
+      scheme: Basic
+      description: Authentication Token
+  parameters:
+    user_id:
+      name: user_id
+      in: path
+      description: A unique identifier of a user
+      required: true
+      schema:
+        type: number
+        examples:
+          - 1234
+      explode: false
+      style: simple
+      allowReserved: false
+      allowEmptyValue: true
+tags:
+  - name: user-service
