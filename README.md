@@ -91,10 +91,6 @@ The database(s) will be populated with the following datasets:
 - A user searches for other users by keyword.
 - A user searches all content by keyword.
 
-### 📦 Microservices Architecture
-
-![](./diagram.png)
-
 ## 🔍 Phase 2 – API specification
 **TODO: add links to openapi files**
 
@@ -166,3 +162,8 @@ The database(s) will be populated with the following datasets:
 
 #### 🔗 Microservices Communication
 - **FR10.1:** The system shall enforce that all inter-service communication between microservices uses gRPC.
+
+
+### 📦 Application Architecture
+
+![Application architecture](./diagram.png)
