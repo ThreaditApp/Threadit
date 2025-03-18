@@ -92,7 +92,8 @@ The database(s) will be populated with the following datasets:
 - A user searches all content by keyword.
 
 ## 🔍 Phase 2 – API Specification
-**TODO: add links to openapi files**
+
+The OpenAPI specification for the *Threadit* API can be found in [/docs/openapi](./docs/openapi/).
 
 ## 🔍 Phase 3 – Functional Requirements and Application Architecture
 
