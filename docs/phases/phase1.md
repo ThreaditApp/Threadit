@@ -1,0 +1,67 @@
+## 🔍 Phase 1 - Datasets, Business Capabilities and Use Cases
+
+### 📂 Datasets
+
+The database(s) will be populated with the following datasets:
+
+- 📊 [Reddit Top 2.5 Million](https://github.com/umbrae/reddit-top-2.5-million) - Aug 2013 (1.66GB)
+- 🐦 [Twitter Friends](https://www.kaggle.com/datasets/hwassner/TwitterFriends) - Sep 2016 (448.48MB)
+
+### 🏢 Business Capabilities
+
+*Threadit* enables users to connect, share, and engage in discussions within online communities. The platform supports:
+
+- 🔑 **User Management & Authentication** - User registration, login, logout and account deletion.
+- 🧑‍💻 **User Profiles** - View and update user profiles. 
+- 🌍 **Communities** - Create or join communities centered around specific interests or topics.
+- 📝 **Threads** - Create threads for discussing and sharing content.
+- 💬 **Comments** - Commenting, replying, and engaging in conversations within threads and communities.
+- ⬆️ **Voting System** - Upvote or downvote threads and comments to indicate quality and relevance.
+- 🔗 **Social Connectivity** - Follow users and communities to stay updated on their activity.
+- 🏠 **Personalized Feed** - Feed of threads from followed users and communities.
+- 🔎 **Search & Discovery** - Search for threads, users or communities by keyword.
+
+### 📌 Use cases
+
+#### 🔑 User Management & Authentication
+- A user registers a new account.
+- A user logs in to access their account.
+- A user logs out of their session.
+- A user deletes their account.
+
+#### 🧑‍💻 User Profiles
+- A user views their own or another user's profile.
+- A user updates their profile information.
+
+#### 🌍 Communities
+- A user creates a new community.
+- A user joins a community.
+- A user leaves a community.
+- A user views a community's threads and members.
+
+#### 📝 Threads
+- A user creates a thread.
+- A user edits or deletes their own thread.
+- A user views a thread and its comments.
+
+#### 💬 Comments
+- A user comments on a thread.
+- A user replies to a comment.
+- A user edits or deletes their comment.
+
+#### ⬆️ Voting System
+- A user upvotes or downvotes a thread.
+- A user upvotes or downvotes a comment.
+
+#### 🔗 Social Connectivity
+- A user follows or unfollows another user.
+- A user follows or unfollows a community.
+
+#### 🏠 Personalized Feed
+- A user views a feed of threads from followed users and communities.
+
+#### 🔎 Search & Discovery
+- A user searches for threads by keyword.
+- A user searches for communities by keyword.
+- A user searches for other users by keyword.
+- A user searches all content by keyword.
