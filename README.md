@@ -99,10 +99,21 @@ The database(s) will be populated with the following datasets:
 ### 📌 Functional requirements
 
 #### 🔑 User Management & Authentication
-- **FR1.1:** TODO
+- **FR1.1:** The system shall allow users to register a new account by providing a display name, email, and password.
+- **FR1.2:** The system shall enforce password security policies, including a minimum length and complexity requirements.
+- **FR1.3:** The system shall allow users to authenticate using their email and password.
+- **FR1.4:** The system shall issue a token upon successful authentication.
+- **FR1.5:** The system shall allow users to log out by invalidating their authentication token.
+- **FR1.6:** The system shall allow authenticated users to delete their account.
+- **FR1.7:** The system shall ensure that deleted user accounts are permanently removed from the authentication database.
 
 #### 🧑‍💻 User Profiles
-- **FR2.1:** TODO
+- **FR2.1:** The system shall allow authenticated users to view their own profile information.
+- **FR2.2:** The system shall allow users to view another user’s public profile information.
+- **FR2.3:** The system shall allow authenticated users to update their own profile information, including display name, username, and bio.
+- **FR2.4:** The system shall enforce uniqueness constraints on usernames.
+- **FR2.5:** The system shall allow authenticated users to delete their own profile, which should also trigger account deletion.
+- **FR2.6:** The system shall prevent unauthorized users from modifying another user's profile.
 
 #### 🌍 Communities
 - **FR3.1:** The system shall allow users to retrieve a list of communities.
