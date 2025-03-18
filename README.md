@@ -137,7 +137,15 @@ The database(s) will be populated with the following datasets:
 - **FR4.12:** The system shall allow community owners to delete any thread in their community.
 
 #### 💬 Comments
-- **FR5.1:** TODO
+- **FR5.1:** The system shall allow users to retrieve a list of comments for a specific post.
+- **FR5.2:** The system shall support pagination for comment retrieval.
+- **FR5.3:** The system shall allow authenticated users to create a new comment for a post.
+- **FR5.4:** The system shall allow users to retrieve the details of a specific comment.
+- **FR5.5:** The system shall allow authenticated users to update their own comments.
+- **FR5.6:** The system shall enforce authorization checks to prevent users from modifying or deleting comments they do not own.
+- **FR5.7:** The system shall allow authenticated users to delete their own comments.
+- **FR5.8:** The system shall allow users to reply to existing comments.
+- **FR5.9:** The system shall ensure that replies are correctly linked to their parent comment.
 
 #### ⬆️ Voting System
 - **FR6.1:** TODO
@@ -146,7 +154,12 @@ The database(s) will be populated with the following datasets:
 - **FR7.1:** TODO
 
 #### 🏠 Personalized Feed
-- **FR8.1:** TODO
+- **FR8.1:** The system shall allow authenticated users to retrieve a personalized feed.
+- **FR8.2:** The system shall support pagination for feed retrieval.
+- **FR8.3:** The system shall allow users to sort their feed by newest, trending, or top items.
+- **FR8.4:** The system shall ensure that feed items contain both posts and comments, categorized accordingly.
+- **FR8.5:** The system shall provide metadata for each feed item, including community ID, timestamps, and content.
+- **FR8.6:** The system shall ensure that only authorized users can access personalized feeds.
 
 #### 🔎 Search & Discovery
 - **FR9.1:** TODO
