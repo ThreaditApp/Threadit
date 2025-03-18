@@ -91,12 +91,12 @@ The database(s) will be populated with the following datasets:
 - A user searches for other users by keyword.
 - A user searches all content by keyword.
 
-## 🔍 Phase 2 – API specification
+## 🔍 Phase 2 – API Specification
 **TODO: add links to openapi files**
 
-## 🔍 Phase 3 – Functional requirements and application architecture
+## 🔍 Phase 3 – Functional Requirements and Application Architecture
 
-### 📌 Functional requirements
+### 📌 Functional Requirements
 
 #### 🔑 User Management & Authentication
 - **FR1.1:** The system should allow users to register a new account by providing a display name, email, and password.
@@ -157,7 +157,7 @@ The database(s) will be populated with the following datasets:
 #### ⬆️ Voting System
 - **FR6.1:** The system should allow authenticated users to upvote or downvote a thread.
 - **FR6.2:** The system should allow authenticated users to upvote or downvote a comment.
-- **FR6.4:** The system should allow authenticated users to change or remove their vote on a thread or comment.
+- **FR6.3:** The system should allow authenticated users to change or remove their vote on a thread or comment.
 
 #### 🔗 Social Connectivity
 - **FR7.1:** The system should allow authenticated users to follow or unfollow another user.
@@ -180,7 +180,7 @@ The database(s) will be populated with the following datasets:
 - **FR9.3:** The system should allow users to search for other users by keyword.
 - **FR9.4:** The system should allow users to search all content by keyword.
 - **FR9.5:** The system should support pagination for search results.
-- **FR9.7:** The system should allow users to sort search results by date or popularity.
+- **FR9.6:** The system should allow users to sort search results by date or popularity.
 
 #### 🔗 Microservices Communication
 - **FR10.1:** The system should enforce that all inter-service communication between microservices uses gRPC.

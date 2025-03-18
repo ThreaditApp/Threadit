@@ -1,0 +1,227 @@
+openapi: 3.1.0
+info:
+  title: SearchService API
+  description: API for searching in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+tags:
+  - name: Search
+    description: Operations related to searching
+paths:
+  /search:
+    get:
+      operationId: globalSearch
+      tags:
+        - search-service
+      summary: "Global Search"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalSearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      parameters:
+        - in: query
+          name: q
+          required: true
+          style: form
+          description: Query
+          explode: true
+          schema:
+            type: string
+          allowReserved: false
+  /search/users:
+    get:
+      operationId: searchUsers
+      tags:
+        - search-service
+      summary: Search Users
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      parameters:
+        - in: query
+          name: q
+          required: true
+          style: form
+          description: Query
+          explode: true
+          schema:
+            type: string
+          allowReserved: false
+  /search/communities:
+    get:
+      operationId: searchCommunities
+      tags:
+        - search-service
+      summary: Search Communities
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      parameters:
+        - in: query
+          name: q
+          required: true
+          style: form
+          description: Query
+          explode: true
+          schema:
+            type: string
+          allowReserved: false
+  /search/threads:
+    get:
+      operationId: searchThreads
+      tags:
+        - search-service
+      summary: Search Threads
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/SearchResponse"
+                required:
+                  - data
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      parameters:
+        - in: query
+          name: q
+          required: true
+          style: form
+          description: Query
+          explode: true
+          schema:
+            type: string
+          allowReserved: false
+components:
+  schemas:
+    GlobalSearchResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: string
+        communities:
+          type: array
+          items:
+            type: string
+        threads:
+          type: array
+          items:
+            type: string
+      required:
+        - users
+        - communities
+        - threads
+      description: Returns an object with search results of users, communities and threads
+    SearchResponse:
+      type: array
+      items:
+        type: string
+      description: Returns the search results
+  responses:
+    Conflict:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+      description: The request could not be completed due to a conflict with the
+        current state of the resource. Resolve the conflict and try again.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - message
+                  properties:
+                    message:
+                      type: string
+              message:
+                type: string
+      description: The server could not understand the request due to invalid syntax.
+        The client should modify the request and try again.
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+      description: Authentication is required to access the requested resource. The
+        client must include the appropriate credentials.
+    NotFound:
+      description: The server cannot find the requested resource. The endpoint may be
+        invalid or the resource may no longer exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    InternalServerErrror:
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request. Report the issue to the support team if it
+        persists.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Authentication Token
+      bearerFormat: JWT

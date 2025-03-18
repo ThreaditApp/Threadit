@@ -1,0 +1,242 @@
+openapi: 3.1.0
+info:
+  title: SocialService API
+  description: API for managing social connections in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+tags:
+  - name: Social
+    description: Operations related to social connections
+paths:
+  /social/user/{user_id}:
+    delete:
+      operationId: unfollowUser
+      tags:
+        - social-service
+      summary: Unfollow User
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "200":
+          description: The logged user unfollowed the user.
+          content:
+            application/json:
+              schema:
+                type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
+    post:
+      operationId: followUser
+      tags:
+        - social-service
+      summary: Follow User
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "200":
+          description: The logged user started following the user.
+          content:
+            application/json:
+              schema:
+                type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          description: The user with the provided id was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+      security:
+        - bearerAuth: []
+  /social/community/{community_id}:
+    delete:
+      operationId: unfollowCommunity
+      tags:
+        - social-service
+      summary: Unfollow Community
+      parameters:
+        - $ref: "#/components/parameters/community_id"
+      responses:
+        "200":
+          description: The logged user successfully unfollowed the community.
+          content:
+            application/json:
+              schema:
+                type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
+    post:
+      operationId: followCommunity
+      tags:
+        - social-service
+      summary: Follow Community
+      parameters:
+        - $ref: "#/components/parameters/community_id"
+      responses:
+        "200":
+          description: The logged user started following the community.
+          content:
+            application/json:
+              schema:
+                type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+      security:
+        - bearerAuth: []
+components:
+  responses:
+    Conflict:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+      description: The request could not be completed due to a conflict with the
+        current state of the resource. Resolve the conflict and try again.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - message
+                  properties:
+                    message:
+                      type: string
+              message:
+                type: string
+      description: The server could not understand the request due to invalid syntax.
+        The client should modify the request and try again.
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+      description: Authentication is required to access the requested resource. The
+        client must include the appropriate credentials.
+    NotFound:
+      description: The server cannot find the requested resource. The endpoint may be
+        invalid or the resource may no longer exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    InternalServerErrror:
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request. Report the issue to the support team if it
+        persists.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Authentication Token
+      bearerFormat: JWT
+  parameters:
+    user_id:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+    community_id:
+      name: community_id
+      in: path
+      required: true
+      schema:
+        type: string
