@@ -1,3 +1,3 @@
-## 🔍 Phase 4 - System implementation
+## 🔍 Phase 4 - System Implementation
 
 TODO

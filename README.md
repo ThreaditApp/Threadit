@@ -25,17 +25,17 @@ Its architecture will follow a microservices model and be deployed on Google Clo
 
 ## 🔍 Development Phases
 
-- [Phase 1](./docs/phases/phase1.md)
-- [Phase 2](./docs/phases/phase2.md)
-- [Phase 3](./docs/phases/phase3.md)
-- [Phase 4](./docs/phases/phase4.md)
-- [Phase 5](./docs/phases/phase5.md)
-- [Phase 6](./docs/phases/phase6.md)
-- [Phase 7](./docs/phases/phase7.md)
-- [Phase 8](./docs/phases/phase8.md)
-- [Phase 9](./docs/phases/phase9.md)
-- [Phase 10](./docs/phases/phase10.md)
+- [Phase 1 - Datasets, Business Capabilities and Use Cases](./docs/phases/phase1.md)
+- [Phase 2 - API Specification](./docs/phases/phase2.md)
+- [Phase 3 - Functional Requirements and Application Architecture](./docs/phases/phase3.md)
+- [Phase 4 - System Implementation](./docs/phases/phase4.md)
+- [Phase 5 - System Deployment](./docs/phases/phase5.md)
+- [Phase 6 - Non-Functional Requirements and Technical Architecture or Big Data](./docs/phases/phase6.md)
+- [Phase 7 - Implementation and Scripted Deployment of Previous Phase](./docs/phases/phase7.md)
+- [Phase 8 - Automation with CI/CD](./docs/phases/phase8.md)
+- [Phase 9 - System Testing](./docs/phases/phase9.md)
+- [Phase 10 - Final Report](./docs/phases/phase10.md)
 
 ## 📦 Application Architecture
 
-![Application architecture](./docs/images/diagram.png)
+![application architecture](./docs/images/architecture.png)

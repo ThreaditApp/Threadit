@@ -1,3 +1,3 @@
-## 🔍 Phase 6 - Non-functional requirements and technical architecture or big data
+## 🔍 Phase 6 - Non-Functional Requirements and Technical Architecture or Big Data
 
 TODO

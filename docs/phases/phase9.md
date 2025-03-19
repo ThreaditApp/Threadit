@@ -1,3 +1,3 @@
-## 🔍 Phase 9 - System testing
+## 🔍 Phase 9 - System Testing
 
 TODO

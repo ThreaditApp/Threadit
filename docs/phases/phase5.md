@@ -1,3 +1,3 @@
-## 🔍 Phase 5 - System deployment
+## 🔍 Phase 5 - System Deployment
 
 TODO

@@ -1,3 +1,3 @@
-## 🔍 Phase 7 - Implementation and scripted deployment of previous phase
+## 🔍 Phase 7 - Implementation and Scripted Deployment of Previous Phase
 
 TODO
