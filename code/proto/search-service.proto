@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package search;
+
+option go_package = "search-service/src/pb;pb";
+
+service SearchService {
+	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse);
+	rpc UserSearch (UserSearchRequest) returns (UserSearchResponse);
+	rpc CommunitySearch (CommunitySearchRequest) returns (CommunitySearchResponse);
+	rpc ThreadSearch (ThreadSearchRequest) returns (ThreadSearchResponse);
+}
+
+message GlobalSearchRequest {
+	string query = 1;
+}
+
+message GlobalSearchResponse {
+	repeated string thread_ids = 1;
+	repeated string user_ids = 2;
+	repeated string community_ids = 3;
+}
+
+message UserSearchRequest {
+	string query = 1;
+}
+
+message UserSearchResponse {
+	repeated string user_ids = 1;
+}
+
+message CommunitySearchRequest {
+	string query = 1;
+}
+
+message CommunitySearchResponse {
+	repeated string community_ids = 1;
+}
+
+message ThreadSearchRequest {
+	string query = 1;
+}
+
+message ThreadSearchResponse {
+	repeated string thread_ids = 1;
+}
