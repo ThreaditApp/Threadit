@@ -4,8 +4,8 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	server "vote-service/src"
-	pb "vote-service/src/pb"
+	server "social-service/src"
+	pb "social-service/src/pb"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterVoteServiceServer(grpcServer, &server.VoteServer{})
+	pb.RegisterSocialServiceServer(grpcServer, &server.SocialServer{})
 
 	log.Println("gRPC server is listening on :50051")
 	if err := grpcServer.Serve(lis); err != nil {

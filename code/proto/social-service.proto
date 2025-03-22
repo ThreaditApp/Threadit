@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package vote;
+
+option go_package = "social-service/src/pb;pb";
+
+import "google/protobuf/empty.proto";
+
+
+service SocialService {
+  rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
+	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
+	rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
+	rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse);
+	rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+	rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+	rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+}
+
+message FollowUserRequest {
+	string user_id = 1;
+}
+
+message GetFollowersRequest {
+	string user_id = 1;
+}
+
+message GetFollowersResponse {
+	repeated string user_ids = 1;
+}
+
+message GetFollowingRequest {
+	string user_id = 1;
+}
+
+message GetFollowingResponse {
+	repeated string user_ids = 1;
+}
+
+message FollowCommunityRequest {
+	string community_id = 1;
+}
+
+message GetCommunityFollowersRequest {
+	string community_id = 1;
+}
+
+message GetCommunityFollowersResponse {
+	repeated string user_ids = 1;
+}

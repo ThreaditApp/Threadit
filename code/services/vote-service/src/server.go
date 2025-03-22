@@ -7,7 +7,7 @@ import (
 )
 
 type VoteServer struct {
-	pb.UnimplementedVotingServiceServer
+	pb.UnimplementedVoteServiceServer
 }
 
 func (s *VoteServer) UpvoteThread(ctx context.Context, req *pb.VoteThreadRequest) (*emptypb.Empty, error) {

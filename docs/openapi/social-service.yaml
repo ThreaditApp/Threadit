@@ -27,6 +27,7 @@ paths:
             application/json:
               schema:
                 type: "null"
+                title: UnfollowUserOk
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -59,6 +60,7 @@ paths:
             application/json:
               schema:
                 type: "null"
+                title: FollowUserOk
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -101,6 +103,7 @@ paths:
             application/json:
               schema:
                 type: "null"
+                title: UnfollowCommunityOk
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -133,6 +136,7 @@ paths:
             application/json:
               schema:
                 type: "null"
+                title: FollowCommunityOk
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -147,6 +151,112 @@ paths:
                     type: string
                 required:
                   - message
+      security:
+        - bearerAuth: []
+  /social/user/{user_id}/following:
+    get:
+      operationId: getFollowing
+      tags:
+        - social-service
+      summary: Get Following
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+  /social/community/{community_id}/followers:
+    get:
+      operationId: getCommunityFollowers
+      tags:
+        - social-service
+      summary: Get Community Followers
+      parameters:
+        - $ref: "#/components/parameters/community_id"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /social/user/{user_id}/followers:
+    get:
+      operationId: getFollowers
+      tags:
+        - social-service
+      summary: Get Followers
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
 components:

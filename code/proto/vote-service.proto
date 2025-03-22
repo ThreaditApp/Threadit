@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package voting;
+package vote;
 
 option go_package = "vote-service/src/pb;pb";
 
 import "google/protobuf/empty.proto";
 
 
-service VotingService {
+service VoteService {
   rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
   rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
   rpc RemoveThreadVote (VoteThreadRequest) returns (google.protobuf.Empty);
