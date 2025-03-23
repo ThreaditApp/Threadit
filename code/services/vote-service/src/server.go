@@ -15,58 +15,34 @@ type VoteServer struct {
 }
 
 func (s *VoteServer) UpvoteThread(ctx context.Context, req *pb.VoteThreadRequest) (*emptypb.Empty, error) {
-	_, err := s.ThreadClient.UpdateVote(ctx, &threadpb.VoteThreadRequest{
-		ThreadId: req.ThreadId,
-		UserId: getCurrentUserId(ctx),
-		Value: 1,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	return &emptypb.Empty{}, nil
+	return s.updateThreadVote(ctx, req, 1)
 }
 
 func (s *VoteServer) DownvoteThread(ctx context.Context, req *pb.VoteThreadRequest) (*emptypb.Empty, error) {
-	_, err := s.ThreadClient.UpdateVote(ctx, &threadpb.VoteThreadRequest{
-		ThreadId: req.ThreadId,
-		UserId: getCurrentUserId(ctx),
-		Value: -1,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	return &emptypb.Empty{}, nil
+	return s.updateThreadVote(ctx, req, -1)
 }
 
 func (s *VoteServer) RemoveThreadVote(ctx context.Context, req *pb.VoteThreadRequest) (*emptypb.Empty, error) {
-	_, err := s.ThreadClient.UpdateVote(ctx, &threadpb.VoteThreadRequest{
-		ThreadId: req.ThreadId,
-		UserId: getCurrentUserId(ctx),
-		Value: 0,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	return &emptypb.Empty{}, nil
+	return s.updateThreadVote(ctx, req, 0)
 }
 
 func (s *VoteServer) UpvoteComment(ctx context.Context, req *pb.VoteCommentRequest) (*emptypb.Empty, error) {
-	_, err := s.CommentClient.UpdateVote(ctx, &commentpb.VoteCommentRequest{
-		CommentId: req.CommentId,
-		UserId: getCurrentUserId(ctx),
-		Value: 1,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	return &emptypb.Empty{}, nil
+	return s.updateCommentVote(ctx, req, 1)
 }
 
 func (s *VoteServer) DownvoteComment(ctx context.Context, req *pb.VoteCommentRequest) (*emptypb.Empty, error) {
-	_, err := s.CommentClient.UpdateVote(ctx, &commentpb.VoteCommentRequest{
-		CommentId: req.CommentId,
+	return s.updateCommentVote(ctx, req, -1)
+}
+
+func (s *VoteServer) RemoveCommentVote(ctx context.Context, req *pb.VoteCommentRequest) (*emptypb.Empty, error) {
+	return s.updateCommentVote(ctx, req, 0)
+}
+
+func (s *VoteServer) updateThreadVote(ctx context.Context, req *pb.VoteThreadRequest, value int) (*emptypb.Empty, error)  {
+	_, err := s.ThreadClient.UpdateVote(ctx, &threadpb.VoteThreadRequest{
+		ThreadId: req.ThreadId,
 		UserId: getCurrentUserId(ctx),
-		Value: -1,
+		Value: value,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
@@ -74,11 +50,11 @@ func (s *VoteServer) DownvoteComment(ctx context.Context, req *pb.VoteCommentReq
 	return &emptypb.Empty{}, nil
 }
 
-func (s *VoteServer) RemoveCommentVote(ctx context.Context, req *pb.VoteCommentRequest) (*emptypb.Empty, error) {
+func (s *VoteServer) updateCommentVote(ctx context.Context, req *pb.VoteCommentRequest, value int) (*emptypb.Empty, error)  {
 	_, err := s.CommentClient.UpdateVote(ctx, &commentpb.VoteCommentRequest{
 		CommentId: req.CommentId,
 		UserId: getCurrentUserId(ctx),
-		Value: 0,
+		Value: value,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)

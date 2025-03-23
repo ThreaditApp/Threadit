@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	server "search-service/src"
 	pb "search-service/src/pb"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
+func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 	addr := fmt.Sprintf("localhost:%d", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -21,11 +22,11 @@ func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 
 func main() {
 	// connect to other services
-	userConn := ConnectGrpcClient("user service", 50052)
+	userConn := connectGrpcClient("user service", 50052)
 	defer userConn.Close()
-	communityConn := ConnectGrpcClient("community service", 50053)
+	communityConn := connectGrpcClient("community service", 50053)
 	defer communityConn.Close()
-	threadConn := ConnectGrpcClient("thread service", 50054)
+	threadConn := connectGrpcClient("thread service", 50054)
 	defer threadConn.Close()
 
 	// create search server with clients

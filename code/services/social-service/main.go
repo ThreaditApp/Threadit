@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	server "social-service/src"
 	pb "social-service/src/pb"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
+func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 	addr := fmt.Sprintf("localhost:%d", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -21,7 +22,7 @@ func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 
 func main() {
 	// connect to database service
-	dbConn := ConnectGrpcClient("database service", 50055)
+	dbConn := connectGrpcClient("database service", 50055)
 	defer dbConn.Close()
 
 	// create social service with database service

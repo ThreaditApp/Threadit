@@ -9,7 +9,7 @@ import (
 	pb "vote-service/src/pb"
 )
 
-func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
+func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 	addr := fmt.Sprintf("localhost:%d", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -19,11 +19,10 @@ func ConnectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 }
 
 func main() {
-
 	// connect to other services
-	threadConn := ConnectGrpcClient("thread service", 50056)
+	threadConn := connectGrpcClient("thread service", 50056)
 	defer threadConn.Close()
-	commentConn := ConnectGrpcClient("comment service", 50057)
+	commentConn := connectGrpcClient("comment service", 50057)
 	defer commentConn.Close()
 
 	// create social service with database service
@@ -37,7 +36,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-
 	grpcServer := grpc.NewServer()
 	pb.RegisterVoteServiceServer(grpcServer, voteService)
 
