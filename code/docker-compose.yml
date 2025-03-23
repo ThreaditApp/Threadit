@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: database
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/data/db
+
+  db-service:
+    build:
+      context: ./services/db-service
+    container_name: db-service
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: ${MONGO_URI}
+    ports:
+      - "50051:50051"
+
+volumes:
+  db_data:
+    driver: local
