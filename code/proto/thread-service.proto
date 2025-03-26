@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 service ThreadService {
-	rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
+  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
   rpc CreateThread (CreateThreadRequest) returns (Thread);
   rpc GetThread (GetThreadRequest) returns (Thread);
   rpc UpdateThread (UpdateThreadRequest) returns (Thread);
@@ -37,19 +37,19 @@ message ListThreadsRequest {
   int32 page_size = 2;
   string community_id = 3;
   string author_id = 4;
-	string search = 5;
-	string sort_by = 6;
-	string sort_order = 7;
+  string search = 5;
+  string sort_by = 6;
+  string sort_order = 7;
 }
 
 message ListThreadsResponse {
-	repeated Thread threads = 1;
+  repeated Thread threads = 1;
   Pagination pagination = 2;
 }
 
 message CreateThreadRequest {
-	string community_id = 1;
-	string title = 2;
+  string community_id = 1;
+  string title = 2;
   string content = 3;
 }
 
