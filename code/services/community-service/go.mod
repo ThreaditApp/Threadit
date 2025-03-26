@@ -1,4 +1,4 @@
-module social-service
+module community-service
 
 go 1.23
 
