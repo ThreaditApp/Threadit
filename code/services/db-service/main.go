@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
-	"time"
-
+	server "db-service/src"
+	pb "db-service/src/pb"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
+	"log"
+	"net"
+	"os"
 )
 
 func main() {
@@ -20,16 +21,26 @@ func main() {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
 
-	defer client.Disconnect(context.Background())
+	defer func(client *mongo.Client, ctx context.Context) {
+		err := client.Disconnect(ctx)
+		if err != nil {
+			log.Fatalf("Failed to disconnect from MongoDB: %v", err)
+		}
+	}(client, context.Background())
 
-	fmt.Println("Connected to the Threadit database server!")
+	// start gRPC server
+	lis, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 
-	// TODO: Create a gRPC server and remove the loop below
+	grpcServer := grpc.NewServer()
+	pb.RegisterDBServiceServer(grpcServer, &server.DBServer{
+		Mongo: *client,
+	})
 
-	// Infinite loop to simulate listening
-	for {
-		// Simulate listening for gRPC requests
-		fmt.Println("Listening for gRPC requests...")
-		time.Sleep(10 * time.Second)
+	log.Println("search service is listening on :50051")
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }
