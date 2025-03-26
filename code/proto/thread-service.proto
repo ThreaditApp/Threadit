@@ -33,13 +33,13 @@ message Pagination {
 }
 
 message ListThreadsRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-  string community_id = 3;
-  string author_id = 4;
-  string search = 5;
-  string sort_by = 6;
-  string sort_order = 7;
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string community_id = 3;
+  optional string author_id = 4;
+  optional string search = 5;
+  optional string sort_by = 6;
+  optional string sort_order = 7;
 }
 
 message ListThreadsResponse {
@@ -59,8 +59,8 @@ message GetThreadRequest {
 
 message UpdateThreadRequest {
   string id = 1;
-  string title = 2;
-  string content = 3;
+  optional string title = 2;
+  optional string content = 3;
 }
 
 message DeleteThreadRequest {
