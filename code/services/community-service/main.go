@@ -1,11 +1,11 @@
 package main
 
 import (
+	server "community-service/src"
+	pb "community-service/src/pb"
 	"fmt"
 	"log"
 	"net"
-	server "community-service/src"
-	pb "community-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

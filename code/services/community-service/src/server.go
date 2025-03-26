@@ -1,12 +1,12 @@
 package server
 
 import (
+	pb "community-service/src/pb"
 	"context"
 	"fmt"
+
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/timestamppb"
-	pb "thread-service/src/pb"
 )
 
 type CommunityServer struct {
