@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package vote;
+
+option go_package = "vote-service/src/pb;pb";
+
+import "google/protobuf/empty.proto";
+
+
+service DBService {
+  // user crud operations
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (google.protobuf.Empty);
+  rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
+
+  // community crud operations
+  rpc CreateCommunity (CreateCommunityRequest) returns (CreateCommunityResponse);
+  rpc GetCommunity (GetCommunityRequest) returns (GetCommunityResponse);
+  rpc UpdateCommunity (UpdateCommunityRequest) returns (google.protobuf.Empty);
+  rpc DeleteCommunity (DeleteCommunityRequest) returns (google.protobuf.Empty);
+
+  // thread crud operations
+  rpc CreateThread (CreateThreadRequest) returns (CreateThreadResponse);
+  rpc GetThread (GetThreadRequest) returns (GetThreadResponse);
+  rpc UpdateThread (UpdateThreadRequest) returns (google.protobuf.Empty);
+  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
+
+  // comment crud operations
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse);
+  rpc GetComment (GetCommentRequest) returns (GetCommentResponse);
+  rpc UpdateComment (UpdateCommentRequest) returns (google.protobuf.Empty);
+  rpc DeleteComment (DeleteCommentRequest) returns (google.protobuf.Empty);
+
+  // follower operations
+  rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
+	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
+	rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
+	rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse);
+	rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+	rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+	rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string bio = 3;
+}
+
+message CreateUserResponse {
+  string id = 1;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  string username = 1;
+  string email = 2;
+  string bio = 3;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  optional string username = 2;
+  optional string email = 3;
+  optional string bio = 4;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message CreateCommunityRequest {
+  string name = 1;
+}
+
+message CreateCommunityResponse {
+  string id = 1;
+}
+
+message GetCommunityRequest {
+  string id = 1;
+}
+
+message GetCommunityResponse {
+  string name = 1;
+}
+
+message UpdateCommunityRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message DeleteCommunityRequest {
+  string id = 1;
+}
+
+message CreateThreadRequest {
+  string title = 1;
+  string content = 2;
+}
+
+message CreateThreadResponse {
+  string id = 1;
+}
+
+message GetThreadRequest {
+  string id = 1;
+}
+
+message GetThreadResponse {
+  string title = 1;
+  string content = 2;
+}
+
+message UpdateThreadRequest {
+  string id = 1;
+  optional string title = 2;
+  optional string content = 3;
+}
+
+message DeleteThreadRequest {
+  string id = 1;
+}
+
+message CreateCommentRequest {
+  string content = 1;
+}
+
+message CreateCommentResponse {
+  string id = 1;
+}
+
+message GetCommentRequest {
+  string id = 1;
+}
+
+message GetCommentResponse {
+  string content = 1;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string content = 2;
+}
+
+message DeleteCommentRequest {
+  string id = 1;
+}
+
+message FollowUserRequest {
+  string user_id = 1;
+}
+
+message GetFollowersRequest {
+  string user_id = 1;
+}
+
+message GetFollowersResponse {
+  repeated string user_ids = 1;
+}
+
+message GetFollowingRequest {
+  string user_id = 1;
+}
+
+message GetFollowingResponse {
+  repeated string user_ids = 1;
+}
+
+message FollowCommunityRequest {
+  string community_id = 1;
+}
+
+message GetCommunityFollowersRequest {
+  string community_id = 1;
+}
+
+message GetCommunityFollowersResponse {
+  repeated string user_ids = 1;
+}
