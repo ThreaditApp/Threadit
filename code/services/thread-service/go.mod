@@ -1,4 +1,4 @@
-module social-service
+module thread-service
 
 go 1.23
 
