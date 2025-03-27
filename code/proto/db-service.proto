@@ -15,9 +15,10 @@ service DBService {
   rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
 
   // community crud operations
-  rpc CreateCommunity (CreateCommunityRequest) returns (CreateCommunityResponse);
-  rpc GetCommunity (GetCommunityRequest) returns (GetCommunityResponse);
-  rpc UpdateCommunity (UpdateCommunityRequest) returns (google.protobuf.Empty);
+  rpc ListCommunities (ListCommunitiesRequest) returns (ListCommunitiesResponse);
+  rpc CreateCommunity (CreateCommunityRequest) returns (Community);
+  rpc GetCommunity (GetCommunityRequest) returns (Community);
+  rpc UpdateCommunity (UpdateCommunityRequest) returns (Community);
   rpc DeleteCommunity (DeleteCommunityRequest) returns (google.protobuf.Empty);
 
   // thread crud operations
@@ -43,6 +44,13 @@ service DBService {
   rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
   rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
   rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
 }
 
 message Pagination {
@@ -90,29 +98,50 @@ message DeleteUserRequest {
   string id = 1;
 }
 
-message CreateCommunityRequest {
-  string name = 1;
+message Community {
+  string id = 1;
+  string owner_id = 2;
+  string name = 3;
+  string description = 4;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
-message CreateCommunityResponse {
-  string id = 1;
+message ListCommunitiesRequest {
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string owner_id = 3;
+  optional string search = 4;
+  optional string sort_by = 5;
+  optional string sort_order = 6;
+}
+
+message ListCommunitiesResponse {
+  repeated Community communities = 1;
+  Pagination pagination = 2;
+}
+
+message CreateCommunityRequest {
+  string owner_id = 1;
+  string name = 2;
+  string description = 3;
 }
 
 message GetCommunityRequest {
   string id = 1;
-}
-
-message GetCommunityResponse {
-  string name = 1;
+  optional string owner_id = 2;
 }
 
 message UpdateCommunityRequest {
   string id = 1;
-  string name = 2;
+  string owner_id = 2;
+  optional string name = 3;
+  optional string description = 4;
 }
 
 message DeleteCommunityRequest {
   string id = 1;
+  string owner_id = 2;
 }
 
 message Thread {
