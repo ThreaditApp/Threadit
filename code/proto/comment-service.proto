@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package comment;
+
+option go_package = "comment-service/src/pb;pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service CommentService {
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
+}
+
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  string parent_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message ListCommentsRequest {
+  string post_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListCommentsResponse {
+  repeated Comment comments = 1;
+  Pagination pagination = 2;
+}
+
+message CreateCommentRequest {
+  string post_id = 1;
+  string content = 2;
+  string parent_id = 3;
+}
+
+message CreateCommentResponse {
+  Comment comment = 1;
+}
+
+message GetCommentRequest {
+  string id = 1;
+}
+
+message GetCommentResponse {
+  Comment comment = 1;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string content = 2;
+}
+
+message DeleteCommentRequest {
+  string id = 1;
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
+}

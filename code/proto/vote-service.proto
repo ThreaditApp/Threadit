@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package vote;
+
+option go_package = "vote-service/src/pb;pb";
+
+import "google/protobuf/empty.proto";
+
+
+service VoteService {
+  rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
+  rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
+  rpc RemoveThreadVote (VoteThreadRequest) returns (google.protobuf.Empty);
+  rpc UpvoteComment (VoteCommentRequest) returns (google.protobuf.Empty);
+  rpc DownvoteComment (VoteCommentRequest) returns (google.protobuf.Empty);
+  rpc RemoveCommentVote (VoteCommentRequest) returns (google.protobuf.Empty);
+}
+
+message VoteThreadRequest {
+  string thread_id = 1;
+}
+
+message VoteCommentRequest {
+  string comment_id = 1;
+}

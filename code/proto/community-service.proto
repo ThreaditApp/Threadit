@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package community;
+
+option go_package = "community-service/src/pb;pb";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service CommunityService {
+  rpc ListCommunities(ListCommunitiesRequest) returns (ListCommunitiesResponse);
+  rpc CreateCommunity(CreateCommunityRequest) returns (Community);
+  rpc GetCommunity(GetCommunityRequest) returns (Community);
+  rpc UpdateCommunity(UpdateCommunityRequest) returns (Community);
+  rpc DeleteCommunity(DeleteCommunityRequest) returns (google.protobuf.Empty);
+}
+
+message Community {
+  string id = 1;
+  string owner_id = 2;
+  string name = 3;
+  string description = 4;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
+}
+
+message ListCommunitiesRequest {
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string owner_id = 3;
+  optional string search = 4;
+  optional string sort_by = 5;
+  optional string sort_order = 6;
+}
+
+message ListCommunitiesResponse {
+  repeated Community communities = 1;
+  Pagination pagination = 2;
+}
+
+message CreateCommunityRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message GetCommunityRequest {
+  string id = 1;
+}
+
+message UpdateCommunityRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+}
+
+message DeleteCommunityRequest {
+  string id = 1;
+}
