@@ -1,15 +1,12 @@
 package server
 
 import (
+	"comment-service/src/pb"
 	"context"
 	"fmt"
-	"log"
-
-	pb "comment-service/src/pb"
-	dbpb "db-service/src/pb"
-
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 )
 
 type CommentServer struct {
@@ -20,7 +17,7 @@ type CommentServer struct {
 func (s *CommentServer) ListComments(ctx context.Context, req *pb.ListCommentsRequest) (*pb.ListCommentsResponse, error) {
 	log.Printf("ListComments called with post_id: %s", req.PostId)
 
-	res, err := s.DBClient.ListComments(ctx, &dbpb.ListCommentsRequest{
+	res, err := s.DBClient.ListComments(ctx, &pb.ListCommentsRequest{
 		PostId:   req.PostId,
 		Page:     req.Page,
 		PageSize: req.PageSize,
@@ -58,7 +55,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *pb.CreateComment
 		return nil, err
 	}
 
-	res, err := s.DBClient.CreateComment(ctx, &dbpb.CreateCommentRequest{
+	res, err := s.DBClient.CreateComment(ctx, &pb.CreateCommentRequest{
 		PostId:   req.PostId,
 		UserId:   userId,
 		Content:  req.Content,
@@ -81,7 +78,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *pb.CreateComment
 func (s *CommentServer) GetComment(ctx context.Context, req *pb.GetCommentRequest) (*pb.Comment, error) {
 	log.Printf("GetComment called with id: %s", req.Id)
 
-	res, err := s.DBClient.GetComment(ctx, &dbpb.GetCommentRequest{
+	res, err := s.DBClient.GetComment(ctx, &pb.GetCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {
@@ -98,13 +95,13 @@ func (s *CommentServer) GetComment(ctx context.Context, req *pb.GetCommentReques
 	}, nil
 }
 
-func (s *CommentServer) UpdateComment(ctx context.Context, req *pb.UpdateCommentRequest) (*pb.Comment, error) {
+func (s *CommentServer) UpdateComment(ctx context.Context, req *pb.UpdateCommentRequest) (*emptypb.Empty, error) {
 	userId, err := getCurrentUserId(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
+	_, err = s.DBClient.UpdateComment(ctx, &pb.UpdateCommentRequest{
 		Id:      req.Id,
 		UserId:  userId,
 		Content: req.Content,
@@ -113,14 +110,7 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *pb.UpdateComment
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
-	return &pb.Comment{
-		Id:        res.Comment.Id,
-		PostId:    res.Comment.PostId,
-		UserId:    res.Comment.UserId,
-		Content:   res.Comment.Content,
-		ParentId:  res.Comment.ParentId,
-		CreatedAt: res.Comment.CreatedAt,
-	}, nil
+	return nil, nil
 }
 
 func (s *CommentServer) DeleteComment(ctx context.Context, req *pb.DeleteCommentRequest) (*emptypb.Empty, error) {
@@ -129,7 +119,7 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *pb.DeleteComment
 		return nil, err
 	}
 
-	_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
+	_, err = s.DBClient.DeleteComment(ctx, &pb.DeleteCommentRequest{
 		Id:     req.Id,
 		UserId: userId,
 	})

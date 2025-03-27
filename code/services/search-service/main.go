@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 	server "search-service/src"
-	pb "search-service/src/pb"
+	"search-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,9 +36,9 @@ func main() {
 
 	// create search server with clients
 	searchServer := &server.SearchServer{
-		UserClient:      userpb.NewUserServiceClient(userConn),
-		CommunityClient: communitypb.NewCommunityServiceClient(communityConn),
-		ThreadClient:    threadpb.NewThreadServiceClient(threadConn),
+		UserClient:      pb.NewUserServiceClient(userConn),
+		CommunityClient: pb.NewCommunityServiceClient(communityConn),
+		ThreadClient:    pb.NewThreadServiceClient(threadConn),
 	}
 
 	// get env port
@@ -56,7 +56,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	pb.RegisterSearchServiceServer(grpcServer, searchServer)
 
-	log.Printf("search service is listening on :%s", port)
+	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

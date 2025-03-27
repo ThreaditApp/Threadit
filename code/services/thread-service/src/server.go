@@ -5,17 +5,16 @@ import (
 	"fmt"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/timestamppb"
-	pb "thread-service/src/pb"
+	"thread-service/src/pb"
 )
 
 type ThreadServer struct {
 	pb.UnimplementedThreadServiceServer
-	DBClient dbpb.DBServiceClient
+	DBClient pb.DBServiceClient
 }
 
 func (s *ThreadServer) ListThreads(ctx context.Context, req *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
-	res, err := s.DBClient.ListThreads(ctx, &dbpb.ListThreadsRequest{
+	res, err := s.DBClient.ListThreads(ctx, &pb.ListThreadsRequest{
 		Page:        req.Page,
 		PageSize:    req.PageSize,
 		CommunityId: req.CommunityId,
@@ -58,7 +57,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *pb.CreateThreadReq
 		return nil, err
 	}
 
-	res, err := s.DBClient.CreateThread(ctx, &dbpb.CreateThreadRequest{
+	res, err := s.DBClient.CreateThread(ctx, &pb.CreateThreadRequest{
 		CommunityId: req.CommunityId,
 		AuthorId:    userId,
 		Title:       req.Title,
@@ -80,7 +79,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *pb.CreateThreadReq
 }
 
 func (s *ThreadServer) GetThread(ctx context.Context, req *pb.GetThreadRequest) (*pb.Thread, error) {
-	res, err := s.DBClient.GetThread(ctx, &dbpb.GetThreadRequest{
+	res, err := s.DBClient.GetThread(ctx, &pb.GetThreadRequest{
 		Id: req.Id,
 	})
 	if err != nil {
@@ -104,7 +103,7 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *pb.UpdateThreadReq
 		return nil, err
 	}
 
-	res, err := s.DBClient.UpdateThread(ctx, &dbpb.UpdateThreadRequest{
+	res, err := s.DBClient.UpdateThread(ctx, &pb.UpdateThreadRequest{
 		Id:       req.Id,
 		AuthorId: userId,
 		Title:    req.Title,
@@ -131,7 +130,7 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *pb.DeleteThreadReq
 		return nil, err
 	}
 
-	_, err = s.DBClient.DeleteThread(ctx, &dbpb.DeleteThreadRequest{
+	_, err = s.DBClient.DeleteThread(ctx, &pb.DeleteThreadRequest{
 		Id:       req.Id,
 		AuthorId: userId,
 	})

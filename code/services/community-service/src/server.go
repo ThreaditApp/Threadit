@@ -1,25 +1,24 @@
 package server
 
 import (
-	pb "community-service/src/pb"
+	"community-service/src/pb"
 	"context"
 	"fmt"
-
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type CommunityServer struct {
 	pb.UnimplementedCommunityServiceServer
-	DBClient dbpb.DBServiceClient
+	DBClient pb.DBServiceClient
 }
 
 func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
-	res, err := s.DBClient.ListCommunities(ctx, &dbpb.ListCommunitiesRequest{
+	res, err := s.DBClient.ListCommunities(ctx, &pb.ListCommunitiesRequest{
 		Page:      req.Page,
 		PageSize:  req.PageSize,
 		OwnerId:   req.OwnerId,
-		Search:    req.Search,
+		Name:      req.Name,
 		SortBy:    req.SortBy,
 		SortOrder: req.SortOrder,
 	})
@@ -56,7 +55,7 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCom
 		return nil, err
 	}
 
-	res, err := s.DBClient.CreateCommunity(ctx, &dbpb.CreateCommunityRequest{
+	res, err := s.DBClient.CreateCommunity(ctx, &pb.CreateCommunityRequest{
 		OwnerId:     userId,
 		Name:        req.Name,
 		Description: req.Description,
@@ -76,7 +75,7 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCom
 }
 
 func (s *CommunityServer) GetCommunity(ctx context.Context, req *pb.GetCommunityRequest) (*pb.Community, error) {
-	res, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
+	res, err := s.DBClient.GetCommunity(ctx, &pb.GetCommunityRequest{
 		Id: req.Id,
 	})
 	if err != nil {
@@ -99,7 +98,7 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *pb.UpdateCom
 		return nil, err
 	}
 
-	res, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
+	res, err := s.DBClient.UpdateCommunity(ctx, &pb.UpdateCommunityRequest{
 		Id:          req.Id,
 		OwnerId:     userId,
 		Name:        req.Name,
@@ -125,7 +124,7 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *pb.DeleteCom
 		return nil, err
 	}
 
-	_, err = s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
+	_, err = s.DBClient.DeleteCommunity(ctx, &pb.DeleteCommunityRequest{
 		Id:      req.Id,
 		OwnerId: userId,
 	})

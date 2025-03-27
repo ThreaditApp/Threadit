@@ -1,17 +1,17 @@
 package server
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
-	pb "vote-service/src/pb"
+	"vote-service/src/pb"
 )
 
 type VoteServer struct {
 	pb.UnimplementedVoteServiceServer
-	ThreadClient threadpb.ThreadServiceClient
-	CommentClient commentpb.CommentServiceClient
+	ThreadClient  pb.ThreadServiceClient
+	CommentClient pb.CommentServiceClient
 }
 
 func (s *VoteServer) UpvoteThread(ctx context.Context, req *pb.VoteThreadRequest) (*emptypb.Empty, error) {
@@ -38,11 +38,11 @@ func (s *VoteServer) RemoveCommentVote(ctx context.Context, req *pb.VoteCommentR
 	return s.updateCommentVote(ctx, req, 0)
 }
 
-func (s *VoteServer) updateThreadVote(ctx context.Context, req *pb.VoteThreadRequest, value int) (*emptypb.Empty, error)  {
+func (s *VoteServer) updateThreadVote(ctx context.Context, req *pb.VoteThreadRequest, value int) (*emptypb.Empty, error) {
 	_, err := s.ThreadClient.UpdateVote(ctx, &threadpb.VoteThreadRequest{
 		ThreadId: req.ThreadId,
-		UserId: getCurrentUserId(ctx),
-		Value: value,
+		UserId:   getCurrentUserId(ctx),
+		Value:    value,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
@@ -50,11 +50,11 @@ func (s *VoteServer) updateThreadVote(ctx context.Context, req *pb.VoteThreadReq
 	return &emptypb.Empty{}, nil
 }
 
-func (s *VoteServer) updateCommentVote(ctx context.Context, req *pb.VoteCommentRequest, value int) (*emptypb.Empty, error)  {
+func (s *VoteServer) updateCommentVote(ctx context.Context, req *pb.VoteCommentRequest, value int) (*emptypb.Empty, error) {
 	_, err := s.CommentClient.UpdateVote(ctx, &commentpb.VoteCommentRequest{
 		CommentId: req.CommentId,
-		UserId: getCurrentUserId(ctx),
-		Value: value,
+		UserId:    getCurrentUserId(ctx),
+		Value:     value,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)

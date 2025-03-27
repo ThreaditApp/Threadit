@@ -1,40 +1,40 @@
 package server
 
 import (
-	"fmt"
 	"context"
-	pb "search-service/src/pb"
+	"fmt"
+	"search-service/src/pb"
 )
 
 type SearchServer struct {
 	pb.UnimplementedSearchServiceServer
-	UserClient userpb.UserServiceClient
-	CommunityClient communitypb.CommunityServiceClient
-	ThreadClient threadpb.ThreadServiceClient
+	UserClient      pb.UserServiceClient
+	CommunityClient pb.CommunityServiceClient
+	ThreadClient    pb.ThreadServiceClient
 }
 
 func (s *SearchServer) GlobalSearch(ctx context.Context, req *pb.GlobalSearchRequest) (*pb.GlobalSearchResponse, error) {
-	userResults, err := s.searchUsers(ctx, req.Query);
+	userResults, err := s.searchUsers(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
-	communityResults, err := s.searchCommunities(ctx, req.Query);
+	communityResults, err := s.searchCommunities(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
-	threadResults, err := s.searchThreads(ctx, req.Query);
+	threadResults, err := s.searchThreads(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.GlobalSearchResponse{
-		UserIds: userResults,
+		UserIds:      userResults,
 		CommunityIds: communityResults,
-		ThreadIds: threadResults,
+		ThreadIds:    threadResults,
 	}, nil
 }
 
 func (s *SearchServer) UserSearch(ctx context.Context, req *pb.UserSearchRequest) (*pb.UserSearchResponse, error) {
-	results, err := s.searchUsers(ctx, req.Query);
+	results, err := s.searchUsers(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (s *SearchServer) UserSearch(ctx context.Context, req *pb.UserSearchRequest
 }
 
 func (s *SearchServer) CommunitySearch(ctx context.Context, req *pb.CommunitySearchRequest) (*pb.CommunitySearchResponse, error) {
-	results, err := s.searchCommunities(ctx, req.Query);
+	results, err := s.searchCommunities(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (s *SearchServer) CommunitySearch(ctx context.Context, req *pb.CommunitySea
 }
 
 func (s *SearchServer) ThreadSearch(ctx context.Context, req *pb.ThreadSearchRequest) (*pb.ThreadSearchResponse, error) {
-	results, err := s.searchThreads(ctx, req.Query);
+	results, err := s.searchThreads(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (s *SearchServer) ThreadSearch(ctx context.Context, req *pb.ThreadSearchReq
 }
 
 func (s *SearchServer) searchUsers(ctx context.Context, query string) ([]string, error) {
-	res, err := s.UserClient.GetUsersByName(ctx, &userpb.UserQueryRequest{
+	res, err := s.UserClient.GetUsersByName(ctx, &pb.UserQueryRequest{
 		Query: query,
 	})
 	if err != nil {
@@ -74,7 +74,7 @@ func (s *SearchServer) searchUsers(ctx context.Context, query string) ([]string,
 }
 
 func (s *SearchServer) searchCommunities(ctx context.Context, query string) ([]string, error) {
-	res, err := s.CommunityClient.GetCommunitiesByName(ctx, &communitypb.CommunityQueryRequest{
+	res, err := s.CommunityClient.GetCommunitiesByName(ctx, &pb.CommunityQueryRequest{
 		Query: query,
 	})
 	if err != nil {
@@ -84,7 +84,7 @@ func (s *SearchServer) searchCommunities(ctx context.Context, query string) ([]s
 }
 
 func (s *SearchServer) searchThreads(ctx context.Context, query string) ([]string, error) {
-	res, err := s.ThreadClient.GetThreadsByTitle(ctx, &threadpb.ThreadQueryRequest{
+	res, err := s.ThreadClient.GetThreadsByTitle(ctx, &pb.ThreadQueryRequest{
 		Query: query,
 	})
 	if err != nil {

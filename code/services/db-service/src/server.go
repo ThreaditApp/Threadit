@@ -2,15 +2,15 @@ package server
 
 import (
 	"context"
-	pb "db-service/src/pb"
+	"db-service/src/pb"
 	"fmt"
-	"strings"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"strings"
 )
 
 type DBServer struct {
@@ -84,7 +84,6 @@ func (s *DBServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*e
 	}
 	return nil, nil
 }
-
 
 func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
@@ -460,7 +459,7 @@ func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.
 	}
 
 	filter := bson.M{
-		"_id": in.GetId(),
+		"id": in.GetId(),
 	}
 
 	var thread bson.M
@@ -485,7 +484,7 @@ func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest)
 	}
 
 	filter := bson.M{
-		"_id":       in.GetId(),
+		"id":        in.GetId(),
 		"author_id": in.GetAuthorId(),
 	}
 

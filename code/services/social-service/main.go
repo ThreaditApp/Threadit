@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 	server "social-service/src"
-	pb "social-service/src/pb"
+	"social-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,7 +32,7 @@ func main() {
 
 	// create social service with database service
 	socialService := &server.SocialServer{
-		DBClient: dbpb.NewDBServiceClient(dbConn),
+		DBClient: pb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port

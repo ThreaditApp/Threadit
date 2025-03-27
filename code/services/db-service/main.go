@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	server "db-service/src"
-	pb "db-service/src/pb"
-  "fmt"
+	"db-service/src/pb"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -49,7 +49,7 @@ func main() {
 		Mongo: client,
 	})
 
-	log.Println("database service is listening on :50051")
+	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

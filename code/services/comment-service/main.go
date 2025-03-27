@@ -1,23 +1,18 @@
 package main
 
 import (
-	server "community-service/src"
-	pb "community-service/src/pb"
+	server "comment-service/src"
+	"comment-service/src/pb"
 	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	"os"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
-func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
-	port := os.Getenv(portEnvVar)
-	if port == "" {
-		log.Fatalf("missing %s env var", portEnvVar)
-	}
-	addr := fmt.Sprintf("localhost:%s", port)
+func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
+	addr := fmt.Sprintf("localhost:%d", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", serviceName, err)
@@ -27,11 +22,11 @@ func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
 
 func main() {
 	// connect to database service
-	dbConn := connectGrpcClient("database service", "DB_SERVICE_PORT")
+	dbConn := connectGrpcClient("database service", 50055)
 	defer dbConn.Close()
 
 	// create community service with database service
-	communityService := &server.CommunityServer{
+	commentService := &server.CommentServer{
 		DBClient: pb.NewDBServiceClient(dbConn),
 	}
 
@@ -47,7 +42,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterCommunityServiceServer(grpcServer, communityService)
+	pb.RegisterCommentServiceServer(grpcServer, commentService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

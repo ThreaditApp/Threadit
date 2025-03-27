@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 	server "thread-service/src"
-	pb "thread-service/src/pb"
+	"thread-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,7 +32,7 @@ func main() {
 
 	// create thread service with database service
 	threadService := &server.ThreadServer{
-		DBClient: dbpb.NewDBServiceClient(dbConn),
+		DBClient: pb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port

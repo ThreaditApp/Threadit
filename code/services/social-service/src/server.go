@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
-	pb "social-service/src/pb"
+	"social-service/src/pb"
 )
 
 type SocialServer struct {
 	pb.UnimplementedSocialServiceServer
-	DBClient dbpb.DBServiceClient
+	DBClient pb.DBServiceClient
 }
 
 func (s *SocialServer) FollowUser(ctx context.Context, req *pb.FollowUserRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.FollowUser(ctx, &dbpb.FollowUserRequest{
-		UserId:       getCurrentUserId(ctx),
+	user, _ := getCurrentUserId(ctx)
+	_, err := s.DBClient.FollowUser(ctx, &pb.FollowUserRequest{
+		UserId:       user,
 		TargetUserId: req.UserId,
 	})
 	if err != nil {
@@ -25,7 +26,7 @@ func (s *SocialServer) FollowUser(ctx context.Context, req *pb.FollowUserRequest
 }
 
 func (s *SocialServer) UnfollowUser(ctx context.Context, req *pb.FollowUserRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.UnfollowUser(ctx, &dbpb.UnfollowUserRequest{
+	_, err := s.DBClient.UnfollowUser(ctx, &pb.UnfollowUserRequest{
 		UserId:       getCurrentUserId(ctx),
 		TargetUserId: req.UserId,
 	})
@@ -36,7 +37,7 @@ func (s *SocialServer) UnfollowUser(ctx context.Context, req *pb.FollowUserReque
 }
 
 func (s *SocialServer) GetFollowers(ctx context.Context, req *pb.GetFollowersRequest) (*pb.GetFollowersResponse, error) {
-	res, err := s.DBClient.GetFollowers(ctx, &dbpb.GetFollowersRequest{
+	res, err := s.DBClient.GetFollowers(ctx, &pb.GetFollowersRequest{
 		UserId: req.UserId,
 	})
 	if err != nil {
@@ -48,7 +49,7 @@ func (s *SocialServer) GetFollowers(ctx context.Context, req *pb.GetFollowersReq
 }
 
 func (s *SocialServer) GetFollowing(ctx context.Context, req *pb.GetFollowingRequest) (*pb.GetFollowingResponse, error) {
-	res, err := s.DBClient.GetFollowing(ctx, &dbpb.GetFollowingRequest{
+	res, err := s.DBClient.GetFollowing(ctx, &pb.GetFollowingRequest{
 		UserId: req.UserId,
 	})
 	if err != nil {
@@ -61,7 +62,7 @@ func (s *SocialServer) GetFollowing(ctx context.Context, req *pb.GetFollowingReq
 }
 
 func (s *SocialServer) FollowCommunity(ctx context.Context, req *pb.FollowCommunityRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.FollowCommunity(ctx, &dbpb.FollowCommunityRequest{
+	_, err := s.DBClient.FollowCommunity(ctx, &pb.FollowCommunityRequest{
 		UserId:      getCurrentUserId(ctx),
 		CommunityId: req.CommunityId,
 	})
@@ -72,7 +73,7 @@ func (s *SocialServer) FollowCommunity(ctx context.Context, req *pb.FollowCommun
 }
 
 func (s *SocialServer) UnfollowCommunity(ctx context.Context, req *pb.FollowCommunityRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.UnfollowCommunity(ctx, &dbpb.UnfollowCommunityRequest{
+	_, err := s.DBClient.UnfollowCommunity(ctx, &pb.UnfollowCommunityRequest{
 		UserId:      getCurrentUserId(ctx),
 		CommunityId: req.CommunityId,
 	})
@@ -83,7 +84,7 @@ func (s *SocialServer) UnfollowCommunity(ctx context.Context, req *pb.FollowComm
 }
 
 func (s *SocialServer) GetCommunityFollowers(ctx context.Context, req *pb.GetCommunityFollowersRequest) (*pb.GetCommunityFollowersResponse, error) {
-	res, err := s.DBClient.GetCommunityFollowers(ctx, &dbpb.GetCommunityFollowersRequest{
+	res, err := s.DBClient.GetCommunityFollowers(ctx, &pb.GetCommunityFollowersRequest{
 		CommunityId: req.CommunityId,
 	})
 	if err != nil {

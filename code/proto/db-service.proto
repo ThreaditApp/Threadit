@@ -31,8 +31,8 @@ service DBService {
   // comment crud operations
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
-  rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
+  rpc GetComment(GetCommentRequest) returns (Comment);
+  rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
 
   // follower operations
@@ -103,7 +103,7 @@ message ListCommunitiesRequest {
   optional int32 page = 1;
   optional int32 page_size = 2;
   optional string owner_id = 3;
-  optional string search = 4;
+  optional string name = 4;
   optional string sort_by = 5;
   optional string sort_order = 6;
 }
@@ -151,7 +151,7 @@ message ListThreadsRequest {
   optional int32 page_size = 2;
   optional string community_id = 3;
   optional string author_id = 4;
-  optional string search = 5;
+  optional string title = 5;
   optional string sort_by = 6;
   optional string sort_order = 7;
 }
@@ -228,10 +228,6 @@ message UpdateCommentRequest {
   string id = 1;
   string user_id = 2;
   string content = 3;
-}
-
-message UpdateCommentResponse {
-  Comment comment = 1;
 }
 
 message DeleteCommentRequest {
