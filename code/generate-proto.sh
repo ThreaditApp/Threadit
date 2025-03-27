@@ -46,16 +46,12 @@ protoc \
 if [ -f "$REQUIREMENTS_FILE" ]; then
   echo "📋 Found requirements.txt, processing dependencies..."
   
-  if command -v dos2unix &> /dev/null; then
-    dos2unix "$REQUIREMENTS_FILE" &> /dev/null || true
-  fi
-  
   while IFS= read -r DEPENDENCY || [[ -n "$DEPENDENCY" ]]; do
     if [[ -z "$DEPENDENCY" || "$DEPENDENCY" =~ ^# || "$DEPENDENCY" =~ ^// ]]; then
       continue
     fi
     
-    DEPENDENCY=$(echo "$DEPENDENCY" | xargs)
+    DEPENDENCY=$(echo "$DEPENDENCY" | tr -d '\r' | xargs)
     
     echo "🔄 Processing dependency: $DEPENDENCY"
     DEP_PROTO_FILE="$PROTO_DIR/${DEPENDENCY}.proto"
