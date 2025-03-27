@@ -17,6 +17,7 @@ PROTO_DIR="$SCRIPT_DIR/proto"
 SERVICE_DIR="$SCRIPT_DIR/services/$SERVICE_NAME"
 PROTO_FILE="$PROTO_DIR/${SERVICE_NAME}.proto"
 OUT_DIR="$SERVICE_DIR/src/pb"
+REQUIREMENTS_FILE="$SERVICE_DIR/requirements.txt"
 
 # check if the .proto file exists
 if [ ! -f "$PROTO_FILE" ]; then
@@ -41,4 +42,41 @@ protoc \
   --proto_path="$PROTO_DIR" \
   "$PROTO_FILE"
 
-echo "✅ Proto files for '$SERVICE_NAME' generated in $OUT_DIR"
+# process dependencies
+if [ -f "$REQUIREMENTS_FILE" ]; then
+  echo "📋 Found requirements.txt, processing dependencies..."
+  
+  if command -v dos2unix &> /dev/null; then
+    dos2unix "$REQUIREMENTS_FILE" &> /dev/null || true
+  fi
+  
+  while IFS= read -r DEPENDENCY || [[ -n "$DEPENDENCY" ]]; do
+    if [[ -z "$DEPENDENCY" || "$DEPENDENCY" =~ ^# || "$DEPENDENCY" =~ ^// ]]; then
+      continue
+    fi
+    
+    DEPENDENCY=$(echo "$DEPENDENCY" | xargs)
+    
+    echo "🔄 Processing dependency: $DEPENDENCY"
+    DEP_PROTO_FILE="$PROTO_DIR/${DEPENDENCY}.proto"
+    
+    if [ ! -f "$DEP_PROTO_FILE" ]; then
+      echo "⚠️  Warning: Proto file not found for dependency: $DEP_PROTO_FILE"
+      continue
+    fi
+    
+    protoc \
+      --go_out="$OUT_DIR" \
+      --go_opt=paths=source_relative \
+      --go-grpc_out="$OUT_DIR" \
+      --go-grpc_opt=paths=source_relative \
+      --proto_path="$PROTO_DIR" \
+      "$DEP_PROTO_FILE"
+      
+    echo "✅ Generated Go code for dependency '$DEPENDENCY'"
+  done < "$REQUIREMENTS_FILE"
+  
+  echo "✅ All dependencies processed"
+else
+  echo "ℹ️  No requirements.txt found, skipping dependencies"
+fi

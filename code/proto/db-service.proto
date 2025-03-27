@@ -22,25 +22,35 @@ service DBService {
   rpc DeleteCommunity (DeleteCommunityRequest) returns (google.protobuf.Empty);
 
   // thread crud operations
-  rpc CreateThread (CreateThreadRequest) returns (CreateThreadResponse);
-  rpc GetThread (GetThreadRequest) returns (GetThreadResponse);
-  rpc UpdateThread (UpdateThreadRequest) returns (google.protobuf.Empty);
+  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
+  rpc CreateThread (CreateThreadRequest) returns (Thread);
+  rpc GetThread (GetThreadRequest) returns (Thread);
+  rpc UpdateThread (UpdateThreadRequest) returns (Thread);
   rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
 
   // comment crud operations
-  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment (GetCommentRequest) returns (GetCommentResponse);
-  rpc UpdateComment (UpdateCommentRequest) returns (google.protobuf.Empty);
-  rpc DeleteComment (DeleteCommentRequest) returns (google.protobuf.Empty);
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
+  rpc ReplyToComment(ReplyToCommentRequest) returns (ReplyToCommentResponse);
 
   // follower operations
   rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
-	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
-	rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
-	rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse);
-	rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
-	rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
-	rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+  rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
+  rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
+  rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse);
+  rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+  rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
+  rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
 }
 
 message Pagination {
@@ -71,6 +81,13 @@ message GetUserResponse {
 }
 
 message UpdateUserRequest {
+  string id = 1;
+  optional string username = 2;
+  optional string email = 3;
+  optional string bio = 4;
+}
+
+message UpdateUserResponse {
   string id = 1;
   optional string username = 2;
   optional string email = 3;
@@ -127,57 +144,117 @@ message DeleteCommunityRequest {
   string owner_id = 2;
 }
 
-message CreateThreadRequest {
-  string title = 1;
-  string content = 2;
+message Thread {
+  string id = 1;
+  string community_id = 2;
+  string author_id = 3;
+  string title = 4;
+  string content = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
-message CreateThreadResponse {
-  string id = 1;
+message ListThreadsRequest {
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string community_id = 3;
+  optional string author_id = 4;
+  optional string search = 5;
+  optional string sort_by = 6;
+  optional string sort_order = 7;
+}
+
+message ListThreadsResponse {
+  repeated Thread threads = 1;
+  Pagination pagination = 2;
+}
+
+message CreateThreadRequest {
+  string community_id = 1;
+  string author_id = 2;
+  string title = 3;
+  string content = 4;
 }
 
 message GetThreadRequest {
   string id = 1;
 }
 
-message GetThreadResponse {
-  string title = 1;
-  string content = 2;
-}
-
 message UpdateThreadRequest {
   string id = 1;
-  optional string title = 2;
-  optional string content = 3;
+  string author_id = 2;
+  optional string title = 3;
+  optional string content = 4;
 }
 
 message DeleteThreadRequest {
   string id = 1;
+  string author_id = 2;
+}
+
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  string parent_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message ListCommentsRequest {
+  string post_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListCommentsResponse {
+  repeated Comment comments = 1;
+  Pagination pagination = 2;
 }
 
 message CreateCommentRequest {
-  string content = 1;
+  string post_id = 1;
+  string user_id = 2;
+  string content = 3;
+  string parent_id = 4;
 }
 
 message CreateCommentResponse {
-  string id = 1;
+  Comment comment = 1;
 }
 
 message GetCommentRequest {
   string id = 1;
+  string user_id = 2;
 }
 
 message GetCommentResponse {
-  string content = 1;
+  Comment comment = 1;
 }
 
 message UpdateCommentRequest {
   string id = 1;
-  string content = 2;
+  string user_id = 2;
+  string content = 3;
+}
+
+message UpdateCommentResponse {
+  Comment comment = 1;
 }
 
 message DeleteCommentRequest {
   string id = 1;
+  string user_id = 2;
+}
+
+message ReplyToCommentRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message ReplyToCommentResponse {
+  Comment comment = 1;
 }
 
 message FollowUserRequest {
@@ -210,4 +287,11 @@ message GetCommunityFollowersRequest {
 
 message GetCommunityFollowersResponse {
   repeated string user_ids = 1;
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
 }

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package vote;
+package social;
 
 option go_package = "social-service/src/pb;pb";
 

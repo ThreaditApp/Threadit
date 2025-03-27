@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 	"os"
-	server "search-service/src"
-	pb "search-service/src/pb"
+	server "thread-service/src"
+	pb "thread-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -17,7 +17,7 @@ func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
 	if port == "" {
 		log.Fatalf("missing %s env var", portEnvVar)
 	}
-	addr := fmt.Sprintf("localhost:%s", port)
+	addr := fmt.Sprintf("localhost:%d", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", serviceName, err)
@@ -26,19 +26,13 @@ func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
-	// connect to other services
-	userConn := connectGrpcClient("user service", "USER_SERVICE_PORT")
-	defer userConn.Close()
-	communityConn := connectGrpcClient("community service", "COMMUNITY_SERVICE_PORT")
-	defer communityConn.Close()
-	threadConn := connectGrpcClient("thread service", "THREAD_SERVICE_PORT")
-	defer threadConn.Close()
+	// connect to database service
+	dbConn := connectGrpcClient("database service", "DB_SERVICE_PORT")
+	defer dbConn.Close()
 
-	// create search server with clients
-	searchServer := &server.SearchServer{
-		UserClient:      userpb.NewUserServiceClient(userConn),
-		CommunityClient: communitypb.NewCommunityServiceClient(communityConn),
-		ThreadClient:    threadpb.NewThreadServiceClient(threadConn),
+	// create thread service with database service
+	threadService := &server.ThreadServer{
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port
@@ -54,9 +48,9 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterSearchServiceServer(grpcServer, searchServer)
+	pb.RegisterThreadServiceServer(grpcServer, threadService)
 
-	log.Printf("search service is listening on :%s", port)
+	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
