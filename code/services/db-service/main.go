@@ -37,10 +37,10 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterDBServiceServer(grpcServer, &server.DBServer{
-		Mongo: *client,
+		Mongo: client,
 	})
 
-	log.Println("search service is listening on :50051")
+	log.Println("database service is listening on :50051")
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

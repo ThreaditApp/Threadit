@@ -5,7 +5,6 @@ import (
 	pb "db-service/src/pb"
 	"fmt"
 	"strings"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,7 +15,7 @@ import (
 
 type DBServer struct {
 	pb.UnimplementedDBServiceServer
-	Mongo mongo.Client
+	Mongo *mongo.Client
 }
 
 func (s *DBServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
@@ -38,9 +37,7 @@ func (s *DBServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*p
 func (s *DBServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("users")
 	filter := bson.M{
-		"username": in.GetUsername(),
-		"email":    in.GetEmail(),
-		"bio":      in.GetBio(),
+		"id:": in.GetId(),
 	}
 	var user bson.M
 	err := collection.FindOne(ctx, filter).Decode(&user)
@@ -55,7 +52,7 @@ func (s *DBServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetU
 	}, nil
 }
 
-func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
+func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("users")
 	filter := bson.M{
 		"id": in.GetId(),
