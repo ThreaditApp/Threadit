@@ -1,30 +1,170 @@
-version: "3.8"
-
 services:
   mongodb:
     image: mongo:latest
     container_name: database
     restart: always
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
     volumes:
       - db_data:/data/db
+    networks:
+      - threadit-network
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping'); exit();"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   db-service:
     build:
       context: ./services/db-service
     container_name: db-service
+    restart: always
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     environment:
       MONGO_URI: ${MONGO_URI}
+      SERVICE_PORT: ${DB_SERVICE_PORT}
     ports:
-      - "50051:50051"
+      - "${DB_SERVICE_PORT}:${DB_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  # user-service:
+  #   build:
+  #     context: ./services/user-service
+  #   container_name: user-service
+  #   restart: always
+  #   depends_on:
+  #     - db-service
+  #   environment:
+  #     SERVICE_PORT: ${USER_SERVICE_PORT}
+  #     DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+  #   ports:
+  #     - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+  #   networks:
+  #     - threadit-network
+
+  # community-service:
+  #   build:
+  #     context: ./services/community-service
+  #   container_name: community-service
+  #   restart: always
+  #   depends_on:
+  #     - db-service
+  #   environment:
+  #     SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+  #     DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+  #   ports:
+  #     - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
+  #   networks:
+  #     - threadit-network
+
+  thread-service:
+    build:
+      context: ./services/thread-service
+    container_name: thread-service
+    restart: always
+    depends_on:
+      - db-service
+    environment:
+      SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+    ports:
+      - "${THREAD_SERVICE_PORT}:${THREAD_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  # comment-service:
+  #   build:
+  #     context: ./services/comment-service
+  #   container_name: comment-service
+  #   restart: always
+  #   depends_on:
+  #     - db-service # TODO: Review dependencies
+  #   environment:
+  #     SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+  #     DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+  #   ports:
+  #     - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
+  #   networks:
+  #     - threadit-network
+
+  vote-service:
+    build:
+      context: ./services/vote-service
+    container_name: vote-service
+    restart: always
+    depends_on:
+      - thread-service
+      # - comment-service # TODO: Uncomment when comment-service is ready
+    environment:
+      SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+    ports:
+      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  social-service:
+    build:
+      context: ./services/social-service
+    container_name: social-service
+    restart: always
+    depends_on:
+      - db-service
+    environment:
+      SERVICE_PORT: ${SOCIAL_SERVICE_PORT}
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+    ports:
+      - "${SOCIAL_SERVICE_PORT}:${SOCIAL_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  search-service:
+    build:
+      context: ./services/search-service
+    container_name: search-service
+    restart: always
+    depends_on:
+      # - user-service # TODO: Uncomment when user-service is ready
+      # - community-service # TODO: Uncomment when community-service is ready
+      - thread-service
+    environment:
+      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+    ports:
+      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  # feed-service: # TODO: Uncomment when feed-service is ready
+  #   build:
+  #     context: ./services/feed-service
+  #   container_name: feed-service
+  #   restart: always
+  #   depends_on:
+  #     - db-service # TODO: Review dependencies
+  #   environment:
+  #     SERVICE_PORT: ${FEED_SERVICE_PORT}
+  #     DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+  #   ports:
+  #     - "${FEED_SERVICE_PORT}:${FEED_SERVICE_PORT}"
+  #   networks:
+  #     - threadit-network
 
 volumes:
   db_data:
     driver: local
+
+networks:
+  threadit-network:
+    driver: bridge

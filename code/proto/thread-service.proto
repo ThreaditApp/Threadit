@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package thread;
+
+option go_package = "thread-service/src/pb;pb";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service ThreadService {
+  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
+  rpc CreateThread (CreateThreadRequest) returns (Thread);
+  rpc GetThread (GetThreadRequest) returns (Thread);
+  rpc UpdateThread (UpdateThreadRequest) returns (Thread);
+  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
+}
+
+message Thread {
+  string id = 1;
+  string community_id = 2;
+  string author_id = 3;
+  string title = 4;
+  string content = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Pagination {
+  int32 current_page = 1;
+  int32 per_page = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
+}
+
+message ListThreadsRequest {
+  optional int32 page = 1;
+  optional int32 page_size = 2;
+  optional string community_id = 3;
+  optional string author_id = 4;
+  optional string title = 5;
+  optional string sort_by = 6;
+  optional string sort_order = 7;
+}
+
+message ListThreadsResponse {
+  repeated Thread threads = 1;
+  Pagination pagination = 2;
+}
+
+message CreateThreadRequest {
+  string community_id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message GetThreadRequest {
+  string id = 1;
+}
+
+message UpdateThreadRequest {
+  string id = 1;
+  optional string title = 2;
+  optional string content = 3;
+}
+
+message DeleteThreadRequest {
+  string id = 1;
+}
