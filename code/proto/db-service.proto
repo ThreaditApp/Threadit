@@ -34,7 +34,6 @@ service DBService {
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
-  rpc ReplyToComment(ReplyToCommentRequest) returns (ReplyToCommentResponse);
 
   // follower operations
   rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
@@ -44,13 +43,6 @@ service DBService {
   rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
   rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
   rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
-}
-
-message Pagination {
-  int32 current_page = 1;
-  int32 per_page = 2;
-  int32 total_items = 3;
-  int32 total_pages = 4;
 }
 
 message Pagination {
@@ -247,16 +239,6 @@ message DeleteCommentRequest {
   string user_id = 2;
 }
 
-message ReplyToCommentRequest {
-  string id = 1;
-  string user_id = 2;
-  string content = 3;
-}
-
-message ReplyToCommentResponse {
-  Comment comment = 1;
-}
-
 message FollowUserRequest {
   string user_id = 1;
 }
@@ -287,11 +269,4 @@ message GetCommunityFollowersRequest {
 
 message GetCommunityFollowersResponse {
   repeated string user_ids = 1;
-}
-
-message Pagination {
-  int32 current_page = 1;
-  int32 per_page = 2;
-  int32 total_items = 3;
-  int32 total_pages = 4;
 }
