@@ -20,7 +20,7 @@ func (s *ThreadServer) ListThreads(ctx context.Context, req *pb.ListThreadsReque
 		PageSize:    req.PageSize,
 		CommunityId: req.CommunityId,
 		AuthorId:    req.AuthorId,
-		Search:      req.Search,
+		Title:       req.Title,
 		SortBy:      req.SortBy,
 		SortOrder:   req.SortOrder,
 	})
@@ -105,10 +105,10 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *pb.UpdateThreadReq
 	}
 
 	res, err := s.DBClient.UpdateThread(ctx, &dbpb.UpdateThreadRequest{
-		Id:        req.Id,
-		AuthorId:  userId,
-		Title:     req.Title,
-		Content:   req.Content,
+		Id:       req.Id,
+		AuthorId: userId,
+		Title:    req.Title,
+		Content:  req.Content,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
