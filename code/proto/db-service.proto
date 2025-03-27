@@ -34,9 +34,6 @@ service DBService {
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
   rpc ReplyToComment(ReplyToCommentRequest) returns (ReplyToCommentResponse);
 
-  // feed crud operations
-  rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse);
-
   // follower operations
   rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
 	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
@@ -138,27 +135,70 @@ message DeleteThreadRequest {
   string id = 1;
 }
 
-message Feed {
+message Comment {
   string id = 1;
-  string type = 2;
-  string community_id = 3;
-  string title = 4;
-  string content = 5;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  string parent_id = 5;
   google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
 }
 
-message GetUserFeedRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-  string sort = 3;
+message ListCommentsRequest {
+  string post_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
 }
 
-message GetUserFeedResponse {
-  repeated Feed posts = 1;
+message ListCommentsResponse {
+  repeated Comment comments = 1;
   Pagination pagination = 2;
 }
 
+message CreateCommentRequest {
+  string post_id = 1;
+  string user_id = 2;
+  string content = 3;
+  string parent_id = 4;
+}
+
+message CreateCommentResponse {
+  Comment comment = 1;
+}
+
+message GetCommentRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message GetCommentResponse {
+  Comment comment = 1;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message UpdateCommentResponse {
+  Comment comment = 1;
+}
+
+message DeleteCommentRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message ReplyToCommentRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message ReplyToCommentResponse {
+  Comment comment = 1;
+}
 
 message FollowUserRequest {
   string user_id = 1;

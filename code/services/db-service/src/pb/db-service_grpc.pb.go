@@ -38,7 +38,6 @@ const (
 	DBService_UpdateComment_FullMethodName         = "/db.DBService/UpdateComment"
 	DBService_DeleteComment_FullMethodName         = "/db.DBService/DeleteComment"
 	DBService_ReplyToComment_FullMethodName        = "/db.DBService/ReplyToComment"
-	DBService_GetUserFeed_FullMethodName           = "/db.DBService/GetUserFeed"
 	DBService_FollowUser_FullMethodName            = "/db.DBService/FollowUser"
 	DBService_UnfollowUser_FullMethodName          = "/db.DBService/UnfollowUser"
 	DBService_GetFollowers_FullMethodName          = "/db.DBService/GetFollowers"
@@ -74,8 +73,6 @@ type DBServiceClient interface {
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error)
-	// feed crud operations
-	GetUserFeed(ctx context.Context, in *GetUserFeedRequest, opts ...grpc.CallOption) (*GetUserFeedResponse, error)
 	// follower operations
 	FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UnfollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -274,16 +271,6 @@ func (c *dBServiceClient) ReplyToComment(ctx context.Context, in *ReplyToComment
 	return out, nil
 }
 
-func (c *dBServiceClient) GetUserFeed(ctx context.Context, in *GetUserFeedRequest, opts ...grpc.CallOption) (*GetUserFeedResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserFeedResponse)
-	err := c.cc.Invoke(ctx, DBService_GetUserFeed_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *dBServiceClient) FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -380,8 +367,6 @@ type DBServiceServer interface {
 	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
 	ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error)
-	// feed crud operations
-	GetUserFeed(context.Context, *GetUserFeedRequest) (*GetUserFeedResponse, error)
 	// follower operations
 	FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
 	UnfollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
@@ -453,9 +438,6 @@ func (UnimplementedDBServiceServer) DeleteComment(context.Context, *DeleteCommen
 }
 func (UnimplementedDBServiceServer) ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplyToComment not implemented")
-}
-func (UnimplementedDBServiceServer) GetUserFeed(context.Context, *GetUserFeedRequest) (*GetUserFeedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserFeed not implemented")
 }
 func (UnimplementedDBServiceServer) FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FollowUser not implemented")
@@ -823,24 +805,6 @@ func _DBService_ReplyToComment_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBService_GetUserFeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserFeedRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).GetUserFeed(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_GetUserFeed_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).GetUserFeed(ctx, req.(*GetUserFeedRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DBService_FollowUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FollowUserRequest)
 	if err := dec(in); err != nil {
@@ -1045,10 +1009,6 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReplyToComment",
 			Handler:    _DBService_ReplyToComment_Handler,
-		},
-		{
-			MethodName: "GetUserFeed",
-			Handler:    _DBService_GetUserFeed_Handler,
 		},
 		{
 			MethodName: "FollowUser",

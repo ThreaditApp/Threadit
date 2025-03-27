@@ -11,7 +11,7 @@ service FeedService {
   rpc GetUserFeed(GetUserFeedRequest) returns (GetUserFeedResponse);
 }
 
-message Feed {
+message Thread {
   string id = 1;
   string type = 2;
   string community_id = 3;
@@ -28,7 +28,7 @@ message GetUserFeedRequest {
 }
 
 message GetUserFeedResponse {
-  repeated Feed posts = 1;
+  repeated Thread posts = 1;
   Pagination pagination = 2;
 }
 

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Feed struct {
+type Thread struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
@@ -36,20 +36,20 @@ type Feed struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Feed) Reset() {
-	*x = Feed{}
+func (x *Thread) Reset() {
+	*x = Thread{}
 	mi := &file_feed_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Feed) String() string {
+func (x *Thread) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Feed) ProtoMessage() {}
+func (*Thread) ProtoMessage() {}
 
-func (x *Feed) ProtoReflect() protoreflect.Message {
+func (x *Thread) ProtoReflect() protoreflect.Message {
 	mi := &file_feed_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,54 +61,54 @@ func (x *Feed) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Feed.ProtoReflect.Descriptor instead.
-func (*Feed) Descriptor() ([]byte, []int) {
+// Deprecated: Use Thread.ProtoReflect.Descriptor instead.
+func (*Thread) Descriptor() ([]byte, []int) {
 	return file_feed_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Feed) GetId() string {
+func (x *Thread) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Feed) GetType() string {
+func (x *Thread) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *Feed) GetCommunityId() string {
+func (x *Thread) GetCommunityId() string {
 	if x != nil {
 		return x.CommunityId
 	}
 	return ""
 }
 
-func (x *Feed) GetTitle() string {
+func (x *Thread) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *Feed) GetContent() string {
+func (x *Thread) GetContent() string {
 	if x != nil {
 		return x.Content
 	}
 	return ""
 }
 
-func (x *Feed) GetCreatedAt() *timestamppb.Timestamp {
+func (x *Thread) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *Feed) GetUpdatedAt() *timestamppb.Timestamp {
+func (x *Thread) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
@@ -177,7 +177,7 @@ func (x *GetUserFeedRequest) GetSort() string {
 
 type GetUserFeedResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Posts         []*Feed                `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
+	Posts         []*Thread              `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
 	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -213,7 +213,7 @@ func (*GetUserFeedResponse) Descriptor() ([]byte, []int) {
 	return file_feed_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetUserFeedResponse) GetPosts() []*Feed {
+func (x *GetUserFeedResponse) GetPosts() []*Thread {
 	if x != nil {
 		return x.Posts
 	}
@@ -299,8 +299,8 @@ var File_feed_service_proto protoreflect.FileDescriptor
 
 const file_feed_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12feed-service.proto\x12\x04feed\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf3\x01\n" +
-	"\x04Feed\x12\x0e\n" +
+	"\x12feed-service.proto\x12\x04feed\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf5\x01\n" +
+	"\x06Thread\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12!\n" +
 	"\fcommunity_id\x18\x03 \x01(\tR\vcommunityId\x12\x14\n" +
@@ -313,10 +313,9 @@ const file_feed_service_proto_rawDesc = "" +
 	"\x12GetUserFeedRequest\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x12\n" +
-	"\x04sort\x18\x03 \x01(\tR\x04sort\"i\n" +
-	"\x13GetUserFeedResponse\x12 \n" +
-	"\x05posts\x18\x01 \x03(\v2\n" +
-	".feed.FeedR\x05posts\x120\n" +
+	"\x04sort\x18\x03 \x01(\tR\x04sort\"k\n" +
+	"\x13GetUserFeedResponse\x12\"\n" +
+	"\x05posts\x18\x01 \x03(\v2\f.feed.ThreadR\x05posts\x120\n" +
 	"\n" +
 	"pagination\x18\x02 \x01(\v2\x10.feed.PaginationR\n" +
 	"pagination\"\x8c\x01\n" +
@@ -345,16 +344,16 @@ func file_feed_service_proto_rawDescGZIP() []byte {
 
 var file_feed_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_feed_service_proto_goTypes = []any{
-	(*Feed)(nil),                  // 0: feed.Feed
+	(*Thread)(nil),                // 0: feed.Thread
 	(*GetUserFeedRequest)(nil),    // 1: feed.GetUserFeedRequest
 	(*GetUserFeedResponse)(nil),   // 2: feed.GetUserFeedResponse
 	(*Pagination)(nil),            // 3: feed.Pagination
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_feed_service_proto_depIdxs = []int32{
-	4, // 0: feed.Feed.created_at:type_name -> google.protobuf.Timestamp
-	4, // 1: feed.Feed.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 2: feed.GetUserFeedResponse.posts:type_name -> feed.Feed
+	4, // 0: feed.Thread.created_at:type_name -> google.protobuf.Timestamp
+	4, // 1: feed.Thread.updated_at:type_name -> google.protobuf.Timestamp
+	0, // 2: feed.GetUserFeedResponse.posts:type_name -> feed.Thread
 	3, // 3: feed.GetUserFeedResponse.pagination:type_name -> feed.Pagination
 	1, // 4: feed.FeedService.GetUserFeed:input_type -> feed.GetUserFeedRequest
 	2, // 5: feed.FeedService.GetUserFeed:output_type -> feed.GetUserFeedResponse
