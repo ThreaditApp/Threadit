@@ -2,16 +2,14 @@
 
 ### Setup
 
-
 Threadit requires Go and Docker. You can find installation instructions in the links below:
 
 - [Install Go](https://go.dev/doc/install)
-
 - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-### Environmental Variables
+### Environment Variables
 
-To configure the application, change directory to `code/`, then simply copy the example environment file and rename it:
+To configure the application, change directory to `/code`, then simply copy the example environment file and rename it:
 
 ```bash
 cp .env.example .env
@@ -19,7 +17,7 @@ cp .env.example .env
 
 ### Run Docker
 
-Finally, still in the `code/` directory you need to run the `docker-compose.yml` file. This command should start the necessary containers:
+Finally, still in the `/code` directory you need to run the `docker-compose.yml` file. This command should start the necessary containers:
 
 ```bash
 docker-compose -p threadit --build -d
@@ -31,7 +29,7 @@ To stop the application run:
 docker-compose -p threadit stop
 ```
 
-## Additional information
+## Using gRPC and Protobufs
 
 ### Install gRPC and Protobufs for Go
 
@@ -40,9 +38,15 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 ```
 
-### Generate Go code from the Protobuf Definition
+### Generate Go Code for a Service with Protobufs
 
 ```bash
-cd services
-./generate-proto.sh <service-name>
+cd code
+./generate-proto.sh service-name
+```
+
+### Generate Go Code for All Services with Protobufs
+```bash
+cd code
+./generate-proto-all.sh
 ```
