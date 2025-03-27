@@ -13,10 +13,6 @@ service CommunityService {
   rpc GetCommunity(GetCommunityRequest) returns (Community);
   rpc UpdateCommunity(UpdateCommunityRequest) returns (Community);
   rpc DeleteCommunity(DeleteCommunityRequest) returns (google.protobuf.Empty);
-  rpc UploadCommunityIcon(UploadCommunityIconRequest) returns (Community);
-  rpc JoinCommunity(JoinCommunityRequest) returns (google.protobuf.Empty);
-  rpc LeaveCommunity(LeaveCommunityRequest) returns (google.protobuf.Empty);
-  rpc ListCommunityMembers(ListCommunityMembersRequest) returns (ListCommunityMembersResponse);
 }
 
 message Community {
@@ -24,7 +20,6 @@ message Community {
   string owner_id = 2;
   string name = 3;
   string description = 4;
-  string icon_url = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
@@ -67,29 +62,4 @@ message UpdateCommunityRequest {
 
 message DeleteCommunityRequest {
   string id = 1;
-}
-
-message UploadCommunityIconRequest {
-  string id = 1;
-  bytes icon = 2;
-  string mime_type = 3;
-}
-
-message JoinCommunityRequest {
-  string id = 1;
-}
-
-message LeaveCommunityRequest {
-  string id = 1;
-}
-
-message ListCommunityMembersRequest {
-  string id = 1;
-  optional int32 page = 2;
-  optional int32 page_size = 3;
-}
-
-message ListCommunityMembersResponse {
-  repeated string member_ids = 1;
-  Pagination pagination = 2;
 }

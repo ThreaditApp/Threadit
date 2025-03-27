@@ -34,7 +34,6 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommu
 			OwnerId:     community.OwnerId,
 			Name:        community.Name,
 			Description: community.Description,
-			IconUrl:     community.IconUrl,
 			CreatedAt:   community.CreatedAt,
 			UpdatedAt:   community.UpdatedAt,
 		}
@@ -71,7 +70,6 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCom
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
 		Description: res.Description,
-		IconUrl:     res.IconUrl,
 		CreatedAt:   res.CreatedAt,
 		UpdatedAt:   res.UpdatedAt,
 	}, nil
@@ -90,7 +88,6 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *pb.GetCommunity
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
 		Description: res.Description,
-		IconUrl:     res.IconUrl,
 		CreatedAt:   res.CreatedAt,
 		UpdatedAt:   res.UpdatedAt,
 	}, nil
@@ -117,7 +114,6 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *pb.UpdateCom
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
 		Description: res.Description,
-		IconUrl:     res.IconUrl,
 		CreatedAt:   res.CreatedAt,
 		UpdatedAt:   res.UpdatedAt,
 	}, nil
@@ -138,88 +134,6 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *pb.DeleteCom
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-func (s *CommunityServer) UploadCommunityIcon(ctx context.Context, req *pb.UploadCommunityIconRequest) (*pb.Community, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := s.DBClient.UploadCommunityIcon(ctx, &dbpb.UploadCommunityIconRequest{
-		Id:       req.Id,
-		OwnerId:  userId,
-		Icon:     req.Icon,
-		MimeType: req.MimeType,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
-	return &pb.Community{
-		Id:          res.Id,
-		OwnerId:     res.OwnerId,
-		Name:        res.Name,
-		Description: res.Description,
-		IconUrl:     res.IconUrl,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
-	}, nil
-}
-
-func (s *CommunityServer) JoinCommunity(ctx context.Context, req *pb.JoinCommunityRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = s.DBClient.JoinCommunity(ctx, &dbpb.JoinCommunityRequest{
-		Id:     req.Id,
-		UserId: userId,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *CommunityServer) LeaveCommunity(ctx context.Context, req *pb.LeaveCommunityRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = s.DBClient.LeaveCommunity(ctx, &dbpb.LeaveCommunityRequest{
-		Id:     req.Id,
-		UserId: userId,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *CommunityServer) ListCommunityMembers(ctx context.Context, req *pb.ListCommunityMembersRequest) (*pb.ListCommunityMembersResponse, error) {
-	res, err := s.DBClient.ListCommunityMembers(ctx, &dbpb.ListCommunityMembersRequest{
-		Id:       req.Id,
-		Page:     req.Page,
-		PageSize: req.PageSize,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
-	return &pb.ListCommunityMembersResponse{
-		MemberIds: res.MemberIds,
-		Pagination: &pb.Pagination{
-			CurrentPage: res.Pagination.CurrentPage,
-			PerPage:     res.Pagination.PerPage,
-			TotalItems:  res.Pagination.TotalItems,
-			TotalPages:  res.Pagination.TotalPages,
-		},
-	}, nil
 }
 
 func getCurrentUserId(ctx context.Context) (string, error) {
