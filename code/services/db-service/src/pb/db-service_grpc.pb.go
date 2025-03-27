@@ -20,29 +20,29 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DBService_CreateUser_FullMethodName            = "/vote.DBService/CreateUser"
-	DBService_GetUser_FullMethodName               = "/vote.DBService/GetUser"
-	DBService_UpdateUser_FullMethodName            = "/vote.DBService/UpdateUser"
-	DBService_DeleteUser_FullMethodName            = "/vote.DBService/DeleteUser"
-	DBService_CreateCommunity_FullMethodName       = "/vote.DBService/CreateCommunity"
-	DBService_GetCommunity_FullMethodName          = "/vote.DBService/GetCommunity"
-	DBService_UpdateCommunity_FullMethodName       = "/vote.DBService/UpdateCommunity"
-	DBService_DeleteCommunity_FullMethodName       = "/vote.DBService/DeleteCommunity"
-	DBService_CreateThread_FullMethodName          = "/vote.DBService/CreateThread"
-	DBService_GetThread_FullMethodName             = "/vote.DBService/GetThread"
-	DBService_UpdateThread_FullMethodName          = "/vote.DBService/UpdateThread"
-	DBService_DeleteThread_FullMethodName          = "/vote.DBService/DeleteThread"
-	DBService_CreateComment_FullMethodName         = "/vote.DBService/CreateComment"
-	DBService_GetComment_FullMethodName            = "/vote.DBService/GetComment"
-	DBService_UpdateComment_FullMethodName         = "/vote.DBService/UpdateComment"
-	DBService_DeleteComment_FullMethodName         = "/vote.DBService/DeleteComment"
-	DBService_FollowUser_FullMethodName            = "/vote.DBService/FollowUser"
-	DBService_UnfollowUser_FullMethodName          = "/vote.DBService/UnfollowUser"
-	DBService_GetFollowers_FullMethodName          = "/vote.DBService/GetFollowers"
-	DBService_GetFollowing_FullMethodName          = "/vote.DBService/GetFollowing"
-	DBService_FollowCommunity_FullMethodName       = "/vote.DBService/FollowCommunity"
-	DBService_UnfollowCommunity_FullMethodName     = "/vote.DBService/UnfollowCommunity"
-	DBService_GetCommunityFollowers_FullMethodName = "/vote.DBService/GetCommunityFollowers"
+	DBService_CreateUser_FullMethodName            = "/db.DBService/CreateUser"
+	DBService_GetUser_FullMethodName               = "/db.DBService/GetUser"
+	DBService_UpdateUser_FullMethodName            = "/db.DBService/UpdateUser"
+	DBService_DeleteUser_FullMethodName            = "/db.DBService/DeleteUser"
+	DBService_CreateCommunity_FullMethodName       = "/db.DBService/CreateCommunity"
+	DBService_GetCommunity_FullMethodName          = "/db.DBService/GetCommunity"
+	DBService_UpdateCommunity_FullMethodName       = "/db.DBService/UpdateCommunity"
+	DBService_DeleteCommunity_FullMethodName       = "/db.DBService/DeleteCommunity"
+	DBService_CreateThread_FullMethodName          = "/db.DBService/CreateThread"
+	DBService_GetThread_FullMethodName             = "/db.DBService/GetThread"
+	DBService_UpdateThread_FullMethodName          = "/db.DBService/UpdateThread"
+	DBService_DeleteThread_FullMethodName          = "/db.DBService/DeleteThread"
+	DBService_CreateComment_FullMethodName         = "/db.DBService/CreateComment"
+	DBService_GetComment_FullMethodName            = "/db.DBService/GetComment"
+	DBService_UpdateComment_FullMethodName         = "/db.DBService/UpdateComment"
+	DBService_DeleteComment_FullMethodName         = "/db.DBService/DeleteComment"
+	DBService_FollowUser_FullMethodName            = "/db.DBService/FollowUser"
+	DBService_UnfollowUser_FullMethodName          = "/db.DBService/UnfollowUser"
+	DBService_GetFollowers_FullMethodName          = "/db.DBService/GetFollowers"
+	DBService_GetFollowing_FullMethodName          = "/db.DBService/GetFollowing"
+	DBService_FollowCommunity_FullMethodName       = "/db.DBService/FollowCommunity"
+	DBService_UnfollowCommunity_FullMethodName     = "/db.DBService/UnfollowCommunity"
+	DBService_GetCommunityFollowers_FullMethodName = "/db.DBService/GetCommunityFollowers"
 )
 
 // DBServiceClient is the client API for DBService service.
@@ -867,7 +867,7 @@ func _DBService_GetCommunityFollowers_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DBService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "vote.DBService",
+	ServiceName: "db.DBService",
 	HandlerType: (*DBServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
