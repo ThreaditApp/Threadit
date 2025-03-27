@@ -168,7 +168,7 @@ func (x *ListCommentsRequest) GetPageSize() int32 {
 
 type ListCommentsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          []*Comment             `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	Comments      []*Comment             `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
 	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -204,9 +204,9 @@ func (*ListCommentsResponse) Descriptor() ([]byte, []int) {
 	return file_comment_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ListCommentsResponse) GetData() []*Comment {
+func (x *ListCommentsResponse) GetComments() []*Comment {
 	if x != nil {
-		return x.Data
+		return x.Comments
 	}
 	return nil
 }
@@ -766,9 +766,9 @@ const file_comment_service_proto_rawDesc = "" +
 	"\x13ListCommentsRequest\x12\x17\n" +
 	"\apost_id\x18\x01 \x01(\tR\x06postId\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"q\n" +
-	"\x14ListCommentsResponse\x12$\n" +
-	"\x04data\x18\x01 \x03(\v2\x10.comment.CommentR\x04data\x123\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"y\n" +
+	"\x14ListCommentsResponse\x12,\n" +
+	"\bcomments\x18\x01 \x03(\v2\x10.comment.CommentR\bcomments\x123\n" +
 	"\n" +
 	"pagination\x18\x02 \x01(\v2\x13.comment.PaginationR\n" +
 	"pagination\"f\n" +
@@ -844,7 +844,7 @@ var file_comment_service_proto_goTypes = []any{
 }
 var file_comment_service_proto_depIdxs = []int32{
 	14, // 0: comment.Comment.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 1: comment.ListCommentsResponse.data:type_name -> comment.Comment
+	0,  // 1: comment.ListCommentsResponse.comments:type_name -> comment.Comment
 	13, // 2: comment.ListCommentsResponse.pagination:type_name -> comment.Pagination
 	0,  // 3: comment.CreateCommentResponse.comment:type_name -> comment.Comment
 	0,  // 4: comment.GetCommentResponse.comment:type_name -> comment.Comment

@@ -20,29 +20,31 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DBService_CreateUser_FullMethodName            = "/vote.DBService/CreateUser"
-	DBService_GetUser_FullMethodName               = "/vote.DBService/GetUser"
-	DBService_UpdateUser_FullMethodName            = "/vote.DBService/UpdateUser"
-	DBService_DeleteUser_FullMethodName            = "/vote.DBService/DeleteUser"
-	DBService_CreateCommunity_FullMethodName       = "/vote.DBService/CreateCommunity"
-	DBService_GetCommunity_FullMethodName          = "/vote.DBService/GetCommunity"
-	DBService_UpdateCommunity_FullMethodName       = "/vote.DBService/UpdateCommunity"
-	DBService_DeleteCommunity_FullMethodName       = "/vote.DBService/DeleteCommunity"
-	DBService_CreateThread_FullMethodName          = "/vote.DBService/CreateThread"
-	DBService_GetThread_FullMethodName             = "/vote.DBService/GetThread"
-	DBService_UpdateThread_FullMethodName          = "/vote.DBService/UpdateThread"
-	DBService_DeleteThread_FullMethodName          = "/vote.DBService/DeleteThread"
-	DBService_CreateComment_FullMethodName         = "/vote.DBService/CreateComment"
-	DBService_GetComment_FullMethodName            = "/vote.DBService/GetComment"
-	DBService_UpdateComment_FullMethodName         = "/vote.DBService/UpdateComment"
-	DBService_DeleteComment_FullMethodName         = "/vote.DBService/DeleteComment"
-	DBService_FollowUser_FullMethodName            = "/vote.DBService/FollowUser"
-	DBService_UnfollowUser_FullMethodName          = "/vote.DBService/UnfollowUser"
-	DBService_GetFollowers_FullMethodName          = "/vote.DBService/GetFollowers"
-	DBService_GetFollowing_FullMethodName          = "/vote.DBService/GetFollowing"
-	DBService_FollowCommunity_FullMethodName       = "/vote.DBService/FollowCommunity"
-	DBService_UnfollowCommunity_FullMethodName     = "/vote.DBService/UnfollowCommunity"
-	DBService_GetCommunityFollowers_FullMethodName = "/vote.DBService/GetCommunityFollowers"
+	DBService_CreateUser_FullMethodName            = "/db.DBService/CreateUser"
+	DBService_GetUser_FullMethodName               = "/db.DBService/GetUser"
+	DBService_UpdateUser_FullMethodName            = "/db.DBService/UpdateUser"
+	DBService_DeleteUser_FullMethodName            = "/db.DBService/DeleteUser"
+	DBService_CreateCommunity_FullMethodName       = "/db.DBService/CreateCommunity"
+	DBService_GetCommunity_FullMethodName          = "/db.DBService/GetCommunity"
+	DBService_UpdateCommunity_FullMethodName       = "/db.DBService/UpdateCommunity"
+	DBService_DeleteCommunity_FullMethodName       = "/db.DBService/DeleteCommunity"
+	DBService_CreateThread_FullMethodName          = "/db.DBService/CreateThread"
+	DBService_GetThread_FullMethodName             = "/db.DBService/GetThread"
+	DBService_UpdateThread_FullMethodName          = "/db.DBService/UpdateThread"
+	DBService_DeleteThread_FullMethodName          = "/db.DBService/DeleteThread"
+	DBService_ListComments_FullMethodName          = "/db.DBService/ListComments"
+	DBService_CreateComment_FullMethodName         = "/db.DBService/CreateComment"
+	DBService_GetComment_FullMethodName            = "/db.DBService/GetComment"
+	DBService_UpdateComment_FullMethodName         = "/db.DBService/UpdateComment"
+	DBService_DeleteComment_FullMethodName         = "/db.DBService/DeleteComment"
+	DBService_ReplyToComment_FullMethodName        = "/db.DBService/ReplyToComment"
+	DBService_FollowUser_FullMethodName            = "/db.DBService/FollowUser"
+	DBService_UnfollowUser_FullMethodName          = "/db.DBService/UnfollowUser"
+	DBService_GetFollowers_FullMethodName          = "/db.DBService/GetFollowers"
+	DBService_GetFollowing_FullMethodName          = "/db.DBService/GetFollowing"
+	DBService_FollowCommunity_FullMethodName       = "/db.DBService/FollowCommunity"
+	DBService_UnfollowCommunity_FullMethodName     = "/db.DBService/UnfollowCommunity"
+	DBService_GetCommunityFollowers_FullMethodName = "/db.DBService/GetCommunityFollowers"
 )
 
 // DBServiceClient is the client API for DBService service.
@@ -65,10 +67,12 @@ type DBServiceClient interface {
 	UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteThread(ctx context.Context, in *DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// comment crud operations
+	ListComments(ctx context.Context, in *ListCommentsRequest, opts ...grpc.CallOption) (*ListCommentsResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
-	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error)
 	// follower operations
 	FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UnfollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -207,6 +211,16 @@ func (c *dBServiceClient) DeleteThread(ctx context.Context, in *DeleteThreadRequ
 	return out, nil
 }
 
+func (c *dBServiceClient) ListComments(ctx context.Context, in *ListCommentsRequest, opts ...grpc.CallOption) (*ListCommentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCommentsResponse)
+	err := c.cc.Invoke(ctx, DBService_ListComments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dBServiceClient) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateCommentResponse)
@@ -227,9 +241,9 @@ func (c *dBServiceClient) GetComment(ctx context.Context, in *GetCommentRequest,
 	return out, nil
 }
 
-func (c *dBServiceClient) UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dBServiceClient) UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(UpdateCommentResponse)
 	err := c.cc.Invoke(ctx, DBService_UpdateComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -241,6 +255,16 @@ func (c *dBServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRe
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, DBService_DeleteComment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBServiceClient) ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReplyToCommentResponse)
+	err := c.cc.Invoke(ctx, DBService_ReplyToComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -337,10 +361,12 @@ type DBServiceServer interface {
 	UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error)
 	DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error)
 	// comment crud operations
+	ListComments(context.Context, *ListCommentsRequest) (*ListCommentsResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
 	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
-	UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error)
+	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
+	ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error)
 	// follower operations
 	FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
 	UnfollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
@@ -395,17 +421,23 @@ func (UnimplementedDBServiceServer) UpdateThread(context.Context, *UpdateThreadR
 func (UnimplementedDBServiceServer) DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteThread not implemented")
 }
+func (UnimplementedDBServiceServer) ListComments(context.Context, *ListCommentsRequest) (*ListCommentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListComments not implemented")
+}
 func (UnimplementedDBServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
 }
 func (UnimplementedDBServiceServer) GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
 }
-func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error) {
+func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateComment not implemented")
 }
 func (UnimplementedDBServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
+}
+func (UnimplementedDBServiceServer) ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReplyToComment not implemented")
 }
 func (UnimplementedDBServiceServer) FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FollowUser not implemented")
@@ -665,6 +697,24 @@ func _DBService_DeleteThread_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBService_ListComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCommentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).ListComments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBService_ListComments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).ListComments(ctx, req.(*ListCommentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DBService_CreateComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateCommentRequest)
 	if err := dec(in); err != nil {
@@ -733,6 +783,24 @@ func _DBService_DeleteComment_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBServiceServer).DeleteComment(ctx, req.(*DeleteCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBService_ReplyToComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReplyToCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).ReplyToComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBService_ReplyToComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).ReplyToComment(ctx, req.(*ReplyToCommentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -867,7 +935,7 @@ func _DBService_GetCommunityFollowers_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DBService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "vote.DBService",
+	ServiceName: "db.DBService",
 	HandlerType: (*DBServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -919,6 +987,10 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DBService_DeleteThread_Handler,
 		},
 		{
+			MethodName: "ListComments",
+			Handler:    _DBService_ListComments_Handler,
+		},
+		{
 			MethodName: "CreateComment",
 			Handler:    _DBService_CreateComment_Handler,
 		},
@@ -933,6 +1005,10 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _DBService_DeleteComment_Handler,
+		},
+		{
+			MethodName: "ReplyToComment",
+			Handler:    _DBService_ReplyToComment_Handler,
 		},
 		{
 			MethodName: "FollowUser",

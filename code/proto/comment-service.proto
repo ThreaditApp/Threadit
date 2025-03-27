@@ -31,7 +31,7 @@ message ListCommentsRequest {
 }
 
 message ListCommentsResponse {
-  repeated Comment data = 1;
+  repeated Comment comments = 1;
   Pagination pagination = 2;
 }
 
@@ -66,7 +66,10 @@ message DeleteCommentRequest {
   string id = 1;
 }
 
-message DeleteCommentResponse {}
+message DeleteCommentResponse {
+
+}
+
 
 message ReplyToCommentRequest {
   string id = 1;
