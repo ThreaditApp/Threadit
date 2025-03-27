@@ -1643,6 +1643,210 @@ func (x *ReplyToCommentResponse) GetComment() *Comment {
 	return nil
 }
 
+type Feed struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	CommunityId   string                 `protobuf:"bytes,3,opt,name=community_id,json=communityId,proto3" json:"community_id,omitempty"`
+	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Feed) Reset() {
+	*x = Feed{}
+	mi := &file_db_service_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Feed) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Feed) ProtoMessage() {}
+
+func (x *Feed) ProtoReflect() protoreflect.Message {
+	mi := &file_db_service_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Feed.ProtoReflect.Descriptor instead.
+func (*Feed) Descriptor() ([]byte, []int) {
+	return file_db_service_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *Feed) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Feed) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *Feed) GetCommunityId() string {
+	if x != nil {
+		return x.CommunityId
+	}
+	return ""
+}
+
+func (x *Feed) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Feed) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *Feed) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Feed) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+type GetUserFeedRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Sort          string                 `protobuf:"bytes,3,opt,name=sort,proto3" json:"sort,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserFeedRequest) Reset() {
+	*x = GetUserFeedRequest{}
+	mi := &file_db_service_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserFeedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserFeedRequest) ProtoMessage() {}
+
+func (x *GetUserFeedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_service_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserFeedRequest.ProtoReflect.Descriptor instead.
+func (*GetUserFeedRequest) Descriptor() ([]byte, []int) {
+	return file_db_service_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GetUserFeedRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetUserFeedRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetUserFeedRequest) GetSort() string {
+	if x != nil {
+		return x.Sort
+	}
+	return ""
+}
+
+type GetUserFeedResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Posts         []*Feed                `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts,omitempty"`
+	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserFeedResponse) Reset() {
+	*x = GetUserFeedResponse{}
+	mi := &file_db_service_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserFeedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserFeedResponse) ProtoMessage() {}
+
+func (x *GetUserFeedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_service_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserFeedResponse.ProtoReflect.Descriptor instead.
+func (*GetUserFeedResponse) Descriptor() ([]byte, []int) {
+	return file_db_service_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *GetUserFeedResponse) GetPosts() []*Feed {
+	if x != nil {
+		return x.Posts
+	}
+	return nil
+}
+
+func (x *GetUserFeedResponse) GetPagination() *Pagination {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
 type FollowUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -1652,7 +1856,7 @@ type FollowUserRequest struct {
 
 func (x *FollowUserRequest) Reset() {
 	*x = FollowUserRequest{}
-	mi := &file_db_service_proto_msgTypes[31]
+	mi := &file_db_service_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1664,7 +1868,7 @@ func (x *FollowUserRequest) String() string {
 func (*FollowUserRequest) ProtoMessage() {}
 
 func (x *FollowUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[31]
+	mi := &file_db_service_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1677,7 +1881,7 @@ func (x *FollowUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowUserRequest.ProtoReflect.Descriptor instead.
 func (*FollowUserRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{31}
+	return file_db_service_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *FollowUserRequest) GetUserId() string {
@@ -1696,7 +1900,7 @@ type GetFollowersRequest struct {
 
 func (x *GetFollowersRequest) Reset() {
 	*x = GetFollowersRequest{}
-	mi := &file_db_service_proto_msgTypes[32]
+	mi := &file_db_service_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1708,7 +1912,7 @@ func (x *GetFollowersRequest) String() string {
 func (*GetFollowersRequest) ProtoMessage() {}
 
 func (x *GetFollowersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[32]
+	mi := &file_db_service_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1721,7 +1925,7 @@ func (x *GetFollowersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowersRequest.ProtoReflect.Descriptor instead.
 func (*GetFollowersRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{32}
+	return file_db_service_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GetFollowersRequest) GetUserId() string {
@@ -1740,7 +1944,7 @@ type GetFollowersResponse struct {
 
 func (x *GetFollowersResponse) Reset() {
 	*x = GetFollowersResponse{}
-	mi := &file_db_service_proto_msgTypes[33]
+	mi := &file_db_service_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1752,7 +1956,7 @@ func (x *GetFollowersResponse) String() string {
 func (*GetFollowersResponse) ProtoMessage() {}
 
 func (x *GetFollowersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[33]
+	mi := &file_db_service_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1765,7 +1969,7 @@ func (x *GetFollowersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowersResponse.ProtoReflect.Descriptor instead.
 func (*GetFollowersResponse) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{33}
+	return file_db_service_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GetFollowersResponse) GetUserIds() []string {
@@ -1784,7 +1988,7 @@ type GetFollowingRequest struct {
 
 func (x *GetFollowingRequest) Reset() {
 	*x = GetFollowingRequest{}
-	mi := &file_db_service_proto_msgTypes[34]
+	mi := &file_db_service_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1796,7 +2000,7 @@ func (x *GetFollowingRequest) String() string {
 func (*GetFollowingRequest) ProtoMessage() {}
 
 func (x *GetFollowingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[34]
+	mi := &file_db_service_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1809,7 +2013,7 @@ func (x *GetFollowingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowingRequest.ProtoReflect.Descriptor instead.
 func (*GetFollowingRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{34}
+	return file_db_service_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *GetFollowingRequest) GetUserId() string {
@@ -1828,7 +2032,7 @@ type GetFollowingResponse struct {
 
 func (x *GetFollowingResponse) Reset() {
 	*x = GetFollowingResponse{}
-	mi := &file_db_service_proto_msgTypes[35]
+	mi := &file_db_service_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1840,7 +2044,7 @@ func (x *GetFollowingResponse) String() string {
 func (*GetFollowingResponse) ProtoMessage() {}
 
 func (x *GetFollowingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[35]
+	mi := &file_db_service_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1853,7 +2057,7 @@ func (x *GetFollowingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowingResponse.ProtoReflect.Descriptor instead.
 func (*GetFollowingResponse) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{35}
+	return file_db_service_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *GetFollowingResponse) GetUserIds() []string {
@@ -1872,7 +2076,7 @@ type FollowCommunityRequest struct {
 
 func (x *FollowCommunityRequest) Reset() {
 	*x = FollowCommunityRequest{}
-	mi := &file_db_service_proto_msgTypes[36]
+	mi := &file_db_service_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1884,7 +2088,7 @@ func (x *FollowCommunityRequest) String() string {
 func (*FollowCommunityRequest) ProtoMessage() {}
 
 func (x *FollowCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[36]
+	mi := &file_db_service_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1897,7 +2101,7 @@ func (x *FollowCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FollowCommunityRequest.ProtoReflect.Descriptor instead.
 func (*FollowCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{36}
+	return file_db_service_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *FollowCommunityRequest) GetCommunityId() string {
@@ -1916,7 +2120,7 @@ type GetCommunityFollowersRequest struct {
 
 func (x *GetCommunityFollowersRequest) Reset() {
 	*x = GetCommunityFollowersRequest{}
-	mi := &file_db_service_proto_msgTypes[37]
+	mi := &file_db_service_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1928,7 +2132,7 @@ func (x *GetCommunityFollowersRequest) String() string {
 func (*GetCommunityFollowersRequest) ProtoMessage() {}
 
 func (x *GetCommunityFollowersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[37]
+	mi := &file_db_service_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1941,7 +2145,7 @@ func (x *GetCommunityFollowersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCommunityFollowersRequest.ProtoReflect.Descriptor instead.
 func (*GetCommunityFollowersRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{37}
+	return file_db_service_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *GetCommunityFollowersRequest) GetCommunityId() string {
@@ -1960,7 +2164,7 @@ type GetCommunityFollowersResponse struct {
 
 func (x *GetCommunityFollowersResponse) Reset() {
 	*x = GetCommunityFollowersResponse{}
-	mi := &file_db_service_proto_msgTypes[38]
+	mi := &file_db_service_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1972,7 +2176,7 @@ func (x *GetCommunityFollowersResponse) String() string {
 func (*GetCommunityFollowersResponse) ProtoMessage() {}
 
 func (x *GetCommunityFollowersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[38]
+	mi := &file_db_service_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1985,7 +2189,7 @@ func (x *GetCommunityFollowersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCommunityFollowersResponse.ProtoReflect.Descriptor instead.
 func (*GetCommunityFollowersResponse) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{38}
+	return file_db_service_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *GetCommunityFollowersResponse) GetUserIds() []string {
@@ -2007,7 +2211,7 @@ type Pagination struct {
 
 func (x *Pagination) Reset() {
 	*x = Pagination{}
-	mi := &file_db_service_proto_msgTypes[39]
+	mi := &file_db_service_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2019,7 +2223,7 @@ func (x *Pagination) String() string {
 func (*Pagination) ProtoMessage() {}
 
 func (x *Pagination) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[39]
+	mi := &file_db_service_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2032,7 +2236,7 @@ func (x *Pagination) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Pagination.ProtoReflect.Descriptor instead.
 func (*Pagination) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{39}
+	return file_db_service_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *Pagination) GetCurrentPage() int32 {
@@ -2173,7 +2377,26 @@ const file_db_service_proto_rawDesc = "" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x18\n" +
 	"\acontent\x18\x03 \x01(\tR\acontent\"?\n" +
 	"\x16ReplyToCommentResponse\x12%\n" +
-	"\acomment\x18\x01 \x01(\v2\v.db.CommentR\acomment\",\n" +
+	"\acomment\x18\x01 \x01(\v2\v.db.CommentR\acomment\"\xf3\x01\n" +
+	"\x04Feed\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12!\n" +
+	"\fcommunity_id\x18\x03 \x01(\tR\vcommunityId\x12\x14\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\x12\x18\n" +
+	"\acontent\x18\x05 \x01(\tR\acontent\x129\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"Y\n" +
+	"\x12GetUserFeedRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04sort\x18\x03 \x01(\tR\x04sort\"e\n" +
+	"\x13GetUserFeedResponse\x12\x1e\n" +
+	"\x05posts\x18\x01 \x03(\v2\b.db.FeedR\x05posts\x12.\n" +
+	"\n" +
+	"pagination\x18\x02 \x01(\v2\x0e.db.PaginationR\n" +
+	"pagination\",\n" +
 	"\x11FollowUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\".\n" +
 	"\x13GetFollowersRequest\x12\x17\n" +
@@ -2197,7 +2420,7 @@ const file_db_service_proto_rawDesc = "" +
 	"\vtotal_items\x18\x03 \x01(\x05R\n" +
 	"totalItems\x12\x1f\n" +
 	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages2\x9a\r\n" +
+	"totalPages2\xda\r\n" +
 	"\tDBService\x12;\n" +
 	"\n" +
 	"CreateUser\x12\x15.db.CreateUserRequest\x1a\x16.db.CreateUserResponse\x122\n" +
@@ -2220,7 +2443,8 @@ const file_db_service_proto_rawDesc = "" +
 	"GetComment\x12\x15.db.GetCommentRequest\x1a\x16.db.GetCommentResponse\x12D\n" +
 	"\rUpdateComment\x12\x18.db.UpdateCommentRequest\x1a\x19.db.UpdateCommentResponse\x12A\n" +
 	"\rDeleteComment\x12\x18.db.DeleteCommentRequest\x1a\x16.google.protobuf.Empty\x12G\n" +
-	"\x0eReplyToComment\x12\x19.db.ReplyToCommentRequest\x1a\x1a.db.ReplyToCommentResponse\x12;\n" +
+	"\x0eReplyToComment\x12\x19.db.ReplyToCommentRequest\x1a\x1a.db.ReplyToCommentResponse\x12>\n" +
+	"\vGetUserFeed\x12\x16.db.GetUserFeedRequest\x1a\x17.db.GetUserFeedResponse\x12;\n" +
 	"\n" +
 	"FollowUser\x12\x15.db.FollowUserRequest\x1a\x16.google.protobuf.Empty\x12=\n" +
 	"\fUnfollowUser\x12\x15.db.FollowUserRequest\x1a\x16.google.protobuf.Empty\x12A\n" +
@@ -2242,7 +2466,7 @@ func file_db_service_proto_rawDescGZIP() []byte {
 	return file_db_service_proto_rawDescData
 }
 
-var file_db_service_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
+var file_db_service_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
 var file_db_service_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),             // 0: db.CreateUserRequest
 	(*CreateUserResponse)(nil),            // 1: db.CreateUserResponse
@@ -2275,81 +2499,90 @@ var file_db_service_proto_goTypes = []any{
 	(*DeleteCommentRequest)(nil),          // 28: db.DeleteCommentRequest
 	(*ReplyToCommentRequest)(nil),         // 29: db.ReplyToCommentRequest
 	(*ReplyToCommentResponse)(nil),        // 30: db.ReplyToCommentResponse
-	(*FollowUserRequest)(nil),             // 31: db.FollowUserRequest
-	(*GetFollowersRequest)(nil),           // 32: db.GetFollowersRequest
-	(*GetFollowersResponse)(nil),          // 33: db.GetFollowersResponse
-	(*GetFollowingRequest)(nil),           // 34: db.GetFollowingRequest
-	(*GetFollowingResponse)(nil),          // 35: db.GetFollowingResponse
-	(*FollowCommunityRequest)(nil),        // 36: db.FollowCommunityRequest
-	(*GetCommunityFollowersRequest)(nil),  // 37: db.GetCommunityFollowersRequest
-	(*GetCommunityFollowersResponse)(nil), // 38: db.GetCommunityFollowersResponse
-	(*Pagination)(nil),                    // 39: db.Pagination
-	(*timestamppb.Timestamp)(nil),         // 40: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                 // 41: google.protobuf.Empty
+	(*Feed)(nil),                          // 31: db.Feed
+	(*GetUserFeedRequest)(nil),            // 32: db.GetUserFeedRequest
+	(*GetUserFeedResponse)(nil),           // 33: db.GetUserFeedResponse
+	(*FollowUserRequest)(nil),             // 34: db.FollowUserRequest
+	(*GetFollowersRequest)(nil),           // 35: db.GetFollowersRequest
+	(*GetFollowersResponse)(nil),          // 36: db.GetFollowersResponse
+	(*GetFollowingRequest)(nil),           // 37: db.GetFollowingRequest
+	(*GetFollowingResponse)(nil),          // 38: db.GetFollowingResponse
+	(*FollowCommunityRequest)(nil),        // 39: db.FollowCommunityRequest
+	(*GetCommunityFollowersRequest)(nil),  // 40: db.GetCommunityFollowersRequest
+	(*GetCommunityFollowersResponse)(nil), // 41: db.GetCommunityFollowersResponse
+	(*Pagination)(nil),                    // 42: db.Pagination
+	(*timestamppb.Timestamp)(nil),         // 43: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                 // 44: google.protobuf.Empty
 }
 var file_db_service_proto_depIdxs = []int32{
-	40, // 0: db.Comment.created_at:type_name -> google.protobuf.Timestamp
+	43, // 0: db.Comment.created_at:type_name -> google.protobuf.Timestamp
 	19, // 1: db.ListCommentsResponse.comments:type_name -> db.Comment
-	39, // 2: db.ListCommentsResponse.pagination:type_name -> db.Pagination
+	42, // 2: db.ListCommentsResponse.pagination:type_name -> db.Pagination
 	19, // 3: db.CreateCommentResponse.comment:type_name -> db.Comment
 	19, // 4: db.GetCommentResponse.comment:type_name -> db.Comment
 	19, // 5: db.UpdateCommentResponse.comment:type_name -> db.Comment
 	19, // 6: db.ReplyToCommentResponse.comment:type_name -> db.Comment
-	0,  // 7: db.DBService.CreateUser:input_type -> db.CreateUserRequest
-	2,  // 8: db.DBService.GetUser:input_type -> db.GetUserRequest
-	4,  // 9: db.DBService.UpdateUser:input_type -> db.UpdateUserRequest
-	6,  // 10: db.DBService.DeleteUser:input_type -> db.DeleteUserRequest
-	7,  // 11: db.DBService.CreateCommunity:input_type -> db.CreateCommunityRequest
-	9,  // 12: db.DBService.GetCommunity:input_type -> db.GetCommunityRequest
-	11, // 13: db.DBService.UpdateCommunity:input_type -> db.UpdateCommunityRequest
-	12, // 14: db.DBService.DeleteCommunity:input_type -> db.DeleteCommunityRequest
-	13, // 15: db.DBService.CreateThread:input_type -> db.CreateThreadRequest
-	15, // 16: db.DBService.GetThread:input_type -> db.GetThreadRequest
-	17, // 17: db.DBService.UpdateThread:input_type -> db.UpdateThreadRequest
-	18, // 18: db.DBService.DeleteThread:input_type -> db.DeleteThreadRequest
-	20, // 19: db.DBService.ListComments:input_type -> db.ListCommentsRequest
-	22, // 20: db.DBService.CreateComment:input_type -> db.CreateCommentRequest
-	24, // 21: db.DBService.GetComment:input_type -> db.GetCommentRequest
-	26, // 22: db.DBService.UpdateComment:input_type -> db.UpdateCommentRequest
-	28, // 23: db.DBService.DeleteComment:input_type -> db.DeleteCommentRequest
-	29, // 24: db.DBService.ReplyToComment:input_type -> db.ReplyToCommentRequest
-	31, // 25: db.DBService.FollowUser:input_type -> db.FollowUserRequest
-	31, // 26: db.DBService.UnfollowUser:input_type -> db.FollowUserRequest
-	32, // 27: db.DBService.GetFollowers:input_type -> db.GetFollowersRequest
-	34, // 28: db.DBService.GetFollowing:input_type -> db.GetFollowingRequest
-	36, // 29: db.DBService.FollowCommunity:input_type -> db.FollowCommunityRequest
-	36, // 30: db.DBService.UnfollowCommunity:input_type -> db.FollowCommunityRequest
-	37, // 31: db.DBService.GetCommunityFollowers:input_type -> db.GetCommunityFollowersRequest
-	1,  // 32: db.DBService.CreateUser:output_type -> db.CreateUserResponse
-	3,  // 33: db.DBService.GetUser:output_type -> db.GetUserResponse
-	41, // 34: db.DBService.UpdateUser:output_type -> google.protobuf.Empty
-	41, // 35: db.DBService.DeleteUser:output_type -> google.protobuf.Empty
-	8,  // 36: db.DBService.CreateCommunity:output_type -> db.CreateCommunityResponse
-	10, // 37: db.DBService.GetCommunity:output_type -> db.GetCommunityResponse
-	41, // 38: db.DBService.UpdateCommunity:output_type -> google.protobuf.Empty
-	41, // 39: db.DBService.DeleteCommunity:output_type -> google.protobuf.Empty
-	14, // 40: db.DBService.CreateThread:output_type -> db.CreateThreadResponse
-	16, // 41: db.DBService.GetThread:output_type -> db.GetThreadResponse
-	41, // 42: db.DBService.UpdateThread:output_type -> google.protobuf.Empty
-	41, // 43: db.DBService.DeleteThread:output_type -> google.protobuf.Empty
-	21, // 44: db.DBService.ListComments:output_type -> db.ListCommentsResponse
-	23, // 45: db.DBService.CreateComment:output_type -> db.CreateCommentResponse
-	25, // 46: db.DBService.GetComment:output_type -> db.GetCommentResponse
-	27, // 47: db.DBService.UpdateComment:output_type -> db.UpdateCommentResponse
-	41, // 48: db.DBService.DeleteComment:output_type -> google.protobuf.Empty
-	30, // 49: db.DBService.ReplyToComment:output_type -> db.ReplyToCommentResponse
-	41, // 50: db.DBService.FollowUser:output_type -> google.protobuf.Empty
-	41, // 51: db.DBService.UnfollowUser:output_type -> google.protobuf.Empty
-	33, // 52: db.DBService.GetFollowers:output_type -> db.GetFollowersResponse
-	35, // 53: db.DBService.GetFollowing:output_type -> db.GetFollowingResponse
-	41, // 54: db.DBService.FollowCommunity:output_type -> google.protobuf.Empty
-	41, // 55: db.DBService.UnfollowCommunity:output_type -> google.protobuf.Empty
-	38, // 56: db.DBService.GetCommunityFollowers:output_type -> db.GetCommunityFollowersResponse
-	32, // [32:57] is the sub-list for method output_type
-	7,  // [7:32] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	43, // 7: db.Feed.created_at:type_name -> google.protobuf.Timestamp
+	43, // 8: db.Feed.updated_at:type_name -> google.protobuf.Timestamp
+	31, // 9: db.GetUserFeedResponse.posts:type_name -> db.Feed
+	42, // 10: db.GetUserFeedResponse.pagination:type_name -> db.Pagination
+	0,  // 11: db.DBService.CreateUser:input_type -> db.CreateUserRequest
+	2,  // 12: db.DBService.GetUser:input_type -> db.GetUserRequest
+	4,  // 13: db.DBService.UpdateUser:input_type -> db.UpdateUserRequest
+	6,  // 14: db.DBService.DeleteUser:input_type -> db.DeleteUserRequest
+	7,  // 15: db.DBService.CreateCommunity:input_type -> db.CreateCommunityRequest
+	9,  // 16: db.DBService.GetCommunity:input_type -> db.GetCommunityRequest
+	11, // 17: db.DBService.UpdateCommunity:input_type -> db.UpdateCommunityRequest
+	12, // 18: db.DBService.DeleteCommunity:input_type -> db.DeleteCommunityRequest
+	13, // 19: db.DBService.CreateThread:input_type -> db.CreateThreadRequest
+	15, // 20: db.DBService.GetThread:input_type -> db.GetThreadRequest
+	17, // 21: db.DBService.UpdateThread:input_type -> db.UpdateThreadRequest
+	18, // 22: db.DBService.DeleteThread:input_type -> db.DeleteThreadRequest
+	20, // 23: db.DBService.ListComments:input_type -> db.ListCommentsRequest
+	22, // 24: db.DBService.CreateComment:input_type -> db.CreateCommentRequest
+	24, // 25: db.DBService.GetComment:input_type -> db.GetCommentRequest
+	26, // 26: db.DBService.UpdateComment:input_type -> db.UpdateCommentRequest
+	28, // 27: db.DBService.DeleteComment:input_type -> db.DeleteCommentRequest
+	29, // 28: db.DBService.ReplyToComment:input_type -> db.ReplyToCommentRequest
+	32, // 29: db.DBService.GetUserFeed:input_type -> db.GetUserFeedRequest
+	34, // 30: db.DBService.FollowUser:input_type -> db.FollowUserRequest
+	34, // 31: db.DBService.UnfollowUser:input_type -> db.FollowUserRequest
+	35, // 32: db.DBService.GetFollowers:input_type -> db.GetFollowersRequest
+	37, // 33: db.DBService.GetFollowing:input_type -> db.GetFollowingRequest
+	39, // 34: db.DBService.FollowCommunity:input_type -> db.FollowCommunityRequest
+	39, // 35: db.DBService.UnfollowCommunity:input_type -> db.FollowCommunityRequest
+	40, // 36: db.DBService.GetCommunityFollowers:input_type -> db.GetCommunityFollowersRequest
+	1,  // 37: db.DBService.CreateUser:output_type -> db.CreateUserResponse
+	3,  // 38: db.DBService.GetUser:output_type -> db.GetUserResponse
+	44, // 39: db.DBService.UpdateUser:output_type -> google.protobuf.Empty
+	44, // 40: db.DBService.DeleteUser:output_type -> google.protobuf.Empty
+	8,  // 41: db.DBService.CreateCommunity:output_type -> db.CreateCommunityResponse
+	10, // 42: db.DBService.GetCommunity:output_type -> db.GetCommunityResponse
+	44, // 43: db.DBService.UpdateCommunity:output_type -> google.protobuf.Empty
+	44, // 44: db.DBService.DeleteCommunity:output_type -> google.protobuf.Empty
+	14, // 45: db.DBService.CreateThread:output_type -> db.CreateThreadResponse
+	16, // 46: db.DBService.GetThread:output_type -> db.GetThreadResponse
+	44, // 47: db.DBService.UpdateThread:output_type -> google.protobuf.Empty
+	44, // 48: db.DBService.DeleteThread:output_type -> google.protobuf.Empty
+	21, // 49: db.DBService.ListComments:output_type -> db.ListCommentsResponse
+	23, // 50: db.DBService.CreateComment:output_type -> db.CreateCommentResponse
+	25, // 51: db.DBService.GetComment:output_type -> db.GetCommentResponse
+	27, // 52: db.DBService.UpdateComment:output_type -> db.UpdateCommentResponse
+	44, // 53: db.DBService.DeleteComment:output_type -> google.protobuf.Empty
+	30, // 54: db.DBService.ReplyToComment:output_type -> db.ReplyToCommentResponse
+	33, // 55: db.DBService.GetUserFeed:output_type -> db.GetUserFeedResponse
+	44, // 56: db.DBService.FollowUser:output_type -> google.protobuf.Empty
+	44, // 57: db.DBService.UnfollowUser:output_type -> google.protobuf.Empty
+	36, // 58: db.DBService.GetFollowers:output_type -> db.GetFollowersResponse
+	38, // 59: db.DBService.GetFollowing:output_type -> db.GetFollowingResponse
+	44, // 60: db.DBService.FollowCommunity:output_type -> google.protobuf.Empty
+	44, // 61: db.DBService.UnfollowCommunity:output_type -> google.protobuf.Empty
+	41, // 62: db.DBService.GetCommunityFollowers:output_type -> db.GetCommunityFollowersResponse
+	37, // [37:63] is the sub-list for method output_type
+	11, // [11:37] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_db_service_proto_init() }
@@ -2366,7 +2599,7 @@ func file_db_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_db_service_proto_rawDesc), len(file_db_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   40,
+			NumMessages:   43,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
