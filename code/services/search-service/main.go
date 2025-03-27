@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	server "search-service/src"
 	pb "search-service/src/pb"
 
@@ -11,8 +12,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
-	addr := fmt.Sprintf("localhost:%d", port)
+func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
+	port := os.Getenv(portEnvVar)
+	if port == "" {
+		log.Fatalf("missing %s env var", portEnvVar)
+	}
+	addr := fmt.Sprintf("localhost:%s", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", serviceName, err)
@@ -22,11 +27,11 @@ func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 
 func main() {
 	// connect to other services
-	userConn := connectGrpcClient("user service", 50052)
+	userConn := connectGrpcClient("user service", "USER_SERVICE_PORT")
 	defer userConn.Close()
-	communityConn := connectGrpcClient("community service", 50053)
+	communityConn := connectGrpcClient("community service", "COMMUNITY_SERVICE_PORT")
 	defer communityConn.Close()
-	threadConn := connectGrpcClient("thread service", 50054)
+	threadConn := connectGrpcClient("thread service", "THREAD_SERVICE_PORT")
 	defer threadConn.Close()
 
 	// create search server with clients
@@ -36,8 +41,14 @@ func main() {
 		ThreadClient:    threadpb.NewThreadServiceClient(threadConn),
 	}
 
+	// get env port
+	port := os.Getenv("SERVICE_PORT")
+	if port == "" {
+		log.Fatalf("missing SERVICE_PORT env var")
+	}
+
 	// start gRPC server
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -45,7 +56,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	pb.RegisterSearchServiceServer(grpcServer, searchServer)
 
-	log.Println("search service is listening on :50051")
+	log.Printf("search service is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

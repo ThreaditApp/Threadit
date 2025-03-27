@@ -4,6 +4,7 @@ import (
 	"context"
 	server "db-service/src"
 	pb "db-service/src/pb"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -15,7 +16,15 @@ import (
 
 func main() {
 	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Fatalf("missing MONGO_URI env var")
+	}
 	clientOptions := options.Client().ApplyURI(mongoURI)
+
+	port := os.Getenv("SERVICE_PORT")
+	if port == "" {
+		log.Fatalf("missing SERVICE_PORT env var")
+	}
 
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
@@ -30,7 +39,7 @@ func main() {
 	}(client, context.Background())
 
 	// start gRPC server
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
