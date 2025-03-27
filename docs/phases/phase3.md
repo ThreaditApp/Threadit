@@ -91,4 +91,4 @@
 
 ### 📦 Application Architecture
 
-![Application architecture](../images/diagram.png)
+![Application architecture](../images/architecture.png)

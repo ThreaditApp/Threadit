@@ -2,7 +2,7 @@
 
 # Threadit 💬
 
-Cloud Computing Project - Reddit Clone
+Cloud Computing Project - Reddit Clone API
 
 ![Contributors](https://img.shields.io/github/contributors/ThreaditApp/Threadit)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ThreaditApp/Threadit)
@@ -21,7 +21,7 @@ Cloud Computing Project - Reddit Clone
 ## 🚀 Overview
 
 *Threadit* is cloud native application that offers a set of services that provide users the ability to connect, share and engage in discussions within communities through a REST API.
-Its architecture will follow a microservices model and be deployed on Google Cloud Platform (GCP).
+Its architecture will follow a microservices model with gRPC communication and be deployed on Google Cloud Platform (GCP) with Kubernetes.
 
 ## 🔍 Development Phases
 
