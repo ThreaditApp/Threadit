@@ -11,14 +11,10 @@ Threadit requires Go and Docker. You can find installation instructions in the l
 
 ### Environmental Variables
 
-To configure the application, change directory to `code/`, create a `.env` file in the root of this directory. The `.env` file should contain necessary environment variables for running the application.
+To configure the application, change directory to `code/`, then simply copy the example environment file and rename it:
 
-```ini
-# Example .env configuration
-MONGO_INITDB_DATABASE=threadit-db
-MONGO_INITDB_ROOT_USERNAME=test
-MONGO_INITDB_ROOT_PASSWORD=example
-MONGO_URI=mongodb://test:example@mongodb:27017/threadit-db?authSource=test
+```bash
+cp .env.example .env
 ```
 
 ### Run Docker
