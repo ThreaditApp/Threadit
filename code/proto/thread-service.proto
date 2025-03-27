@@ -37,7 +37,7 @@ message ListThreadsRequest {
   optional int32 page_size = 2;
   optional string community_id = 3;
   optional string author_id = 4;
-  optional string search = 5;
+  optional string title = 5;
   optional string sort_by = 6;
   optional string sort_order = 7;
 }
