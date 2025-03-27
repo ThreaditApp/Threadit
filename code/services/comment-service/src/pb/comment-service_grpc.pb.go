@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,12 +20,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CommentService_ListComments_FullMethodName   = "/comment.CommentService/ListComments"
-	CommentService_CreateComment_FullMethodName  = "/comment.CommentService/CreateComment"
-	CommentService_GetComment_FullMethodName     = "/comment.CommentService/GetComment"
-	CommentService_UpdateComment_FullMethodName  = "/comment.CommentService/UpdateComment"
-	CommentService_DeleteComment_FullMethodName  = "/comment.CommentService/DeleteComment"
-	CommentService_ReplyToComment_FullMethodName = "/comment.CommentService/ReplyToComment"
+	CommentService_ListComments_FullMethodName  = "/comment.CommentService/ListComments"
+	CommentService_CreateComment_FullMethodName = "/comment.CommentService/CreateComment"
+	CommentService_GetComment_FullMethodName    = "/comment.CommentService/GetComment"
+	CommentService_UpdateComment_FullMethodName = "/comment.CommentService/UpdateComment"
+	CommentService_DeleteComment_FullMethodName = "/comment.CommentService/DeleteComment"
 )
 
 // CommentServiceClient is the client API for CommentService service.
@@ -35,8 +35,7 @@ type CommentServiceClient interface {
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
-	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
-	ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error)
+	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type commentServiceClient struct {
@@ -87,20 +86,10 @@ func (c *commentServiceClient) UpdateComment(ctx context.Context, in *UpdateComm
 	return out, nil
 }
 
-func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error) {
+func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteCommentResponse)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, CommentService_DeleteComment_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *commentServiceClient) ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReplyToCommentResponse)
-	err := c.cc.Invoke(ctx, CommentService_ReplyToComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -115,8 +104,7 @@ type CommentServiceServer interface {
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
 	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
 	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
-	DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
-	ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error)
+	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedCommentServiceServer()
 }
 
@@ -139,11 +127,8 @@ func (UnimplementedCommentServiceServer) GetComment(context.Context, *GetComment
 func (UnimplementedCommentServiceServer) UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateComment not implemented")
 }
-func (UnimplementedCommentServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
+func (UnimplementedCommentServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
-}
-func (UnimplementedCommentServiceServer) ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReplyToComment not implemented")
 }
 func (UnimplementedCommentServiceServer) mustEmbedUnimplementedCommentServiceServer() {}
 func (UnimplementedCommentServiceServer) testEmbeddedByValue()                        {}
@@ -256,24 +241,6 @@ func _CommentService_DeleteComment_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CommentService_ReplyToComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReplyToCommentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CommentServiceServer).ReplyToComment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CommentService_ReplyToComment_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommentServiceServer).ReplyToComment(ctx, req.(*ReplyToCommentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // CommentService_ServiceDesc is the grpc.ServiceDesc for CommentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -300,10 +267,6 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _CommentService_DeleteComment_Handler,
-		},
-		{
-			MethodName: "ReplyToComment",
-			Handler:    _CommentService_ReplyToComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

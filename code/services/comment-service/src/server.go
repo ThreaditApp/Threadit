@@ -69,12 +69,12 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *pb.CreateComment
 	}
 
 	return &pb.Comment{
-		Id:        res.Id,
-		PostId:    res.PostId,
-		UserId:    res.UserId,
-		Content:   res.Content,
-		ParentId:  res.ParentId,
-		CreatedAt: res.CreatedAt,
+		Id:        res.Comment.Id,
+		PostId:    res.Comment.PostId,
+		UserId:    res.Comment.UserId,
+		Content:   res.Comment.Content,
+		ParentId:  res.Comment.ParentId,
+		CreatedAt: res.Comment.CreatedAt,
 	}, nil
 }
 
@@ -89,12 +89,12 @@ func (s *CommentServer) GetComment(ctx context.Context, req *pb.GetCommentReques
 	}
 
 	return &pb.Comment{
-		Id:        res.Id,
-		PostId:    res.PostId,
-		UserId:    res.UserId,
-		Content:   res.Content,
-		ParentId:  res.ParentId,
-		CreatedAt: res.CreatedAt,
+		Id:        res.Comment.Id,
+		PostId:    res.Comment.PostId,
+		UserId:    res.Comment.UserId,
+		Content:   res.Comment.Content,
+		ParentId:  res.Comment.ParentId,
+		CreatedAt: res.Comment.CreatedAt,
 	}, nil
 }
 
@@ -114,12 +114,12 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *pb.UpdateComment
 	}
 
 	return &pb.Comment{
-		Id:        res.Id,
-		PostId:    res.PostId,
-		UserId:    res.UserId,
-		Content:   res.Content,
-		ParentId:  res.ParentId,
-		CreatedAt: res.CreatedAt,
+		Id:        res.Comment.Id,
+		PostId:    res.Comment.PostId,
+		UserId:    res.Comment.UserId,
+		Content:   res.Comment.Content,
+		ParentId:  res.Comment.ParentId,
+		CreatedAt: res.Comment.CreatedAt,
 	}, nil
 }
 
@@ -138,32 +138,6 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *pb.DeleteComment
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-func (s *CommentServer) ReplyToComment(ctx context.Context, req *pb.ReplyToCommentRequest) (*pb.Comment, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := s.DBClient.CreateComment(ctx, &dbpb.CreateCommentRequest{
-		PostId:   req.Id,
-		UserId:   userId,
-		Content:  req.Content,
-		ParentId: req.Id,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
-	return &pb.Comment{
-		Id:        res.Id,
-		PostId:    res.PostId,
-		UserId:    res.UserId,
-		Content:   res.Content,
-		ParentId:  res.ParentId,
-		CreatedAt: res.CreatedAt,
-	}, nil
 }
 
 func getCurrentUserId(ctx context.Context) (string, error) {

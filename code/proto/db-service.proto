@@ -32,7 +32,6 @@ service DBService {
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
-  rpc ReplyToComment(ReplyToCommentRequest) returns (ReplyToCommentResponse);
 
   // follower operations
   rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
@@ -188,16 +187,6 @@ message UpdateCommentResponse {
 message DeleteCommentRequest {
   string id = 1;
   string user_id = 2;
-}
-
-message ReplyToCommentRequest {
-  string id = 1;
-  string user_id = 2;
-  string content = 3;
-}
-
-message ReplyToCommentResponse {
-  Comment comment = 1;
 }
 
 message FollowUserRequest {

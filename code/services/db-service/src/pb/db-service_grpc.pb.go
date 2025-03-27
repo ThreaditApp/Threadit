@@ -37,7 +37,6 @@ const (
 	DBService_GetComment_FullMethodName            = "/db.DBService/GetComment"
 	DBService_UpdateComment_FullMethodName         = "/db.DBService/UpdateComment"
 	DBService_DeleteComment_FullMethodName         = "/db.DBService/DeleteComment"
-	DBService_ReplyToComment_FullMethodName        = "/db.DBService/ReplyToComment"
 	DBService_FollowUser_FullMethodName            = "/db.DBService/FollowUser"
 	DBService_UnfollowUser_FullMethodName          = "/db.DBService/UnfollowUser"
 	DBService_GetFollowers_FullMethodName          = "/db.DBService/GetFollowers"
@@ -72,7 +71,6 @@ type DBServiceClient interface {
 	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*UpdateCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error)
 	// follower operations
 	FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UnfollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -261,16 +259,6 @@ func (c *dBServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRe
 	return out, nil
 }
 
-func (c *dBServiceClient) ReplyToComment(ctx context.Context, in *ReplyToCommentRequest, opts ...grpc.CallOption) (*ReplyToCommentResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReplyToCommentResponse)
-	err := c.cc.Invoke(ctx, DBService_ReplyToComment_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *dBServiceClient) FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -366,7 +354,6 @@ type DBServiceServer interface {
 	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
 	UpdateComment(context.Context, *UpdateCommentRequest) (*UpdateCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
-	ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error)
 	// follower operations
 	FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
 	UnfollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
@@ -435,9 +422,6 @@ func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommen
 }
 func (UnimplementedDBServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
-}
-func (UnimplementedDBServiceServer) ReplyToComment(context.Context, *ReplyToCommentRequest) (*ReplyToCommentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReplyToComment not implemented")
 }
 func (UnimplementedDBServiceServer) FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FollowUser not implemented")
@@ -787,24 +771,6 @@ func _DBService_DeleteComment_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBService_ReplyToComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReplyToCommentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).ReplyToComment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_ReplyToComment_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).ReplyToComment(ctx, req.(*ReplyToCommentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DBService_FollowUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FollowUserRequest)
 	if err := dec(in); err != nil {
@@ -1005,10 +971,6 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _DBService_DeleteComment_Handler,
-		},
-		{
-			MethodName: "ReplyToComment",
-			Handler:    _DBService_ReplyToComment_Handler,
 		},
 		{
 			MethodName: "FollowUser",

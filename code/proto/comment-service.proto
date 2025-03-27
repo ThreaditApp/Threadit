@@ -5,14 +5,14 @@ package comment;
 option go_package = "comment-service/src/pb;pb";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service CommentService {
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
   rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
   rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
-  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
-  rpc ReplyToComment(ReplyToCommentRequest) returns (ReplyToCommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
 }
 
 message Comment {
@@ -64,20 +64,6 @@ message UpdateCommentResponse {
 
 message DeleteCommentRequest {
   string id = 1;
-}
-
-message DeleteCommentResponse {
-
-}
-
-
-message ReplyToCommentRequest {
-  string id = 1;
-  string content = 2;
-}
-
-message ReplyToCommentResponse {
-  Comment comment = 1;
 }
 
 message Pagination {
