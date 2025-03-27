@@ -3,22 +3,22 @@ package server
 import (
 	"context"
 	pb "db-service/src/pb"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type DBServer struct {
 	pb.UnimplementedDBServiceServer
-	Mongo mongo.Client
+	Mongo *mongo.Client
 }
 
 func (s *DBServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("users")
 	user := bson.M{
 		"username": in.GetUsername(),
-		"email": in.GetEmail(),
-		"bio": in.GetBio(),
+		"email":    in.GetEmail(),
+		"bio":      in.GetBio(),
 	}
 
 	_, err := collection.InsertOne(ctx, user)
@@ -32,9 +32,7 @@ func (s *DBServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*p
 func (s *DBServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("users")
 	filter := bson.M{
-		"username": in.GetUsername(),
-		"email": in.GetEmail(),
-		"bio": in.GetBio(),
+		"id:": in.GetId(),
 	}
 	var user bson.M
 	err := collection.FindOne(ctx, filter).Decode(&user)
@@ -44,12 +42,12 @@ func (s *DBServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetU
 
 	return &pb.GetUserResponse{
 		Username: user["username"].(string),
-		Email: user["email"].(string),
-		Bio: user["bio"].(string),
+		Email:    user["email"].(string),
+		Bio:      user["bio"].(string),
 	}, nil
 }
 
-func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
+func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("users")
 	filter := bson.M{
 		"id": in.GetId(),
@@ -59,8 +57,8 @@ func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*p
 	update := bson.M{
 		"$set": bson.M{
 			"username": in.GetUsername(),
-			"email": in.GetEmail(),
-			"bio": in.GetBio(),
+			"email":    in.GetEmail(),
+			"bio":      in.GetBio(),
 		},
 	}
 	_, err := collection.UpdateOne(ctx, filter, update)
