@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"strings"
 )
 
 type DBServer struct {
@@ -85,7 +84,8 @@ func (s *DBServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*e
 	return nil, nil
 }
 
-func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
+//TODO Fix this function
+/*func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	filter := bson.M{}
@@ -168,7 +168,7 @@ func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRe
 			TotalPages:  int32(totalPages),
 		},
 	}, nil
-}
+}*/
 
 func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRequest) (*pb.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
@@ -317,7 +317,8 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 	}
 }
 
-func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
+//TODO Fix this function
+/*func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	filter := bson.M{}
@@ -403,7 +404,7 @@ func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (
 			TotalPages:  int32(totalPages),
 		},
 	}, nil
-}
+}*/
 
 func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest) (*pb.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
