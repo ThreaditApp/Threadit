@@ -20,7 +20,7 @@ cp .env.example .env
 Finally, still in the `/code` directory you need to run the `docker-compose.yml` file. This command should start the necessary containers:
 
 ```bash
-docker-compose -p threadit --build -d
+docker-compose -p threadit up --build -d
 ```
 
 To stop the application run:
