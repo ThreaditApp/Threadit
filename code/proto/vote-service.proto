@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package vote;
 
-option go_package = "vote-service/src/pb;pb";
+option go_package = "gen/vote-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 

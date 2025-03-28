@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package search;
 
-option go_package = "search-service/src/pb;pb";
+option go_package = "gen/search-service/pb;pb";
 
 service SearchService {
 	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse);
