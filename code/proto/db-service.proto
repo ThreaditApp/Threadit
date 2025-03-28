@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package db;
 
-option go_package = "db-service/src/pb;pb";
+option go_package = "gen/db-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";

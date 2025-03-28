@@ -16,7 +16,8 @@ services:
 
   db-service:
     build:
-      context: ./services/db-service
+      context: .
+      dockerfile: services/db-service/Dockerfile
     container_name: db-service
     restart: always
     depends_on:
