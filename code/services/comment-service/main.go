@@ -2,8 +2,9 @@ package main
 
 import (
 	server "comment-service/src"
-	"comment-service/src/pb"
 	"fmt"
+	commentpb "gen/comment-service/pb"
+	dbpb "gen/db-service/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -27,7 +28,7 @@ func main() {
 
 	// create community service with database service
 	commentService := &server.CommentServer{
-		DBClient: pb.NewDBServiceClient(dbConn),
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	port := os.Getenv("SERVICE_PORT")
@@ -42,7 +43,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterCommentServiceServer(grpcServer, commentService)
+	commentpb.RegisterCommentServiceServer(grpcServer, commentService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
