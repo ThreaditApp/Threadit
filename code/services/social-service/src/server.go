@@ -3,19 +3,20 @@ package server
 import (
 	"context"
 	"fmt"
+	dbpb "gen/db-service/pb"
+	socialpb "gen/social-service/pb"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"social-service/src/pb"
 )
 
 type SocialServer struct {
-	pb.UnimplementedSocialServiceServer
-	DBClient pb.DBServiceClient
+	socialpb.UnimplementedSocialServiceServer
+	DBClient dbpb.DBServiceClient
 }
 
-func (s *SocialServer) FollowUser(ctx context.Context, req *pb.FollowUserRequest) (*emptypb.Empty, error) {
+func (s *SocialServer) FollowUser(ctx context.Context, req *socialpb.FollowUserRequest) (*emptypb.Empty, error) {
 	user, _ := getCurrentUserId(ctx)
-	_, err := s.DBClient.FollowUser(ctx, &pb.FollowUserRequest{
+	_, err := s.DBClient.FollowUser(ctx, &dbpb.FollowUserRequest{
 		UserId:       user,
 		TargetUserId: req.UserId,
 	})
@@ -25,8 +26,8 @@ func (s *SocialServer) FollowUser(ctx context.Context, req *pb.FollowUserRequest
 	return &emptypb.Empty{}, nil
 }
 
-func (s *SocialServer) UnfollowUser(ctx context.Context, req *pb.FollowUserRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.UnfollowUser(ctx, &pb.UnfollowUserRequest{
+func (s *SocialServer) UnfollowUser(ctx context.Context, req *socialpb.FollowUserRequest) (*emptypb.Empty, error) {
+	_, err := s.DBClient.UnfollowUser(ctx, &dbpb.UnfollowUserRequest{
 		UserId:       getCurrentUserId(ctx),
 		TargetUserId: req.UserId,
 	})
@@ -36,33 +37,33 @@ func (s *SocialServer) UnfollowUser(ctx context.Context, req *pb.FollowUserReque
 	return &emptypb.Empty{}, nil
 }
 
-func (s *SocialServer) GetFollowers(ctx context.Context, req *pb.GetFollowersRequest) (*pb.GetFollowersResponse, error) {
-	res, err := s.DBClient.GetFollowers(ctx, &pb.GetFollowersRequest{
+func (s *SocialServer) GetFollowers(ctx context.Context, req *socialpb.GetFollowersRequest) (*socialpb.GetFollowersResponse, error) {
+	res, err := s.DBClient.GetFollowers(ctx, &dbpb.GetFollowersRequest{
 		UserId: req.UserId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	return &pb.GetFollowersResponse{
+	return &socialpb.GetFollowersResponse{
 		UserIds: res.UserIds,
 	}, nil
 }
 
-func (s *SocialServer) GetFollowing(ctx context.Context, req *pb.GetFollowingRequest) (*pb.GetFollowingResponse, error) {
-	res, err := s.DBClient.GetFollowing(ctx, &pb.GetFollowingRequest{
+func (s *SocialServer) GetFollowing(ctx context.Context, req *socialpb.GetFollowingRequest) (*socialpb.GetFollowingResponse, error) {
+	res, err := s.DBClient.GetFollowing(ctx, &dbpb.GetFollowingRequest{
 		UserId: req.UserId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	return &pb.GetFollowingResponse{
+	return &socialpb.GetFollowingResponse{
 		UserIds: res.UserIds,
 	}, nil
 
 }
 
-func (s *SocialServer) FollowCommunity(ctx context.Context, req *pb.FollowCommunityRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.FollowCommunity(ctx, &pb.FollowCommunityRequest{
+func (s *SocialServer) FollowCommunity(ctx context.Context, req *socialpb.FollowCommunityRequest) (*emptypb.Empty, error) {
+	_, err := s.DBClient.FollowCommunity(ctx, &dbpb.FollowCommunityRequest{
 		UserId:      getCurrentUserId(ctx),
 		CommunityId: req.CommunityId,
 	})
@@ -72,8 +73,8 @@ func (s *SocialServer) FollowCommunity(ctx context.Context, req *pb.FollowCommun
 	return &emptypb.Empty{}, nil
 }
 
-func (s *SocialServer) UnfollowCommunity(ctx context.Context, req *pb.FollowCommunityRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.UnfollowCommunity(ctx, &pb.UnfollowCommunityRequest{
+func (s *SocialServer) UnfollowCommunity(ctx context.Context, req *socialpb.FollowCommunityRequest) (*emptypb.Empty, error) {
+	_, err := s.DBClient.UnfollowCommunity(ctx, &dbpb.UnfollowCommunityRequest{
 		UserId:      getCurrentUserId(ctx),
 		CommunityId: req.CommunityId,
 	})
@@ -83,14 +84,14 @@ func (s *SocialServer) UnfollowCommunity(ctx context.Context, req *pb.FollowComm
 	return &emptypb.Empty{}, nil
 }
 
-func (s *SocialServer) GetCommunityFollowers(ctx context.Context, req *pb.GetCommunityFollowersRequest) (*pb.GetCommunityFollowersResponse, error) {
-	res, err := s.DBClient.GetCommunityFollowers(ctx, &pb.GetCommunityFollowersRequest{
+func (s *SocialServer) GetCommunityFollowers(ctx context.Context, req *socialpb.GetCommunityFollowersRequest) (*socialpb.GetCommunityFollowersResponse, error) {
+	res, err := s.DBClient.GetCommunityFollowers(ctx, &dbpb.GetCommunityFollowersRequest{
 		CommunityId: req.CommunityId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	return &pb.GetCommunityFollowersResponse{
+	return &socialpb.GetCommunityFollowersResponse{
 		UserIds: res.UserIds,
 	}, nil
 }
