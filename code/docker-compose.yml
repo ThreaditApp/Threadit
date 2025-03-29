@@ -34,7 +34,8 @@ services:
 
 #  user-service:
 #    build:
-#      context: ./services/user-service
+#      context: .
+#      dockerfile: services/user-service/Dockerfile
 #    container_name: user-service
 #    restart: always
 #    depends_on:
@@ -49,7 +50,8 @@ services:
 
 #  community-service:
 #    build:
-#      context: ./services/community-service
+#      context: .
+#      dockerfile: services/community-service/Dockerfile
 #    container_name: community-service
 #    restart: always
 #    depends_on:
@@ -64,7 +66,8 @@ services:
 
 #  thread-service:
 #    build:
-#      context: ./services/thread-service
+#      context: .
+#      dockerfile: services/thread-service/Dockerfile
 #    container_name: thread-service
 #    restart: always
 #    depends_on:
@@ -79,7 +82,8 @@ services:
 
 #  comment-service:
 #    build:
-#      context: ./services/comment-service
+#      context: .
+#      dockerfile: services/comment-service/Dockerfile
 #    container_name: comment-service
 #    restart: always
 #    depends_on:
@@ -94,7 +98,8 @@ services:
 
 #  vote-service:
 #    build:
-#      context: ./services/vote-service
+#      context: .
+#      dockerfile: services/vote-service/Dockerfile
 #    container_name: vote-service
 #    restart: always
 #    depends_on:
@@ -111,7 +116,8 @@ services:
 
 #  social-service:
 #    build:
-#      context: ./services/social-service
+#      context: .
+#      dockerfile: services/social-service/Dockerfile
 #    container_name: social-service
 #    restart: always
 #    depends_on:
@@ -126,7 +132,8 @@ services:
 
 #  search-service:
 #    build:
-#      context: ./services/search-service
+#      context: .
+#      dockerfile: services/search-service/Dockerfile
 #    container_name: search-service
 #    restart: always
 #    depends_on:
@@ -145,7 +152,8 @@ services:
 
 #  feed-service: # TODO: Uncomment when feed-service is ready
 #    build:
-#      context: ./services/feed-service
+#      context: .
+#      dockerfile: services/feed-service/Dockerfile
 #    container_name: feed-service
 #    restart: always
 #    depends_on:
