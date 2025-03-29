@@ -14,25 +14,29 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
+func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
+	host := os.Getenv(hostEnvVar)
+	if host == "" {
+		log.Fatalf("missing %s env var", hostEnvVar)
+	}
 	port := os.Getenv(portEnvVar)
 	if port == "" {
 		log.Fatalf("missing %s env var", portEnvVar)
 	}
-	addr := fmt.Sprintf("localhost:%s", port)
+	addr := fmt.Sprintf("%s:%s", host, port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("failed to connect to %s: %v", serviceName, err)
+		log.Fatalf("failed to connect to %s: %v", addr, err)
 	}
 	return conn
 }
 
 func main() {
 	// Connect to other services
-	threadConn := connectGrpcClient("thread service", "THREAD_SERVICE_PORT")
+	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
 	defer threadConn.Close()
 
-	socialConn := connectGrpcClient("social service", "SOCIAL_SERVICE_PORT")
+	socialConn := connectGrpcClient("SOCIAL_SERVICE_HOST", "SOCIAL_SERVICE_PORT")
 	defer socialConn.Close()
 
 	// Create feed service with database client
