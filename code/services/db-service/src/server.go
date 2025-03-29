@@ -181,7 +181,7 @@ func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRe
 
 	community := bson.M{
 		"owner_id":    in.GetOwnerId(),
-		"title":       in.GetName(),
+		"name":        in.GetName(),
 		"description": in.GetDescription(),
 		"created_at":  now.AsTime(),
 		"updated_at":  now.AsTime(),
@@ -246,7 +246,7 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 
 	updateFields := bson.M{}
 	if in.GetName() != "" {
-		updateFields["title"] = in.GetName()
+		updateFields["name"] = in.GetName()
 	}
 	if in.GetDescription() != "" {
 		updateFields["content"] = in.GetDescription()
@@ -292,7 +292,7 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 	updatedAt := timestamppb.New(community["updated_at"].(primitive.DateTime).Time())
 
 	return &pb.Community{
-		Id:          community["_id"].(string),
+		Id:          community["_id"].(primitive.ObjectID).Hex(),
 		OwnerId:     community["owner_id"].(string),
 		Name:        community["name"].(string),
 		Description: community["description"].(string),
@@ -512,7 +512,7 @@ func ConvertToProtoThread(thread bson.M) *pb.Thread {
 	updatedAt := timestamppb.New(thread["updated_at"].(primitive.DateTime).Time())
 
 	return &pb.Thread{
-		Id:          thread["_id"].(string),
+		Id:          thread["_id"].(primitive.ObjectID).Hex(),
 		CommunityId: thread["community_id"].(string),
 		AuthorId:    thread["author_id"].(string),
 		Title:       thread["title"].(string),
