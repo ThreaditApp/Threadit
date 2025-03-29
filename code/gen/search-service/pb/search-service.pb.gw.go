@@ -39,7 +39,7 @@ var filter_SearchService_GlobalSearch_0 = &utilities.DoubleArray{Encoding: map[s
 
 func request_SearchService_GlobalSearch_0(ctx context.Context, marshaler runtime.Marshaler, client SearchServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GlobalSearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	io.Copy(io.Discard, req.Body)
@@ -55,7 +55,7 @@ func request_SearchService_GlobalSearch_0(ctx context.Context, marshaler runtime
 
 func local_request_SearchService_GlobalSearch_0(ctx context.Context, marshaler runtime.Marshaler, server SearchServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GlobalSearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
@@ -72,7 +72,7 @@ var filter_SearchService_CommunitySearch_0 = &utilities.DoubleArray{Encoding: ma
 
 func request_SearchService_CommunitySearch_0(ctx context.Context, marshaler runtime.Marshaler, client SearchServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CommunitySearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	io.Copy(io.Discard, req.Body)
@@ -88,7 +88,7 @@ func request_SearchService_CommunitySearch_0(ctx context.Context, marshaler runt
 
 func local_request_SearchService_CommunitySearch_0(ctx context.Context, marshaler runtime.Marshaler, server SearchServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CommunitySearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
@@ -105,7 +105,7 @@ var filter_SearchService_ThreadSearch_0 = &utilities.DoubleArray{Encoding: map[s
 
 func request_SearchService_ThreadSearch_0(ctx context.Context, marshaler runtime.Marshaler, client SearchServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ThreadSearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	io.Copy(io.Discard, req.Body)
@@ -121,7 +121,7 @@ func request_SearchService_ThreadSearch_0(ctx context.Context, marshaler runtime
 
 func local_request_SearchService_ThreadSearch_0(ctx context.Context, marshaler runtime.Marshaler, server SearchServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ThreadSearchRequest
+		protoReq SearchRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {

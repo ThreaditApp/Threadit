@@ -24,6 +24,12 @@ message Comment {
   string content = 2;
   string ups = 3;
   string downs = 4;
-  optional string parent_comment_id = 5;
-  optional string parent_thread_id = 6;
+  string parent_id = 5;
+  CommentParentType parent_type = 6;
 }
+
+enum CommentParentType {
+  THREAD = 0;
+  COMMENT = 1;
+}
+

@@ -24,9 +24,11 @@ message GetPopularThreadsRequest {
   optional int32 offset = 1;
   optional int32 limit = 2;
 }
+
 message GetPopularThreadsResponse {
   repeated models.Thread threads = 1;
 }
+
 message GetPopularCommentsRequest {
   optional int32 offset = 1;
   optional int32 limit = 2;

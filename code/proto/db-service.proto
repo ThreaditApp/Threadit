@@ -12,21 +12,21 @@ service DBService {
   // community crud operations
   rpc ListCommunities (ListCommunitiesRequest) returns (ListCommunitiesResponse);
   rpc CreateCommunity (CreateCommunityRequest) returns (CreateCommunityResponse);
-  rpc GetCommunity (GetCommunityRequest) returns (models.Community);
+  rpc GetCommunity (GetCommunityRequest) returns (GetCommunityResponse);
   rpc UpdateCommunity (UpdateCommunityRequest) returns (google.protobuf.Empty);
   rpc DeleteCommunity (DeleteCommunityRequest) returns (google.protobuf.Empty);
 
   // thread crud operations
   rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
   rpc CreateThread (CreateThreadRequest) returns (CreateThreadResponse);
-  rpc GetThread (GetThreadRequest) returns (models.Thread);
+  rpc GetThread (GetThreadRequest) returns (GetThreadResponse);
   rpc UpdateThread (UpdateThreadRequest) returns (google.protobuf.Empty);
   rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
 
   // comment crud operations
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment(GetCommentRequest) returns (models.Comment);
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
   rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
 }
@@ -39,8 +39,6 @@ message ListCommunitiesRequest {
 
 message ListCommunitiesResponse {
   repeated models.Community communities = 1;
-  optional int32 offset = 2;
-  optional int32 limit = 3;
 }
 
 message CreateCommunityRequest {
@@ -53,6 +51,10 @@ message CreateCommunityResponse {
 
 message GetCommunityRequest {
   string id = 1;
+}
+
+message GetCommunityResponse {
+  models.Community community = 1;
 }
 
 message UpdateCommunityRequest {
@@ -69,6 +71,7 @@ message ListThreadsRequest {
   optional string title = 2;
   optional int32 offset = 3;
   optional int32 limit = 4;
+  optional string sort_by = 5;
 }
 
 message ListThreadsResponse {
@@ -77,8 +80,8 @@ message ListThreadsResponse {
 
 message CreateThreadRequest {
   string community_id = 1;
-  string title = 3;
-  string content = 4;
+  string title = 2;
+  string content = 3;
 }
 
 message CreateThreadResponse {
@@ -89,10 +92,15 @@ message GetThreadRequest {
   string id = 1;
 }
 
+message GetThreadResponse {
+  models.Thread thread = 1;
+}
+
 message UpdateThreadRequest {
   string id = 1;
-  optional string title = 3;
-  optional string content = 4;
+  optional string title = 2;
+  optional string content = 3;
+  optional int32 vote_offset = 4;
 }
 
 message DeleteThreadRequest {
@@ -103,6 +111,7 @@ message ListCommentsRequest {
   optional string thread_id = 1;
   optional int32 offset = 2;
   optional int32 limit = 3;
+  optional string sort_by = 4;
 }
 
 message ListCommentsResponse {
@@ -110,9 +119,9 @@ message ListCommentsResponse {
 }
 
 message CreateCommentRequest {
-  optional string thread_id = 1;
-  optional string comment_id = 2;
-  string content = 3;
+  string content = 1;
+  string parent_id = 2;
+  models.CommentParentType parent_type = 3;
 }
 
 message CreateCommentResponse {
@@ -121,7 +130,6 @@ message CreateCommentResponse {
 
 message GetCommentRequest {
   string id = 1;
-  string user_id = 2;
 }
 
 message GetCommentResponse {
@@ -130,11 +138,10 @@ message GetCommentResponse {
 
 message UpdateCommentRequest {
   string id = 1;
-  string user_id = 2;
-  string content = 3;
+  optional string content = 2;
+  optional int32 vote_offset = 3;
 }
 
 message DeleteCommentRequest {
   string id = 1;
-  string user_id = 2;
 }

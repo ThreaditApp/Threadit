@@ -43,21 +43,20 @@ service CommentService {
 }
 
 message ListCommentsRequest {
-  string thread_id = 1;
+  optional string thread_id = 1;
   optional int32 offset = 2;
   optional int32 limit = 3;
+  optional string sort_by = 4;
 }
 
 message ListCommentsResponse {
   repeated models.Comment comments = 1;
-  optional int32 offset = 2;
-  optional int32 limit = 3;
 }
 
 message CreateCommentRequest {
-  string content = 2;
-  optional string parent_id = 3;
-  optional string thread_id = 4;
+  string content = 1;
+  string parent_id = 2;
+  models.CommentParentType parent_type = 3;
 }
 
 message CreateCommentResponse {
@@ -74,7 +73,7 @@ message GetCommentResponse {
 
 message UpdateCommentRequest {
   string id = 1;
-  string content = 2;
+  optional string content = 2;
   optional int32 vote_offset = 3;
 }
 

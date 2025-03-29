@@ -8,7 +8,6 @@ package pb
 
 import (
 	context "context"
-	pb "gen/pb"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -34,7 +33,7 @@ const (
 type ThreadServiceClient interface {
 	ListThreads(ctx context.Context, in *ListThreadsRequest, opts ...grpc.CallOption) (*ListThreadsResponse, error)
 	CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*CreateThreadResponse, error)
-	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error)
+	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*GetThreadResponse, error)
 	UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteThread(ctx context.Context, in *DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -67,9 +66,9 @@ func (c *threadServiceClient) CreateThread(ctx context.Context, in *CreateThread
 	return out, nil
 }
 
-func (c *threadServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error) {
+func (c *threadServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*GetThreadResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(pb.Thread)
+	out := new(GetThreadResponse)
 	err := c.cc.Invoke(ctx, ThreadService_GetThread_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -103,7 +102,7 @@ func (c *threadServiceClient) DeleteThread(ctx context.Context, in *DeleteThread
 type ThreadServiceServer interface {
 	ListThreads(context.Context, *ListThreadsRequest) (*ListThreadsResponse, error)
 	CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error)
-	GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error)
+	GetThread(context.Context, *GetThreadRequest) (*GetThreadResponse, error)
 	UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error)
 	DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedThreadServiceServer()
@@ -122,7 +121,7 @@ func (UnimplementedThreadServiceServer) ListThreads(context.Context, *ListThread
 func (UnimplementedThreadServiceServer) CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThread not implemented")
 }
-func (UnimplementedThreadServiceServer) GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error) {
+func (UnimplementedThreadServiceServer) GetThread(context.Context, *GetThreadRequest) (*GetThreadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetThread not implemented")
 }
 func (UnimplementedThreadServiceServer) UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error) {
