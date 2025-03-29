@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"gen/db-service/pb"
+	"strings"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -84,19 +86,21 @@ func (s *DBServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*e
 	return nil, nil
 }
 
-//TODO Fix this function
-/*func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
+func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	filter := bson.M{}
 	if in.GetOwnerId() != "" {
-		filter["owner_id"] = in.GetOwnerId()
+		ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid owner ID: %v", err)
+		}
+		filter["owner_id"] = ownerId
 	}
-	if in.GetSearch() != "" {
-		searchTerm := ".*" + in.GetSearch() + ".*"
+	if in.GetName() != "" {
+		searchTerm := ".*" + in.GetName() + ".*"
 		filter["$or"] = []bson.M{
 			{"name": bson.M{"$regex": searchTerm, "$options": "i"}},
-			{"description": bson.M{"$regex": searchTerm, "$options": "i"}},
 		}
 	}
 
@@ -168,7 +172,7 @@ func (s *DBServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*e
 			TotalPages:  int32(totalPages),
 		},
 	}, nil
-}*/
+}
 
 func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRequest) (*pb.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
@@ -177,16 +181,16 @@ func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRe
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	user, err := s.GetUser(ctx, &pb.GetUserRequest{Id: in.GetOwnerId()})
-	if err != nil || user == nil {
-		return nil, fmt.Errorf("owner not found")
+	ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid owner ID: %v", err)
 	}
 
 	now := timestamppb.Now()
 
 	community := bson.M{
-		"owner_id":    in.GetOwnerId(),
-		"title":       in.GetName(),
+		"owner_id":    ownerId,
+		"name":        in.GetName(),
 		"description": in.GetDescription(),
 		"created_at":  now.AsTime(),
 		"updated_at":  now.AsTime(),
@@ -219,16 +223,16 @@ func (s *DBServer) GetCommunity(ctx context.Context, in *pb.GetCommunityRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	filter := bson.M{
-		"_id": in.GetId(),
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
 	}
-
-	if in.GetOwnerId() != "" {
-		filter["owner_id"] = in.GetOwnerId()
+	filter := bson.M{
+		"_id": id,
 	}
 
 	var community bson.M
-	err := collection.FindOne(ctx, filter).Decode(&community)
+	err = collection.FindOne(ctx, filter).Decode(&community)
 	if err != nil {
 		return nil, err
 	}
@@ -239,18 +243,16 @@ func (s *DBServer) GetCommunity(ctx context.Context, in *pb.GetCommunityRequest)
 func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRequest) (*pb.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
-	if in.GetId() == "" || in.GetOwnerId() == "" {
+	if in.GetId() == "" {
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	user, err := s.GetUser(ctx, &pb.GetUserRequest{Id: in.GetOwnerId()})
-	if err != nil || user == nil {
-		return nil, fmt.Errorf("owner not found")
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
 	}
-
 	filter := bson.M{
-		"_id":      in.GetId(),
-		"owner_id": in.GetOwnerId(),
+		"_id": id,
 	}
 
 	update := bson.M{
@@ -261,7 +263,7 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 
 	updateFields := bson.M{}
 	if in.GetName() != "" {
-		updateFields["title"] = in.GetName()
+		updateFields["name"] = in.GetName()
 	}
 	if in.GetDescription() != "" {
 		updateFields["content"] = in.GetDescription()
@@ -286,16 +288,19 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 func (s *DBServer) DeleteCommunity(ctx context.Context, in *pb.DeleteCommunityRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
-	if in.GetId() == "" || in.GetOwnerId() == "" {
+	if in.GetId() == "" {
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
 	filter := bson.M{
-		"_id":      in.GetId(),
-		"owner_id": in.GetOwnerId(),
+		"_id": id,
 	}
 
-	_, err := collection.DeleteOne(ctx, filter)
+	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -308,8 +313,8 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 	updatedAt := timestamppb.New(community["updated_at"].(primitive.DateTime).Time())
 
 	return &pb.Community{
-		Id:          community["_id"].(string),
-		OwnerId:     community["owner_id"].(string),
+		Id:          community["_id"].(primitive.ObjectID).Hex(),
+		OwnerId:     community["owner_id"].(primitive.ObjectID).Hex(),
 		Name:        community["name"].(string),
 		Description: community["description"].(string),
 		CreatedAt:   createdAt,
@@ -317,22 +322,28 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 	}
 }
 
-//TODO Fix this function
-/*func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
+func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	filter := bson.M{}
 	if in.GetCommunityId() != "" {
-		filter["community_id"] = in.GetCommunityId()
+		communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid community ID: %v", err)
+		}
+		filter["community_id"] = communityId
 	}
 	if in.GetAuthorId() != "" {
-		filter["author_id"] = in.GetAuthorId()
+		authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid author ID: %v", err)
+		}
+		filter["author_id"] = authorId
 	}
-	if in.GetSearch() != "" {
-		searchTerm := ".*" + in.GetSearch() + ".*"
+	if in.GetTitle() != "" {
+		searchTerm := ".*" + in.GetTitle() + ".*"
 		filter["$or"] = []bson.M{
 			{"title": bson.M{"$regex": searchTerm, "$options": "i"}},
-			{"content": bson.M{"$regex": searchTerm, "$options": "i"}},
 		}
 	}
 
@@ -404,7 +415,7 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 			TotalPages:  int32(totalPages),
 		},
 	}, nil
-}*/
+}
 
 func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest) (*pb.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
@@ -413,18 +424,21 @@ func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	// TODO: validate community_id
+	communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
 
-	user, err := s.GetUser(ctx, &pb.GetUserRequest{Id: in.GetAuthorId()})
-	if err != nil || user == nil {
-		return nil, fmt.Errorf("author not found")
+	authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid author ID: %v", err)
 	}
 
 	now := timestamppb.Now()
 
 	thread := bson.M{
-		"community_id": in.GetCommunityId(),
-		"author_id":    in.GetAuthorId(),
+		"community_id": communityId,
+		"author_id":    authorId,
 		"title":        in.GetTitle(),
 		"content":      in.GetContent(),
 		"created_at":   now.AsTime(),
@@ -459,12 +473,17 @@ func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
+	}
+
 	filter := bson.M{
-		"id": in.GetId(),
+		"_id": id,
 	}
 
 	var thread bson.M
-	err := collection.FindOne(ctx, filter).Decode(&thread)
+	err = collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
 		return nil, err
 	}
@@ -475,18 +494,17 @@ func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.
 func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest) (*pb.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
-	if in.GetId() == "" || in.GetAuthorId() == "" {
+	if in.GetId() == "" {
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	user, err := s.GetUser(ctx, &pb.GetUserRequest{Id: in.GetAuthorId()})
-	if err != nil || user == nil {
-		return nil, fmt.Errorf("author not found")
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
 	}
 
 	filter := bson.M{
-		"id":        in.GetId(),
-		"author_id": in.GetAuthorId(),
+		"_id": id,
 	}
 
 	update := bson.M{
@@ -522,16 +540,20 @@ func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest)
 func (s *DBServer) DeleteThread(ctx context.Context, in *pb.DeleteThreadRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
-	if in.GetId() == "" || in.GetAuthorId() == "" {
+	if in.GetId() == "" {
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	filter := bson.M{
-		"_id":       in.GetId(),
-		"author_id": in.GetAuthorId(),
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
 	}
 
-	_, err := collection.DeleteOne(ctx, filter)
+	filter := bson.M{
+		"_id": id,
+	}
+
+	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -544,9 +566,9 @@ func ConvertToProtoThread(thread bson.M) *pb.Thread {
 	updatedAt := timestamppb.New(thread["updated_at"].(primitive.DateTime).Time())
 
 	return &pb.Thread{
-		Id:          thread["_id"].(string),
-		CommunityId: thread["community_id"].(string),
-		AuthorId:    thread["author_id"].(string),
+		Id:          thread["_id"].(primitive.ObjectID).Hex(),
+		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
+		AuthorId:    thread["author_id"].(primitive.ObjectID).Hex(),
 		Title:       thread["title"].(string),
 		Content:     thread["content"].(string),
 		CreatedAt:   createdAt,

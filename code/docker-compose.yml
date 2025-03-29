@@ -48,37 +48,42 @@ services:
 #    networks:
 #      - threadit-network
 
-#  community-service:
-#    build:
-#      context: .
-#      dockerfile: services/community-service/Dockerfile
-#    container_name: community-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#    environment:
-#      SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  community-service:
+    build:
+      context: .
+      dockerfile: services/community-service/Dockerfile
+    container_name: community-service
+    restart: always
+    depends_on:
+      - db-service
+    environment:
+      SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+    ports:
+      - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
-#  thread-service:
-#    build:
-#      context: .
-#      dockerfile: services/thread-service/Dockerfile
-#    container_name: thread-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#    environment:
-#      SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${THREAD_SERVICE_PORT}:${THREAD_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  thread-service:
+    build:
+      context: .
+      dockerfile: services/thread-service/Dockerfile
+    container_name: thread-service
+    restart: always
+    depends_on:
+      - db-service
+      - community-service
+    environment:
+      SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+    ports:
+      - "${THREAD_SERVICE_PORT}:${THREAD_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
 #  comment-service:
 #    build:
@@ -90,6 +95,7 @@ services:
 #      - db-service # TODO: Review dependencies
 #    environment:
 #      SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+#      DB_SERVICE_HOST: db-service
 #      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
 #    ports:
 #      - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
@@ -107,7 +113,9 @@ services:
 #      # - comment-service # TODO: Uncomment when comment-service is ready
 #    environment:
 #      SERVICE_PORT: ${VOTE_SERVICE_PORT}
+#      THREAD_SERVICE_HOST: thread-service
 #      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+#      COMMENT_SERVICE_HOST: comment-service
 #      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
 #    ports:
 #      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
@@ -124,6 +132,7 @@ services:
 #      - db-service
 #    environment:
 #      SERVICE_PORT: ${SOCIAL_SERVICE_PORT}
+#      DB_SERVICE_HOST: db-service
 #      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
 #    ports:
 #      - "${SOCIAL_SERVICE_PORT}:${SOCIAL_SERVICE_PORT}"
@@ -142,8 +151,11 @@ services:
 #      - thread-service
 #    environment:
 #      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+#      USER_SERVICE_HOST: user-service
 #      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+#      COMMUNITY_SERVICE_HOST: community-service
 #      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+#      THREAD_SERVICE_HOST: thread-service
 #      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
 #    ports:
 #      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
@@ -160,6 +172,7 @@ services:
 #      - db-service # TODO: Review dependencies
 #    environment:
 #      SERVICE_PORT: ${FEED_SERVICE_PORT}
+#      DB_SERVICE_HOST: db-service
 #      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
 #    ports:
 #      - "${FEED_SERVICE_PORT}:${FEED_SERVICE_PORT}"
