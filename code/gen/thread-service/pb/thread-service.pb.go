@@ -7,11 +7,11 @@
 package pb
 
 import (
+	pb "gen/models/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -24,182 +24,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Thread struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CommunityId   string                 `protobuf:"bytes,2,opt,name=community_id,json=communityId,proto3" json:"community_id,omitempty"`
-	AuthorId      string                 `protobuf:"bytes,3,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
-	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
-	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Thread) Reset() {
-	*x = Thread{}
-	mi := &file_thread_service_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Thread) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Thread) ProtoMessage() {}
-
-func (x *Thread) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Thread.ProtoReflect.Descriptor instead.
-func (*Thread) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Thread) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *Thread) GetCommunityId() string {
-	if x != nil {
-		return x.CommunityId
-	}
-	return ""
-}
-
-func (x *Thread) GetAuthorId() string {
-	if x != nil {
-		return x.AuthorId
-	}
-	return ""
-}
-
-func (x *Thread) GetTitle() string {
-	if x != nil {
-		return x.Title
-	}
-	return ""
-}
-
-func (x *Thread) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-func (x *Thread) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *Thread) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
-}
-
-type Pagination struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	CurrentPage   int32                  `protobuf:"varint,1,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
-	PerPage       int32                  `protobuf:"varint,2,opt,name=per_page,json=perPage,proto3" json:"per_page,omitempty"`
-	TotalItems    int32                  `protobuf:"varint,3,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`
-	TotalPages    int32                  `protobuf:"varint,4,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Pagination) Reset() {
-	*x = Pagination{}
-	mi := &file_thread_service_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Pagination) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Pagination) ProtoMessage() {}
-
-func (x *Pagination) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Pagination.ProtoReflect.Descriptor instead.
-func (*Pagination) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *Pagination) GetCurrentPage() int32 {
-	if x != nil {
-		return x.CurrentPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetPerPage() int32 {
-	if x != nil {
-		return x.PerPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalItems() int32 {
-	if x != nil {
-		return x.TotalItems
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalPages() int32 {
-	if x != nil {
-		return x.TotalPages
-	}
-	return 0
-}
-
 type ListThreadsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Page          *int32                 `protobuf:"varint,1,opt,name=page,proto3,oneof" json:"page,omitempty"`
-	PageSize      *int32                 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
-	CommunityId   *string                `protobuf:"bytes,3,opt,name=community_id,json=communityId,proto3,oneof" json:"community_id,omitempty"`
-	AuthorId      *string                `protobuf:"bytes,4,opt,name=author_id,json=authorId,proto3,oneof" json:"author_id,omitempty"`
-	Title         *string                `protobuf:"bytes,5,opt,name=title,proto3,oneof" json:"title,omitempty"`
-	SortBy        *string                `protobuf:"bytes,6,opt,name=sort_by,json=sortBy,proto3,oneof" json:"sort_by,omitempty"`
-	SortOrder     *string                `protobuf:"bytes,7,opt,name=sort_order,json=sortOrder,proto3,oneof" json:"sort_order,omitempty"`
+	CommunityId   *string                `protobuf:"bytes,1,opt,name=community_id,json=communityId,proto3,oneof" json:"community_id,omitempty"`
+	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
+	Offset        *string                `protobuf:"bytes,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *string                `protobuf:"bytes,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListThreadsRequest) Reset() {
 	*x = ListThreadsRequest{}
-	mi := &file_thread_service_proto_msgTypes[2]
+	mi := &file_thread_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -211,7 +48,7 @@ func (x *ListThreadsRequest) String() string {
 func (*ListThreadsRequest) ProtoMessage() {}
 
 func (x *ListThreadsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[2]
+	mi := &file_thread_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,33 +61,12 @@ func (x *ListThreadsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListThreadsRequest.ProtoReflect.Descriptor instead.
 func (*ListThreadsRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ListThreadsRequest) GetPage() int32 {
-	if x != nil && x.Page != nil {
-		return *x.Page
-	}
-	return 0
-}
-
-func (x *ListThreadsRequest) GetPageSize() int32 {
-	if x != nil && x.PageSize != nil {
-		return *x.PageSize
-	}
-	return 0
+	return file_thread_service_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ListThreadsRequest) GetCommunityId() string {
 	if x != nil && x.CommunityId != nil {
 		return *x.CommunityId
-	}
-	return ""
-}
-
-func (x *ListThreadsRequest) GetAuthorId() string {
-	if x != nil && x.AuthorId != nil {
-		return *x.AuthorId
 	}
 	return ""
 }
@@ -262,31 +78,30 @@ func (x *ListThreadsRequest) GetTitle() string {
 	return ""
 }
 
-func (x *ListThreadsRequest) GetSortBy() string {
-	if x != nil && x.SortBy != nil {
-		return *x.SortBy
+func (x *ListThreadsRequest) GetOffset() string {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
 	return ""
 }
 
-func (x *ListThreadsRequest) GetSortOrder() string {
-	if x != nil && x.SortOrder != nil {
-		return *x.SortOrder
+func (x *ListThreadsRequest) GetLimit() string {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
 	}
 	return ""
 }
 
 type ListThreadsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Threads       []*Thread              `protobuf:"bytes,1,rep,name=threads,proto3" json:"threads,omitempty"`
-	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Threads       []*pb.Thread           `protobuf:"bytes,1,rep,name=threads,proto3" json:"threads,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListThreadsResponse) Reset() {
 	*x = ListThreadsResponse{}
-	mi := &file_thread_service_proto_msgTypes[3]
+	mi := &file_thread_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +113,7 @@ func (x *ListThreadsResponse) String() string {
 func (*ListThreadsResponse) ProtoMessage() {}
 
 func (x *ListThreadsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[3]
+	mi := &file_thread_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,19 +126,12 @@ func (x *ListThreadsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListThreadsResponse.ProtoReflect.Descriptor instead.
 func (*ListThreadsResponse) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{3}
+	return file_thread_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ListThreadsResponse) GetThreads() []*Thread {
+func (x *ListThreadsResponse) GetThreads() []*pb.Thread {
 	if x != nil {
 		return x.Threads
-	}
-	return nil
-}
-
-func (x *ListThreadsResponse) GetPagination() *Pagination {
-	if x != nil {
-		return x.Pagination
 	}
 	return nil
 }
@@ -339,7 +147,7 @@ type CreateThreadRequest struct {
 
 func (x *CreateThreadRequest) Reset() {
 	*x = CreateThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[4]
+	mi := &file_thread_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -351,7 +159,7 @@ func (x *CreateThreadRequest) String() string {
 func (*CreateThreadRequest) ProtoMessage() {}
 
 func (x *CreateThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[4]
+	mi := &file_thread_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -364,7 +172,7 @@ func (x *CreateThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateThreadRequest.ProtoReflect.Descriptor instead.
 func (*CreateThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{4}
+	return file_thread_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateThreadRequest) GetCommunityId() string {
@@ -388,6 +196,50 @@ func (x *CreateThreadRequest) GetContent() string {
 	return ""
 }
 
+type CreateThreadResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateThreadResponse) Reset() {
+	*x = CreateThreadResponse{}
+	mi := &file_thread_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateThreadResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateThreadResponse) ProtoMessage() {}
+
+func (x *CreateThreadResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_thread_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateThreadResponse.ProtoReflect.Descriptor instead.
+func (*CreateThreadResponse) Descriptor() ([]byte, []int) {
+	return file_thread_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CreateThreadResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type GetThreadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -397,7 +249,7 @@ type GetThreadRequest struct {
 
 func (x *GetThreadRequest) Reset() {
 	*x = GetThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[5]
+	mi := &file_thread_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -409,7 +261,7 @@ func (x *GetThreadRequest) String() string {
 func (*GetThreadRequest) ProtoMessage() {}
 
 func (x *GetThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[5]
+	mi := &file_thread_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -422,7 +274,7 @@ func (x *GetThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetThreadRequest.ProtoReflect.Descriptor instead.
 func (*GetThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{5}
+	return file_thread_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetThreadRequest) GetId() string {
@@ -443,7 +295,7 @@ type UpdateThreadRequest struct {
 
 func (x *UpdateThreadRequest) Reset() {
 	*x = UpdateThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[6]
+	mi := &file_thread_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -455,7 +307,7 @@ func (x *UpdateThreadRequest) String() string {
 func (*UpdateThreadRequest) ProtoMessage() {}
 
 func (x *UpdateThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[6]
+	mi := &file_thread_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,7 +320,7 @@ func (x *UpdateThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateThreadRequest.ProtoReflect.Descriptor instead.
 func (*UpdateThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{6}
+	return file_thread_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UpdateThreadRequest) GetId() string {
@@ -501,7 +353,7 @@ type DeleteThreadRequest struct {
 
 func (x *DeleteThreadRequest) Reset() {
 	*x = DeleteThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[7]
+	mi := &file_thread_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -513,7 +365,7 @@ func (x *DeleteThreadRequest) String() string {
 func (*DeleteThreadRequest) ProtoMessage() {}
 
 func (x *DeleteThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[7]
+	mi := &file_thread_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -526,7 +378,7 @@ func (x *DeleteThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteThreadRequest.ProtoReflect.Descriptor instead.
 func (*DeleteThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{7}
+	return file_thread_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteThreadRequest) GetId() string {
@@ -540,53 +392,24 @@ var File_thread_service_proto protoreflect.FileDescriptor
 
 const file_thread_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xfe\x01\n" +
-	"\x06Thread\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
-	"\fcommunity_id\x18\x02 \x01(\tR\vcommunityId\x12\x1b\n" +
-	"\tauthor_id\x18\x03 \x01(\tR\bauthorId\x12\x14\n" +
-	"\x05title\x18\x04 \x01(\tR\x05title\x12\x18\n" +
-	"\acontent\x18\x05 \x01(\tR\acontent\x129\n" +
-	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
-	"\n" +
-	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x8c\x01\n" +
-	"\n" +
-	"Pagination\x12!\n" +
-	"\fcurrent_page\x18\x01 \x01(\x05R\vcurrentPage\x12\x19\n" +
-	"\bper_page\x18\x02 \x01(\x05R\aperPage\x12\x1f\n" +
-	"\vtotal_items\x18\x03 \x01(\x05R\n" +
-	"totalItems\x12\x1f\n" +
-	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages\"\xd1\x02\n" +
-	"\x12ListThreadsRequest\x12\x17\n" +
-	"\x04page\x18\x01 \x01(\x05H\x00R\x04page\x88\x01\x01\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05H\x01R\bpageSize\x88\x01\x01\x12&\n" +
-	"\fcommunity_id\x18\x03 \x01(\tH\x02R\vcommunityId\x88\x01\x01\x12 \n" +
-	"\tauthor_id\x18\x04 \x01(\tH\x03R\bauthorId\x88\x01\x01\x12\x19\n" +
-	"\x05title\x18\x05 \x01(\tH\x04R\x05title\x88\x01\x01\x12\x1c\n" +
-	"\asort_by\x18\x06 \x01(\tH\x05R\x06sortBy\x88\x01\x01\x12\"\n" +
-	"\n" +
-	"sort_order\x18\a \x01(\tH\x06R\tsortOrder\x88\x01\x01B\a\n" +
-	"\x05_pageB\f\n" +
-	"\n" +
-	"_page_sizeB\x0f\n" +
-	"\r_community_idB\f\n" +
-	"\n" +
-	"_author_idB\b\n" +
-	"\x06_titleB\n" +
-	"\n" +
-	"\b_sort_byB\r\n" +
-	"\v_sort_order\"s\n" +
+	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"\xbf\x01\n" +
+	"\x12ListThreadsRequest\x12&\n" +
+	"\fcommunity_id\x18\x01 \x01(\tH\x00R\vcommunityId\x88\x01\x01\x12\x19\n" +
+	"\x05title\x18\x02 \x01(\tH\x01R\x05title\x88\x01\x01\x12\x1b\n" +
+	"\x06offset\x18\x03 \x01(\tH\x02R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x04 \x01(\tH\x03R\x05limit\x88\x01\x01B\x0f\n" +
+	"\r_community_idB\b\n" +
+	"\x06_titleB\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\"?\n" +
 	"\x13ListThreadsResponse\x12(\n" +
-	"\athreads\x18\x01 \x03(\v2\x0e.thread.ThreadR\athreads\x122\n" +
-	"\n" +
-	"pagination\x18\x02 \x01(\v2\x12.thread.PaginationR\n" +
-	"pagination\"h\n" +
+	"\athreads\x18\x01 \x03(\v2\x0e.models.ThreadR\athreads\"h\n" +
 	"\x13CreateThreadRequest\x12!\n" +
 	"\fcommunity_id\x18\x01 \x01(\tR\vcommunityId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\tR\acontent\"\"\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\"&\n" +
+	"\x14CreateThreadResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\"\n" +
 	"\x10GetThreadRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"u\n" +
 	"\x13UpdateThreadRequest\x12\x0e\n" +
@@ -597,13 +420,13 @@ const file_thread_service_proto_rawDesc = "" +
 	"\n" +
 	"\b_content\"%\n" +
 	"\x13DeleteThreadRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xbc\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xd2\x03\n" +
 	"\rThreadService\x12X\n" +
 	"\vListThreads\x12\x1a.thread.ListThreadsRequest\x1a\x1b.thread.ListThreadsResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
-	"\x12\b/threads\x12P\n" +
-	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x0e.thread.Thread\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/threads\x12L\n" +
-	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x0e.thread.Thread\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/threads/{id}\x12U\n" +
-	"\fUpdateThread\x12\x1b.thread.UpdateThreadRequest\x1a\x0e.thread.Thread\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*2\r/threads/{id}\x12Z\n" +
+	"\x12\b/threads\x12^\n" +
+	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x1c.thread.CreateThreadResponse\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/threads\x12L\n" +
+	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x0e.models.Thread\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/threads/{id}\x12]\n" +
+	"\fUpdateThread\x12\x1b.thread.UpdateThreadRequest\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*2\r/threads/{id}\x12Z\n" +
 	"\fDeleteThread\x12\x1b.thread.DeleteThreadRequest\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f*\r/threads/{id}B\x1aZ\x18gen/thread-service/pb;pbb\x06proto3"
 
 var (
@@ -618,39 +441,35 @@ func file_thread_service_proto_rawDescGZIP() []byte {
 	return file_thread_service_proto_rawDescData
 }
 
-var file_thread_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_thread_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_thread_service_proto_goTypes = []any{
-	(*Thread)(nil),                // 0: thread.Thread
-	(*Pagination)(nil),            // 1: thread.Pagination
-	(*ListThreadsRequest)(nil),    // 2: thread.ListThreadsRequest
-	(*ListThreadsResponse)(nil),   // 3: thread.ListThreadsResponse
-	(*CreateThreadRequest)(nil),   // 4: thread.CreateThreadRequest
-	(*GetThreadRequest)(nil),      // 5: thread.GetThreadRequest
-	(*UpdateThreadRequest)(nil),   // 6: thread.UpdateThreadRequest
-	(*DeleteThreadRequest)(nil),   // 7: thread.DeleteThreadRequest
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(*ListThreadsRequest)(nil),   // 0: thread.ListThreadsRequest
+	(*ListThreadsResponse)(nil),  // 1: thread.ListThreadsResponse
+	(*CreateThreadRequest)(nil),  // 2: thread.CreateThreadRequest
+	(*CreateThreadResponse)(nil), // 3: thread.CreateThreadResponse
+	(*GetThreadRequest)(nil),     // 4: thread.GetThreadRequest
+	(*UpdateThreadRequest)(nil),  // 5: thread.UpdateThreadRequest
+	(*DeleteThreadRequest)(nil),  // 6: thread.DeleteThreadRequest
+	(*pb.Thread)(nil),            // 7: models.Thread
+	(*emptypb.Empty)(nil),        // 8: google.protobuf.Empty
 }
 var file_thread_service_proto_depIdxs = []int32{
-	8, // 0: thread.Thread.created_at:type_name -> google.protobuf.Timestamp
-	8, // 1: thread.Thread.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 2: thread.ListThreadsResponse.threads:type_name -> thread.Thread
-	1, // 3: thread.ListThreadsResponse.pagination:type_name -> thread.Pagination
-	2, // 4: thread.ThreadService.ListThreads:input_type -> thread.ListThreadsRequest
-	4, // 5: thread.ThreadService.CreateThread:input_type -> thread.CreateThreadRequest
-	5, // 6: thread.ThreadService.GetThread:input_type -> thread.GetThreadRequest
-	6, // 7: thread.ThreadService.UpdateThread:input_type -> thread.UpdateThreadRequest
-	7, // 8: thread.ThreadService.DeleteThread:input_type -> thread.DeleteThreadRequest
-	3, // 9: thread.ThreadService.ListThreads:output_type -> thread.ListThreadsResponse
-	0, // 10: thread.ThreadService.CreateThread:output_type -> thread.Thread
-	0, // 11: thread.ThreadService.GetThread:output_type -> thread.Thread
-	0, // 12: thread.ThreadService.UpdateThread:output_type -> thread.Thread
-	9, // 13: thread.ThreadService.DeleteThread:output_type -> google.protobuf.Empty
-	9, // [9:14] is the sub-list for method output_type
-	4, // [4:9] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	7, // 0: thread.ListThreadsResponse.threads:type_name -> models.Thread
+	0, // 1: thread.ThreadService.ListThreads:input_type -> thread.ListThreadsRequest
+	2, // 2: thread.ThreadService.CreateThread:input_type -> thread.CreateThreadRequest
+	4, // 3: thread.ThreadService.GetThread:input_type -> thread.GetThreadRequest
+	5, // 4: thread.ThreadService.UpdateThread:input_type -> thread.UpdateThreadRequest
+	6, // 5: thread.ThreadService.DeleteThread:input_type -> thread.DeleteThreadRequest
+	1, // 6: thread.ThreadService.ListThreads:output_type -> thread.ListThreadsResponse
+	3, // 7: thread.ThreadService.CreateThread:output_type -> thread.CreateThreadResponse
+	7, // 8: thread.ThreadService.GetThread:output_type -> models.Thread
+	8, // 9: thread.ThreadService.UpdateThread:output_type -> google.protobuf.Empty
+	8, // 10: thread.ThreadService.DeleteThread:output_type -> google.protobuf.Empty
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_thread_service_proto_init() }
@@ -658,15 +477,15 @@ func file_thread_service_proto_init() {
 	if File_thread_service_proto != nil {
 		return
 	}
-	file_thread_service_proto_msgTypes[2].OneofWrappers = []any{}
-	file_thread_service_proto_msgTypes[6].OneofWrappers = []any{}
+	file_thread_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_thread_service_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_thread_service_proto_rawDesc), len(file_thread_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
