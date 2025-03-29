@@ -5,6 +5,7 @@ import (
 	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
+
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -99,9 +100,18 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 		return nil, err
 	}
 
+	community, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error calling database service: %w", err)
+	}
+	if community.OwnerId != userId {
+		return nil, fmt.Errorf("user is not the owner of the community")
+	}
+
 	res, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
 		Id:          req.Id,
-		OwnerId:     userId,
 		Name:        req.Name,
 		Description: req.Description,
 	})
@@ -125,9 +135,18 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.
 		return nil, err
 	}
 
+	community, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error calling database service: %w", err)
+	}
+	if community.OwnerId != userId {
+		return nil, fmt.Errorf("user is not the owner of the community")
+	}
+
 	_, err = s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
-		Id:      req.Id,
-		OwnerId: userId,
+		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
