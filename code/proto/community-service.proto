@@ -35,7 +35,7 @@ message ListCommunitiesRequest {
   optional int32 page = 1;
   optional int32 page_size = 2;
   optional string owner_id = 3;
-  optional string search = 4;
+  optional string name = 4;
   optional string sort_by = 5;
   optional string sort_order = 6;
 }
