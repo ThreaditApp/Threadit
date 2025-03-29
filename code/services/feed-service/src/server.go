@@ -2,29 +2,31 @@ package server
 
 import (
 	"context"
-	"feed-service/src/pb"
 	"fmt"
+	feedpb "gen/feed-service/pb"
+	socialpb "gen/social-service/pb"
+	threadpb "gen/thread-service/pb"
 	"log"
 )
 
 type FeedServer struct {
-	pb.UnimplementedFeedServiceServer
-	SocialClient pb.SocialServiceClient
-	ThreadClient pb.ThreadServiceClient
+	feedpb.UnimplementedFeedServiceServer
+	SocialClient socialpb.SocialServiceClient
+	ThreadClient threadpb.ThreadServiceClient
 }
 
-func (s *FeedServer) GetUserFeed(ctx context.Context, req *pb.GetUserFeedRequest) (*pb.GetUserFeedResponse, error) {
+func (s *FeedServer) GetUserFeed(ctx context.Context, req *feedpb.GetUserFeedRequest) (*feedpb.GetUserFeedResponse, error) {
 	log.Printf("GetUserFeed called with page: %d, page_size: %d, sort: %s", req.Page, req.PageSize, req.Sort)
 
 	// Get the list of communities and users the user is following
-	followingRes, err := s.SocialClient.GetFollowing(ctx, &pb.GetFollowingRequest{})
+	followingRes, err := s.SocialClient.GetFollowing(ctx, &socialpb.GetFollowingRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("error fetching following data: %w", err)
 	}
 
 	// Fetch threads from the followed communities and users
 	// TODO: fix this
-	threadRes, err := s.ThreadClient.ListThreads(ctx, &pb.ListThreadsRequest{
+	threadRes, err := s.ThreadClient.ListThreads(ctx, &threadpb.ListThreadsRequest{
 		CommunityId: followingRes.CommunityIds,
 		AuthorId:    followingRes.UserIds,
 		Page:        req.Page,
@@ -37,9 +39,9 @@ func (s *FeedServer) GetUserFeed(ctx context.Context, req *pb.GetUserFeedRequest
 	}
 
 	// Map threads to the response
-	posts := make([]*pb.Thread, len(threadRes.Threads))
+	posts := make([]*feedpb.Thread, len(threadRes.Threads))
 	for i, thread := range threadRes.Threads {
-		posts[i] = &pb.Thread{
+		posts[i] = &feedpb.Thread{
 			Id:          thread.Id,
 			Type:        "thread",
 			CommunityId: thread.CommunityId,
@@ -50,9 +52,9 @@ func (s *FeedServer) GetUserFeed(ctx context.Context, req *pb.GetUserFeedRequest
 		}
 	}
 
-	return &pb.GetUserFeedResponse{
+	return &feedpb.GetUserFeedResponse{
 		Posts: posts,
-		Pagination: &pb.Pagination{
+		Pagination: &feedpb.Pagination{
 			CurrentPage: threadRes.Pagination.CurrentPage,
 			PerPage:     threadRes.Pagination.PerPage,
 			TotalItems:  threadRes.Pagination.TotalItems,

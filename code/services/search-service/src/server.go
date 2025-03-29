@@ -3,17 +3,20 @@ package server
 import (
 	"context"
 	"fmt"
-	"search-service/src/pb"
+	communitypb "gen/community-service/pb"
+	searchpb "gen/search-service/pb"
+	threadpb "gen/thread-service/pb"
+	userpb "gen/user-service/pb"
 )
 
 type SearchServer struct {
-	pb.UnimplementedSearchServiceServer
-	UserClient      pb.UserServiceClient
-	CommunityClient pb.CommunityServiceClient
-	ThreadClient    pb.ThreadServiceClient
+	searchpb.UnimplementedSearchServiceServer
+	UserClient      userpb.UserServiceClient
+	CommunityClient communitypb.CommunityServiceClient
+	ThreadClient    threadpb.ThreadServiceClient
 }
 
-func (s *SearchServer) GlobalSearch(ctx context.Context, req *pb.GlobalSearchRequest) (*pb.GlobalSearchResponse, error) {
+func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.GlobalSearchRequest) (*searchpb.GlobalSearchResponse, error) {
 	userResults, err := s.searchUsers(ctx, req.Query)
 	if err != nil {
 		return nil, err
@@ -26,39 +29,39 @@ func (s *SearchServer) GlobalSearch(ctx context.Context, req *pb.GlobalSearchReq
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GlobalSearchResponse{
+	return &searchpb.GlobalSearchResponse{
 		UserIds:      userResults,
 		CommunityIds: communityResults,
 		ThreadIds:    threadResults,
 	}, nil
 }
 
-func (s *SearchServer) UserSearch(ctx context.Context, req *pb.UserSearchRequest) (*pb.UserSearchResponse, error) {
+func (s *SearchServer) UserSearch(ctx context.Context, req *searchpb.UserSearchRequest) (*searchpb.UserSearchResponse, error) {
 	results, err := s.searchUsers(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UserSearchResponse{
+	return &searchpb.UserSearchResponse{
 		UserIds: results,
 	}, nil
 }
 
-func (s *SearchServer) CommunitySearch(ctx context.Context, req *pb.CommunitySearchRequest) (*pb.CommunitySearchResponse, error) {
+func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.CommunitySearchRequest) (*searchpb.CommunitySearchResponse, error) {
 	results, err := s.searchCommunities(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CommunitySearchResponse{
+	return &searchpb.CommunitySearchResponse{
 		CommunityIds: results,
 	}, nil
 }
 
-func (s *SearchServer) ThreadSearch(ctx context.Context, req *pb.ThreadSearchRequest) (*pb.ThreadSearchResponse, error) {
+func (s *SearchServer) ThreadSearch(ctx context.Context, req *searchpb.ThreadSearchRequest) (*searchpb.ThreadSearchResponse, error) {
 	results, err := s.searchThreads(ctx, req.Query)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ThreadSearchResponse{
+	return &searchpb.ThreadSearchResponse{
 		ThreadIds: results,
 	}, nil
 }

@@ -1,12 +1,13 @@
 package server
 
 import (
-	"user-service/src/pb"
+	dbpb "gen/db-service/pb"
+	userpb "gen/user-service/pb"
 )
 
 type UserServer struct {
-	pb.UnimplementedUserServiceServer
-	DBClient pb.DBServiceClient
+	userpb.UnimplementedUserServiceServer
+	DBClient dbpb.DBServiceClient
 }
 
 // TODO: implement user crud operations

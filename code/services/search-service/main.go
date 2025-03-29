@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	communitypb "gen/community-service/pb"
+	searchpb "gen/search-service/pb"
+	threadpb "gen/thread-service/pb"
+	userpb "gen/user-service/pb"
 	"log"
 	"net"
 	"os"
 	server "search-service/src"
-	"search-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,9 +39,9 @@ func main() {
 
 	// create search server with clients
 	searchServer := &server.SearchServer{
-		UserClient:      pb.NewUserServiceClient(userConn),
-		CommunityClient: pb.NewCommunityServiceClient(communityConn),
-		ThreadClient:    pb.NewThreadServiceClient(threadConn),
+		UserClient:      userpb.NewUserServiceClient(userConn),
+		CommunityClient: communitypb.NewCommunityServiceClient(communityConn),
+		ThreadClient:    threadpb.NewThreadServiceClient(threadConn),
 	}
 
 	// get env port
@@ -54,7 +57,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterSearchServiceServer(grpcServer, searchServer)
+	searchpb.RegisterSearchServiceServer(grpcServer, searchServer)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

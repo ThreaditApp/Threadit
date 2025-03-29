@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	dbpb "gen/db-service/pb"
+	userpb "gen/user-service/pb"
 	"log"
 	"net"
 	"os"
 	server "user-service/src"
-	"user-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -30,7 +31,7 @@ func main() {
 	defer dbConn.Close()
 
 	DBService := &server.UserServer{
-		DBClient: pb.NewDBServiceClient(dbConn),
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port
@@ -45,7 +46,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterUserServiceServer(grpcServer, DBService)
+	userpb.RegisterUserServiceServer(grpcServer, DBService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

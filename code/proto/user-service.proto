@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "user-service/src/pb;pb";
+option go_package = "gen/user-service/pb;pb";
 
 service UserService {}

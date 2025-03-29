@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	dbpb "gen/db-service/pb"
+	socialpb "gen/social-service/pb"
 	"log"
 	"net"
 	"os"
 	server "social-service/src"
-	"social-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,7 +33,7 @@ func main() {
 
 	// create social service with database service
 	socialService := &server.SocialServer{
-		DBClient: pb.NewDBServiceClient(dbConn),
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port
@@ -48,7 +49,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterSocialServiceServer(grpcServer, socialService)
+	socialpb.RegisterSocialServiceServer(grpcServer, socialService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

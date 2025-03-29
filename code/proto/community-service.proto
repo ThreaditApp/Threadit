@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package community;
 
-option go_package = "community-service/src/pb;pb";
+option go_package = "gen/community-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";

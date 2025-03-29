@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	commentpb "gen/comment-service/pb"
+	threadpb "gen/thread-service/pb"
+	votepb "gen/vote-service/pb"
 	"log"
 	"net"
 	"os"
 	server "vote-service/src"
-	"vote-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -34,8 +36,8 @@ func main() {
 
 	// create social service with database service
 	voteService := &server.VoteServer{
-		ThreadClient:  pb.NewThreadServiceClient(threadConn),
-		CommentClient: pb.NewCommentServiceClient(commentConn),
+		ThreadClient:  threadpb.NewThreadServiceClient(threadConn),
+		CommentClient: commentpb.NewCommentServiceClient(commentConn),
 	}
 
 	// get env port
@@ -50,7 +52,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterVoteServiceServer(grpcServer, voteService)
+	votepb.RegisterVoteServiceServer(grpcServer, voteService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

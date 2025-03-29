@@ -2,8 +2,8 @@ package server
 
 import (
 	"context"
-	"db-service/src/pb"
 	"fmt"
+	"gen/db-service/pb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

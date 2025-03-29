@@ -1,20 +1,21 @@
 package server
 
 import (
-	"community-service/src/pb"
 	"context"
 	"fmt"
+	communitypb "gen/community-service/pb"
+	dbpb "gen/db-service/pb"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type CommunityServer struct {
-	pb.UnimplementedCommunityServiceServer
-	DBClient pb.DBServiceClient
+	communitypb.UnimplementedCommunityServiceServer
+	DBClient dbpb.DBServiceClient
 }
 
-func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
-	res, err := s.DBClient.ListCommunities(ctx, &pb.ListCommunitiesRequest{
+func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
+	res, err := s.DBClient.ListCommunities(ctx, &dbpb.ListCommunitiesRequest{
 		Page:      req.Page,
 		PageSize:  req.PageSize,
 		OwnerId:   req.OwnerId,
@@ -26,9 +27,9 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommu
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
-	communities := make([]*pb.Community, len(res.Communities))
+	communities := make([]*communitypb.Community, len(res.Communities))
 	for i, community := range res.Communities {
-		communities[i] = &pb.Community{
+		communities[i] = &communitypb.Community{
 			Id:          community.Id,
 			OwnerId:     community.OwnerId,
 			Name:        community.Name,
@@ -38,9 +39,9 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommu
 		}
 	}
 
-	return &pb.ListCommunitiesResponse{
+	return &communitypb.ListCommunitiesResponse{
 		Communities: communities,
-		Pagination: &pb.Pagination{
+		Pagination: &communitypb.Pagination{
 			CurrentPage: res.Pagination.CurrentPage,
 			PerPage:     res.Pagination.PerPage,
 			TotalItems:  res.Pagination.TotalItems,
@@ -49,13 +50,13 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *pb.ListCommu
 	}, nil
 }
 
-func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCommunityRequest) (*pb.Community, error) {
+func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.CreateCommunityRequest) (*communitypb.Community, error) {
 	userId, err := getCurrentUserId(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := s.DBClient.CreateCommunity(ctx, &pb.CreateCommunityRequest{
+	res, err := s.DBClient.CreateCommunity(ctx, &dbpb.CreateCommunityRequest{
 		OwnerId:     userId,
 		Name:        req.Name,
 		Description: req.Description,
@@ -64,7 +65,7 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCom
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
-	return &pb.Community{
+	return &communitypb.Community{
 		Id:          res.Id,
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
@@ -74,15 +75,15 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *pb.CreateCom
 	}, nil
 }
 
-func (s *CommunityServer) GetCommunity(ctx context.Context, req *pb.GetCommunityRequest) (*pb.Community, error) {
-	res, err := s.DBClient.GetCommunity(ctx, &pb.GetCommunityRequest{
+func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*communitypb.Community, error) {
+	res, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
-	return &pb.Community{
+	return &communitypb.Community{
 		Id:          res.Id,
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
@@ -92,13 +93,13 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *pb.GetCommunity
 	}, nil
 }
 
-func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *pb.UpdateCommunityRequest) (*pb.Community, error) {
+func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest) (*communitypb.Community, error) {
 	userId, err := getCurrentUserId(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := s.DBClient.UpdateCommunity(ctx, &pb.UpdateCommunityRequest{
+	res, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
 		Id:          req.Id,
 		OwnerId:     userId,
 		Name:        req.Name,
@@ -108,7 +109,7 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *pb.UpdateCom
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
-	return &pb.Community{
+	return &communitypb.Community{
 		Id:          res.Id,
 		OwnerId:     res.OwnerId,
 		Name:        res.Name,
@@ -118,13 +119,13 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *pb.UpdateCom
 	}, nil
 }
 
-func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *pb.DeleteCommunityRequest) (*emptypb.Empty, error) {
+func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.DeleteCommunityRequest) (*emptypb.Empty, error) {
 	userId, err := getCurrentUserId(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = s.DBClient.DeleteCommunity(ctx, &pb.DeleteCommunityRequest{
+	_, err = s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
 		Id:      req.Id,
 		OwnerId: userId,
 	})

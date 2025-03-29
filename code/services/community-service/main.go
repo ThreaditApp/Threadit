@@ -2,8 +2,9 @@ package main
 
 import (
 	server "community-service/src"
-	pb "community-service/src/pb"
 	"fmt"
+	communitypb "gen/community-service/pb"
+	dbpb "gen/db-service/pb"
 	"log"
 	"net"
 	"os"
@@ -32,7 +33,7 @@ func main() {
 
 	// create community service with database service
 	communityService := &server.CommunityServer{
-		DBClient: pb.NewDBServiceClient(dbConn),
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	port := os.Getenv("SERVICE_PORT")
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterCommunityServiceServer(grpcServer, communityService)
+	communitypb.RegisterCommunityServiceServer(grpcServer, communityService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

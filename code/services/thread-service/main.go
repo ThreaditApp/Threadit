@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	dbpb "gen/db-service/pb"
+	threadpb "gen/thread-service/pb"
 	"log"
 	"net"
 	"os"
 	server "thread-service/src"
-	"thread-service/src/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,7 +33,7 @@ func main() {
 
 	// create thread service with database service
 	threadService := &server.ThreadServer{
-		DBClient: pb.NewDBServiceClient(dbConn),
+		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
 	// get env port
@@ -48,7 +49,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterThreadServiceServer(grpcServer, threadService)
+	threadpb.RegisterThreadServiceServer(grpcServer, threadService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

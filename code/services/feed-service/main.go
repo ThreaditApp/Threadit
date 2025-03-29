@@ -2,8 +2,10 @@ package main
 
 import (
 	server "feed-service/src"
-	"feed-service/src/pb"
 	"fmt"
+	feedpb "gen/feed-service/pb"
+	socialpb "gen/social-service/pb"
+	threadpb "gen/thread-service/pb"
 	"log"
 	"net"
 	"os"
@@ -35,8 +37,8 @@ func main() {
 
 	// Create feed service with database client
 	feedService := &server.FeedServer{
-		ThreadClient: pb.NewThreadServiceClient(threadConn),
-		SocialClient: pb.NewSocialServiceClient(socialConn),
+		ThreadClient: threadpb.NewThreadServiceClient(threadConn),
+		SocialClient: socialpb.NewSocialServiceClient(socialConn),
 	}
 
 	// get env port
@@ -52,7 +54,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterFeedServiceServer(grpcServer, feedService)
+	feedpb.RegisterFeedServiceServer(grpcServer, feedService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
