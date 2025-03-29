@@ -36,6 +36,7 @@ func main() {
 		DBClient: dbpb.NewDBServiceClient(dbConn),
 	}
 
+	// get env port
 	port := os.Getenv("SERVICE_PORT")
 	if port == "" {
 		log.Fatalf("missing SERVICE_PORT env var")
