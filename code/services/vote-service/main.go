@@ -19,7 +19,7 @@ func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
 	if port == "" {
 		log.Fatalf("missing %s env var", portEnvVar)
 	}
-	addr := fmt.Sprintf("localhost:%d", port)
+	addr := fmt.Sprintf("localhost:%s", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", serviceName, err)

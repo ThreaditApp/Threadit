@@ -5,15 +5,20 @@ import (
 	"fmt"
 	commentpb "gen/comment-service/pb"
 	dbpb "gen/db-service/pb"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	"os"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
-	addr := fmt.Sprintf("localhost:%d", port)
+func connectGrpcClient(serviceName string, portEnvVar string) *grpc.ClientConn {
+	port := os.Getenv(portEnvVar)
+	if port == "" {
+		log.Fatalf("missing %s env var", portEnvVar)
+	}
+	addr := fmt.Sprintf("localhost:%s", port)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", serviceName, err)
@@ -23,7 +28,7 @@ func connectGrpcClient(serviceName string, port int) *grpc.ClientConn {
 
 func main() {
 	// connect to database service
-	dbConn := connectGrpcClient("database service", 50055)
+	dbConn := connectGrpcClient("database service", "DB_SERVICE_PORT")
 	defer dbConn.Close()
 
 	// create community service with database service
@@ -37,7 +42,7 @@ func main() {
 	}
 
 	// start gRPC server
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
