@@ -56,12 +56,8 @@ func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThread
 }
 
 func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThreadRequest) (*threadpb.Thread, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
-	_, err = s.CommunityClient.GetCommunity(ctx, &communitypb.GetCommunityRequest{
+	_, err := s.CommunityClient.GetCommunity(ctx, &communitypb.GetCommunityRequest{
 		Id: req.CommunityId,
 	})
 	if err != nil {
@@ -70,7 +66,6 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 
 	res, err := s.DBClient.CreateThread(ctx, &dbpb.CreateThreadRequest{
 		CommunityId: req.CommunityId,
-		AuthorId:    userId,
 		Title:       req.Title,
 		Content:     req.Content,
 	})
@@ -81,11 +76,8 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 	return &threadpb.Thread{
 		Id:          res.Id,
 		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
 		Title:       res.Title,
 		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
 	}, nil
 }
 
@@ -100,28 +92,17 @@ func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadReq
 	return &threadpb.Thread{
 		Id:          res.Id,
 		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
 		Title:       res.Title,
 		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
 	}, nil
 }
 
 func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*threadpb.Thread, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	thread, err := s.DBClient.GetThread(ctx, &dbpb.GetThreadRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	if thread.AuthorId != userId {
-		return nil, fmt.Errorf("user is not the author of the thread")
 	}
 
 	res, err := s.DBClient.UpdateThread(ctx, &dbpb.UpdateThreadRequest{
@@ -136,28 +117,17 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 	return &threadpb.Thread{
 		Id:          res.Id,
 		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
 		Title:       res.Title,
 		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
 	}, nil
 }
 
 func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThreadRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	thread, err := s.DBClient.GetThread(ctx, &dbpb.GetThreadRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	if thread.AuthorId != userId {
-		return nil, fmt.Errorf("user is not the author of the thread")
 	}
 
 	_, err = s.DBClient.DeleteThread(ctx, &dbpb.DeleteThreadRequest{
@@ -168,16 +138,4 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-func getCurrentUserId(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("no metadata found in context")
-	}
-	userIds := md.Get("x-user-id")
-	if len(userIds) == 0 {
-		return "", fmt.Errorf("user id not found in metadata")
-	}
-	return userIds[0], nil
 }

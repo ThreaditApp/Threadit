@@ -8,7 +8,7 @@ package pb
 
 import (
 	context "context"
-	pb "gen/models/pb"
+	pb "gen/pb"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

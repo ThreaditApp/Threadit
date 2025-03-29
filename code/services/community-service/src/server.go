@@ -52,27 +52,17 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.CreateCommunityRequest) (*communitypb.Community, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
 	res, err := s.DBClient.CreateCommunity(ctx, &dbpb.CreateCommunityRequest{
-		OwnerId:     userId,
-		Name:        req.Name,
-		Description: req.Description,
+		Name: req.Name,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
 	return &communitypb.Community{
-		Id:          res.Id,
-		OwnerId:     res.OwnerId,
-		Name:        res.Name,
-		Description: res.Description,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
+		Id:   res.Id,
+		Name: res.Name,
 	}, nil
 }
 
@@ -85,64 +75,40 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.Get
 	}
 
 	return &communitypb.Community{
-		Id:          res.Id,
-		OwnerId:     res.OwnerId,
-		Name:        res.Name,
-		Description: res.Description,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
+		Id:   res.Id,
+		Name: res.Name,
 	}, nil
 }
 
 func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest) (*communitypb.Community, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	community, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	if community.OwnerId != userId {
-		return nil, fmt.Errorf("user is not the owner of the community")
-	}
 
 	res, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
-		Id:          req.Id,
-		Name:        req.Name,
-		Description: req.Description,
+		Id:   req.Id,
+		Name: req.Name,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
 	return &communitypb.Community{
-		Id:          res.Id,
-		OwnerId:     res.OwnerId,
-		Name:        res.Name,
-		Description: res.Description,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
+		Id:   res.Id,
+		Name: res.Name,
 	}, nil
 }
 
 func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.DeleteCommunityRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
 	community, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-	if community.OwnerId != userId {
-		return nil, fmt.Errorf("user is not the owner of the community")
 	}
 
 	_, err = s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
@@ -153,16 +119,4 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-func getCurrentUserId(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("no metadata found in context")
-	}
-	userIds := md.Get("x-user-id")
-	if len(userIds) == 0 {
-		return "", fmt.Errorf("user id not found in metadata")
-	}
-	return userIds[0], nil
 }

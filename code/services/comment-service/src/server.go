@@ -51,28 +51,20 @@ func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCom
 }
 
 func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.CreateCommentRequest) (*commentpb.Comment, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
 	res, err := s.DBClient.CreateComment(ctx, &dbpb.CreateCommentRequest{
-		PostId:   req.PostId,
-		UserId:   userId,
+		ThreadId: req.ThreadId,
 		Content:  req.Content,
-		ParentId: req.ParentId,
+		ParentId: req.ParentId, // TODO: fix
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
 	return &commentpb.Comment{
-		Id:        res.Comment.Id,
-		PostId:    res.Comment.PostId,
-		UserId:    res.Comment.UserId,
-		Content:   res.Comment.Content,
-		ParentId:  res.Comment.ParentId,
-		CreatedAt: res.Comment.CreatedAt,
+		Id:       res.Comment.Id,
+		Content:  res.Comment.Content,
+		ParentId: res.Comment.ParentId,
 	}, nil
 }
 
@@ -87,24 +79,16 @@ func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommen
 	}
 
 	return &commentpb.Comment{
-		Id:        res.Id,
-		PostId:    res.PostId,
-		UserId:    res.UserId,
-		Content:   res.Content,
-		ParentId:  res.ParentId,
-		CreatedAt: res.CreatedAt,
+		Id:       res.Id,
+		Content:  res.Content,
+		ParentId: res.ParentId,
 	}, nil
 }
 
 func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
-	_, err = s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
+	_, err := s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
 		Id:      req.Id,
-		UserId:  userId,
 		Content: req.Content,
 	})
 	if err != nil {
@@ -115,30 +99,13 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.Update
 }
 
 func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.DeleteCommentRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
 
-	_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
-		Id:     req.Id,
-		UserId: userId,
+	_, err := s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
+		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-func getCurrentUserId(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("no metadata found in context")
-	}
-	userIds := md.Get("x-user-id")
-	if len(userIds) == 0 {
-		return "", fmt.Errorf("user id not found in metadata")
-	}
-	return userIds[0], nil
 }

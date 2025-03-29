@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package models;
 
-option go_package = "gen/models/pb;models";
+option go_package = "gen/pb;models";
 
 message Community {
   string id = 1;

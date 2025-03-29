@@ -7,7 +7,7 @@
 package pb
 
 import (
-	pb "gen/models/pb"
+	pb "gen/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -347,7 +347,7 @@ var File_search_service_proto protoreflect.FileDescriptor
 
 const file_search_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14search-service.proto\x12\x06search\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"x\n" +
+	"\x14search-service.proto\x12\x06search\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"x\n" +
 	"\x13GlobalSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1b\n" +
 	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +

@@ -7,7 +7,7 @@
 package pb
 
 import (
-	pb "gen/models/pb"
+	pb "gen/pb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -1155,7 +1155,7 @@ var File_db_service_proto protoreflect.FileDescriptor
 
 const file_db_service_proto_rawDesc = "" +
 	"\n" +
-	"\x10db-service.proto\x12\x02db\x1a\x1bgoogle/protobuf/empty.proto\x1a\x15models/messages.proto\"\x87\x01\n" +
+	"\x10db-service.proto\x12\x02db\x1a\x1bgoogle/protobuf/empty.proto\x1a\fmodels.proto\"\x87\x01\n" +
 	"\x16ListCommunitiesRequest\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1b\n" +
 	"\x06offset\x18\x02 \x01(\x05H\x01R\x06offset\x88\x01\x01\x12\x19\n" +

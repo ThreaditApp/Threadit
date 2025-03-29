@@ -7,11 +7,10 @@
 package pb
 
 import (
-	pb "gen/models/pb"
+	pb "gen/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -220,7 +219,7 @@ var File_popular_service_proto protoreflect.FileDescriptor
 
 const file_popular_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15popular-service.proto\x12\x04feed\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"g\n" +
+	"\x15popular-service.proto\x12\x04feed\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"g\n" +
 	"\x18GetPopularThreadsRequest\x12\x1b\n" +
 	"\x06offset\x18\x01 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
 	"\x05limit\x18\x02 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +

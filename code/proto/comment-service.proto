@@ -6,7 +6,7 @@ option go_package = "gen/comment-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
-import "models/messages.proto";
+import "models.proto";
 
 service CommentService {
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {
@@ -61,7 +61,7 @@ message CreateCommentRequest {
 }
 
 message CreateCommentResponse {
-  models.Comment comment = 1;
+  string id = 1;
 }
 
 message GetCommentRequest {
@@ -75,6 +75,7 @@ message GetCommentResponse {
 message UpdateCommentRequest {
   string id = 1;
   string content = 2;
+  optional int32 vote_offset = 3;
 }
 
 message DeleteCommentRequest {

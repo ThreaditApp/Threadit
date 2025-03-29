@@ -7,7 +7,7 @@
 package pb
 
 import (
-	pb "gen/models/pb"
+	pb "gen/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -206,7 +206,7 @@ func (x *CreateCommentRequest) GetThreadId() string {
 
 type CreateCommentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Comment       *pb.Comment            `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -241,11 +241,11 @@ func (*CreateCommentResponse) Descriptor() ([]byte, []int) {
 	return file_comment_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateCommentResponse) GetComment() *pb.Comment {
+func (x *CreateCommentResponse) GetId() string {
 	if x != nil {
-		return x.Comment
+		return x.Id
 	}
-	return nil
+	return ""
 }
 
 type GetCommentRequest struct {
@@ -340,6 +340,7 @@ type UpdateCommentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	VoteOffset    *int32                 `protobuf:"varint,3,opt,name=vote_offset,json=voteOffset,proto3,oneof" json:"vote_offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -386,6 +387,13 @@ func (x *UpdateCommentRequest) GetContent() string {
 		return x.Content
 	}
 	return ""
+}
+
+func (x *UpdateCommentRequest) GetVoteOffset() int32 {
+	if x != nil && x.VoteOffset != nil {
+		return *x.VoteOffset
+	}
+	return 0
 }
 
 type DeleteCommentRequest struct {
@@ -436,7 +444,7 @@ var File_comment_service_proto protoreflect.FileDescriptor
 
 const file_comment_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15comment-service.proto\x12\acomment\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"\x7f\n" +
+	"\x15comment-service.proto\x12\acomment\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\x7f\n" +
 	"\x13ListCommentsRequest\x12\x1b\n" +
 	"\tthread_id\x18\x01 \x01(\tR\bthreadId\x12\x1b\n" +
 	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
@@ -456,16 +464,19 @@ const file_comment_service_proto_rawDesc = "" +
 	"\n" +
 	"_parent_idB\f\n" +
 	"\n" +
-	"_thread_id\"B\n" +
-	"\x15CreateCommentResponse\x12)\n" +
-	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"#\n" +
+	"_thread_id\"'\n" +
+	"\x15CreateCommentResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"#\n" +
 	"\x11GetCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"?\n" +
 	"\x12GetCommentResponse\x12)\n" +
-	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"@\n" +
+	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"v\n" +
 	"\x14UpdateCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\"&\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12$\n" +
+	"\vvote_offset\x18\x03 \x01(\x05H\x00R\n" +
+	"voteOffset\x88\x01\x01B\x0e\n" +
+	"\f_vote_offset\"&\n" +
 	"\x14DeleteCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id2\xf8\x03\n" +
 	"\x0eCommentService\x12^\n" +
@@ -503,23 +514,22 @@ var file_comment_service_proto_goTypes = []any{
 }
 var file_comment_service_proto_depIdxs = []int32{
 	8, // 0: comment.ListCommentsResponse.comments:type_name -> models.Comment
-	8, // 1: comment.CreateCommentResponse.comment:type_name -> models.Comment
-	8, // 2: comment.GetCommentResponse.comment:type_name -> models.Comment
-	0, // 3: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
-	2, // 4: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
-	4, // 5: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
-	6, // 6: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
-	7, // 7: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
-	1, // 8: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
-	3, // 9: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
-	5, // 10: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
-	9, // 11: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
-	9, // 12: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
-	8, // [8:13] is the sub-list for method output_type
-	3, // [3:8] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	8, // 1: comment.GetCommentResponse.comment:type_name -> models.Comment
+	0, // 2: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
+	2, // 3: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
+	4, // 4: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
+	6, // 5: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
+	7, // 6: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
+	1, // 7: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
+	3, // 8: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
+	5, // 9: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
+	9, // 10: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
+	9, // 11: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_comment_service_proto_init() }
@@ -530,6 +540,7 @@ func file_comment_service_proto_init() {
 	file_comment_service_proto_msgTypes[0].OneofWrappers = []any{}
 	file_comment_service_proto_msgTypes[1].OneofWrappers = []any{}
 	file_comment_service_proto_msgTypes[2].OneofWrappers = []any{}
+	file_comment_service_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

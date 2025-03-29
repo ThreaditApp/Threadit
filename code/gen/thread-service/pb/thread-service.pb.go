@@ -7,7 +7,7 @@
 package pb
 
 import (
-	pb "gen/models/pb"
+	pb "gen/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -289,6 +289,7 @@ type UpdateThreadRequest struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
 	Content       *string                `protobuf:"bytes,3,opt,name=content,proto3,oneof" json:"content,omitempty"`
+	VoteOffset    *int32                 `protobuf:"varint,4,opt,name=vote_offset,json=voteOffset,proto3,oneof" json:"vote_offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -344,6 +345,13 @@ func (x *UpdateThreadRequest) GetContent() string {
 	return ""
 }
 
+func (x *UpdateThreadRequest) GetVoteOffset() int32 {
+	if x != nil && x.VoteOffset != nil {
+		return *x.VoteOffset
+	}
+	return 0
+}
+
 type DeleteThreadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -392,7 +400,7 @@ var File_thread_service_proto protoreflect.FileDescriptor
 
 const file_thread_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"\xbf\x01\n" +
+	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\xbf\x01\n" +
 	"\x12ListThreadsRequest\x12&\n" +
 	"\fcommunity_id\x18\x01 \x01(\tH\x00R\vcommunityId\x88\x01\x01\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x01R\x05title\x88\x01\x01\x12\x1b\n" +
@@ -411,14 +419,17 @@ const file_thread_service_proto_rawDesc = "" +
 	"\x14CreateThreadResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\"\n" +
 	"\x10GetThreadRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"u\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xab\x01\n" +
 	"\x13UpdateThreadRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1d\n" +
-	"\acontent\x18\x03 \x01(\tH\x01R\acontent\x88\x01\x01B\b\n" +
+	"\acontent\x18\x03 \x01(\tH\x01R\acontent\x88\x01\x01\x12$\n" +
+	"\vvote_offset\x18\x04 \x01(\x05H\x02R\n" +
+	"voteOffset\x88\x01\x01B\b\n" +
 	"\x06_titleB\n" +
 	"\n" +
-	"\b_content\"%\n" +
+	"\b_contentB\x0e\n" +
+	"\f_vote_offset\"%\n" +
 	"\x13DeleteThreadRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id2\xd2\x03\n" +
 	"\rThreadService\x12X\n" +

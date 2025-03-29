@@ -8,7 +8,7 @@ package pb
 
 import (
 	context "context"
-	pb "gen/models/pb"
+	pb "gen/pb"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -33,9 +33,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommunityServiceClient interface {
 	ListCommunities(ctx context.Context, in *ListCommunitiesRequest, opts ...grpc.CallOption) (*ListCommunitiesResponse, error)
-	CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error)
+	CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*CreateCommunityResponse, error)
 	GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error)
-	UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error)
+	UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteCommunity(ctx context.Context, in *DeleteCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -57,9 +57,9 @@ func (c *communityServiceClient) ListCommunities(ctx context.Context, in *ListCo
 	return out, nil
 }
 
-func (c *communityServiceClient) CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error) {
+func (c *communityServiceClient) CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*CreateCommunityResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(pb.Community)
+	out := new(CreateCommunityResponse)
 	err := c.cc.Invoke(ctx, CommunityService_CreateCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -77,9 +77,9 @@ func (c *communityServiceClient) GetCommunity(ctx context.Context, in *GetCommun
 	return out, nil
 }
 
-func (c *communityServiceClient) UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error) {
+func (c *communityServiceClient) UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(pb.Community)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, CommunityService_UpdateCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -102,9 +102,9 @@ func (c *communityServiceClient) DeleteCommunity(ctx context.Context, in *Delete
 // for forward compatibility.
 type CommunityServiceServer interface {
 	ListCommunities(context.Context, *ListCommunitiesRequest) (*ListCommunitiesResponse, error)
-	CreateCommunity(context.Context, *CreateCommunityRequest) (*pb.Community, error)
+	CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error)
 	GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error)
-	UpdateCommunity(context.Context, *UpdateCommunityRequest) (*pb.Community, error)
+	UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error)
 	DeleteCommunity(context.Context, *DeleteCommunityRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedCommunityServiceServer()
 }
@@ -119,13 +119,13 @@ type UnimplementedCommunityServiceServer struct{}
 func (UnimplementedCommunityServiceServer) ListCommunities(context.Context, *ListCommunitiesRequest) (*ListCommunitiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCommunities not implemented")
 }
-func (UnimplementedCommunityServiceServer) CreateCommunity(context.Context, *CreateCommunityRequest) (*pb.Community, error) {
+func (UnimplementedCommunityServiceServer) CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCommunity not implemented")
 }
 func (UnimplementedCommunityServiceServer) GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommunity not implemented")
 }
-func (UnimplementedCommunityServiceServer) UpdateCommunity(context.Context, *UpdateCommunityRequest) (*pb.Community, error) {
+func (UnimplementedCommunityServiceServer) UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCommunity not implemented")
 }
 func (UnimplementedCommunityServiceServer) DeleteCommunity(context.Context, *DeleteCommunityRequest) (*emptypb.Empty, error) {

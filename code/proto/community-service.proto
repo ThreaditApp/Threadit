@@ -6,7 +6,7 @@ option go_package = "gen/community-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
-import "models/messages.proto";
+import "models.proto";
 
 service CommunityService {
   rpc ListCommunities(ListCommunitiesRequest) returns (ListCommunitiesResponse) {
@@ -15,7 +15,7 @@ service CommunityService {
     };
   }
 
-  rpc CreateCommunity(CreateCommunityRequest) returns (models.Community) {
+  rpc CreateCommunity(CreateCommunityRequest) returns (CreateCommunityResponse) {
     option (google.api.http) = {
       post: "/communities"
       body: "*"
@@ -28,7 +28,7 @@ service CommunityService {
     };
   }
 
-  rpc UpdateCommunity(UpdateCommunityRequest) returns (models.Community) {
+  rpc UpdateCommunity(UpdateCommunityRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       patch: "/communities/{id}"
       body: "*"
@@ -56,6 +56,10 @@ message ListCommunitiesResponse {
 
 message CreateCommunityRequest {
   string name = 1;
+}
+
+message CreateCommunityResponse {
+  string id = 1;
 }
 
 message GetCommunityRequest {
