@@ -3,5 +3,6 @@ syntax = "proto3";
 package user;
 
 option go_package = "gen/user-service/pb;pb";
+import "google/api/annotations.proto";
 
 service UserService {}

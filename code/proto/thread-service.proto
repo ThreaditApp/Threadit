@@ -6,13 +6,40 @@ option go_package = "gen/thread-service/pb;pb";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 service ThreadService {
-  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
-  rpc CreateThread (CreateThreadRequest) returns (Thread);
-  rpc GetThread (GetThreadRequest) returns (Thread);
-  rpc UpdateThread (UpdateThreadRequest) returns (Thread);
-  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
+  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse) {
+    option (google.api.http) = {
+      get: "/threads"
+    };
+  }
+
+  rpc CreateThread (CreateThreadRequest) returns (Thread) {
+    option (google.api.http) = {
+      post: "/threads"
+      body: "*"
+    };
+  }
+
+  rpc GetThread (GetThreadRequest) returns (Thread) {
+    option (google.api.http) = {
+      get: "/threads/{id}"
+    };
+  }
+
+  rpc UpdateThread (UpdateThreadRequest) returns (Thread) {
+    option (google.api.http) = {
+      patch: "/threads/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/threads/{id}"
+    };
+  }
 }
 
 message Thread {

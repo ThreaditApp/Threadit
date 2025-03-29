@@ -1,4 +1,63 @@
 services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--entrypoints.web.address=:${TRAEFIK_HTTP_PORT}"
+    ports:
+      - "${TRAEFIK_HTTP_PORT}:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik:/etc/traefik:ro"
+    networks:
+      - threadit-network
+
+  grpc-gateway:
+    build:
+      context: .
+      dockerfile: grpc-gateway/Dockerfile
+    container_name: grpc-gateway
+    restart: always
+    depends_on:
+      - community-service
+      - thread-service
+      # - user-service
+      # - comment-service
+      # - vote-service
+      # - social-service
+      # - search-service
+      # - feed-service
+    environment:
+      GRPC_GATEWAY_PORT: ${GRPC_GATEWAY_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      # USER_SERVICE_HOST: user-service
+      # USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      # COMMENT_SERVICE_HOST: comment-service
+      # COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+      # VOTE_SERVICE_HOST: vote-service
+      # VOTE_SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      # SOCIAL_SERVICE_HOST: social-service
+      # SOCIAL_SERVICE_PORT: ${SOCIAL_SERVICE_PORT}
+      # SEARCH_SERVICE_HOST: search-service
+      # SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      # FEED_SERVICE_HOST: feed-service
+      # FEED_SERVICE_PORT: ${FEED_SERVICE_PORT}
+    ports:
+      - "${GRPC_GATEWAY_PORT}:${GRPC_GATEWAY_PORT}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grpc-gateway.rule=Host(`localhost`)"
+      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=${GRPC_GATEWAY_PORT}"
+    networks:
+      - threadit-network
+
   mongodb:
     image: mongo:latest
     container_name: database

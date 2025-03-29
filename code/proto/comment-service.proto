@@ -6,13 +6,40 @@ option go_package = "gen/comment-service/pb;pb";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
 service CommentService {
-  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
-  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
-  rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
-  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {
+    option (google.api.http) = {
+      get: "/comments"
+    };
+  }
+
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {
+    option (google.api.http) = {
+      post: "/comments"
+      body: "*"
+    };
+  }
+
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {
+    option (google.api.http) = {
+      get: "/comments/{id}"
+    };
+  }
+
+  rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/comments/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/comments/{id}"
+    };
+  }
 }
 
 message Comment {
