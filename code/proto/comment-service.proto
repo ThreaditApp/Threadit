@@ -4,9 +4,9 @@ package comment;
 
 option go_package = "gen/comment-service/pb;pb";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
+import "models/messages.proto";
 
 service CommentService {
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {
@@ -42,34 +42,26 @@ service CommentService {
   }
 }
 
-message Comment {
-  string id = 1;
-  string post_id = 2;
-  string user_id = 3;
-  string content = 4;
-  string parent_id = 5;
-  google.protobuf.Timestamp created_at = 6;
-}
-
 message ListCommentsRequest {
-  string post_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
+  string thread_id = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
 }
 
 message ListCommentsResponse {
-  repeated Comment comments = 1;
-  Pagination pagination = 2;
+  repeated models.Comment comments = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
 }
 
 message CreateCommentRequest {
-  string post_id = 1;
   string content = 2;
-  string parent_id = 3;
+  optional string parent_id = 3;
+  optional string thread_id = 4;
 }
 
 message CreateCommentResponse {
-  Comment comment = 1;
+  models.Comment comment = 1;
 }
 
 message GetCommentRequest {
@@ -77,7 +69,7 @@ message GetCommentRequest {
 }
 
 message GetCommentResponse {
-  Comment comment = 1;
+  models.Comment comment = 1;
 }
 
 message UpdateCommentRequest {
@@ -87,11 +79,4 @@ message UpdateCommentRequest {
 
 message DeleteCommentRequest {
   string id = 1;
-}
-
-message Pagination {
-  int32 current_page = 1;
-  int32 per_page = 2;
-  int32 total_items = 3;
-  int32 total_pages = 4;
 }

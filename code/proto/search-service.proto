@@ -5,17 +5,12 @@ package search;
 option go_package = "gen/search-service/pb;pb";
 
 import "google/api/annotations.proto";
+import "models/messages.proto";
 
 service SearchService {
 	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse) {
 		option (google.api.http) = {
 			get: "/search"
-		};
-	}
-
-	rpc UserSearch (UserSearchRequest) returns (UserSearchResponse) {
-		option (google.api.http) = {
-			get: "/search/user"
 		};
 	}
 
@@ -34,34 +29,31 @@ service SearchService {
 
 message GlobalSearchRequest {
 	string query = 1;
+	optional int32 offset = 2;
+	optional int32 limit = 3;	
 }
 
 message GlobalSearchResponse {
-	repeated string thread_ids = 1;
-	repeated string user_ids = 2;
-	repeated string community_ids = 3;
-}
-
-message UserSearchRequest {
-	string query = 1;
-}
-
-message UserSearchResponse {
-	repeated string user_ids = 1;
+	repeated models.Thread thread_results = 1;
+	repeated models.Community community_results = 2;
 }
 
 message CommunitySearchRequest {
 	string query = 1;
+	optional int32 offset = 2;
+	optional int32 limit = 3;	
 }
 
 message CommunitySearchResponse {
-	repeated string community_ids = 1;
+	repeated models.Community results = 1;
 }
 
 message ThreadSearchRequest {
 	string query = 1;
+	optional int32 offset = 2;
+	optional int32 limit = 3;	
 }
 
 message ThreadSearchResponse {
-	repeated string thread_ids = 1;
+	repeated models.Thread results = 1;
 }

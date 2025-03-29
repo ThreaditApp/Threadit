@@ -7,11 +7,11 @@
 package pb
 
 import (
+	pb "gen/models/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -24,173 +24,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Community struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	OwnerId       string                 `protobuf:"bytes,2,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Community) Reset() {
-	*x = Community{}
-	mi := &file_community_service_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Community) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Community) ProtoMessage() {}
-
-func (x *Community) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Community.ProtoReflect.Descriptor instead.
-func (*Community) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Community) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *Community) GetOwnerId() string {
-	if x != nil {
-		return x.OwnerId
-	}
-	return ""
-}
-
-func (x *Community) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *Community) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *Community) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *Community) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
-}
-
-type Pagination struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	CurrentPage   int32                  `protobuf:"varint,1,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
-	PerPage       int32                  `protobuf:"varint,2,opt,name=per_page,json=perPage,proto3" json:"per_page,omitempty"`
-	TotalItems    int32                  `protobuf:"varint,3,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`
-	TotalPages    int32                  `protobuf:"varint,4,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Pagination) Reset() {
-	*x = Pagination{}
-	mi := &file_community_service_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Pagination) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Pagination) ProtoMessage() {}
-
-func (x *Pagination) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Pagination.ProtoReflect.Descriptor instead.
-func (*Pagination) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *Pagination) GetCurrentPage() int32 {
-	if x != nil {
-		return x.CurrentPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetPerPage() int32 {
-	if x != nil {
-		return x.PerPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalItems() int32 {
-	if x != nil {
-		return x.TotalItems
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalPages() int32 {
-	if x != nil {
-		return x.TotalPages
-	}
-	return 0
-}
-
 type ListCommunitiesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Page          *int32                 `protobuf:"varint,1,opt,name=page,proto3,oneof" json:"page,omitempty"`
-	PageSize      *int32                 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3,oneof" json:"page_size,omitempty"`
-	OwnerId       *string                `protobuf:"bytes,3,opt,name=owner_id,json=ownerId,proto3,oneof" json:"owner_id,omitempty"`
-	Name          *string                `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	SortBy        *string                `protobuf:"bytes,5,opt,name=sort_by,json=sortBy,proto3,oneof" json:"sort_by,omitempty"`
-	SortOrder     *string                `protobuf:"bytes,6,opt,name=sort_order,json=sortOrder,proto3,oneof" json:"sort_order,omitempty"`
+	Name          *string                `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCommunitiesRequest) Reset() {
 	*x = ListCommunitiesRequest{}
-	mi := &file_community_service_proto_msgTypes[2]
+	mi := &file_community_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -202,7 +47,7 @@ func (x *ListCommunitiesRequest) String() string {
 func (*ListCommunitiesRequest) ProtoMessage() {}
 
 func (x *ListCommunitiesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[2]
+	mi := &file_community_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -215,28 +60,7 @@ func (x *ListCommunitiesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCommunitiesRequest.ProtoReflect.Descriptor instead.
 func (*ListCommunitiesRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ListCommunitiesRequest) GetPage() int32 {
-	if x != nil && x.Page != nil {
-		return *x.Page
-	}
-	return 0
-}
-
-func (x *ListCommunitiesRequest) GetPageSize() int32 {
-	if x != nil && x.PageSize != nil {
-		return *x.PageSize
-	}
-	return 0
-}
-
-func (x *ListCommunitiesRequest) GetOwnerId() string {
-	if x != nil && x.OwnerId != nil {
-		return *x.OwnerId
-	}
-	return ""
+	return file_community_service_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ListCommunitiesRequest) GetName() string {
@@ -246,31 +70,32 @@ func (x *ListCommunitiesRequest) GetName() string {
 	return ""
 }
 
-func (x *ListCommunitiesRequest) GetSortBy() string {
-	if x != nil && x.SortBy != nil {
-		return *x.SortBy
+func (x *ListCommunitiesRequest) GetOffset() int32 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
-	return ""
+	return 0
 }
 
-func (x *ListCommunitiesRequest) GetSortOrder() string {
-	if x != nil && x.SortOrder != nil {
-		return *x.SortOrder
+func (x *ListCommunitiesRequest) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
 	}
-	return ""
+	return 0
 }
 
 type ListCommunitiesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Communities   []*Community           `protobuf:"bytes,1,rep,name=communities,proto3" json:"communities,omitempty"`
-	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Communities   []*pb.Community        `protobuf:"bytes,1,rep,name=communities,proto3" json:"communities,omitempty"`
+	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCommunitiesResponse) Reset() {
 	*x = ListCommunitiesResponse{}
-	mi := &file_community_service_proto_msgTypes[3]
+	mi := &file_community_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -282,7 +107,7 @@ func (x *ListCommunitiesResponse) String() string {
 func (*ListCommunitiesResponse) ProtoMessage() {}
 
 func (x *ListCommunitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[3]
+	mi := &file_community_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -295,34 +120,40 @@ func (x *ListCommunitiesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCommunitiesResponse.ProtoReflect.Descriptor instead.
 func (*ListCommunitiesResponse) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{3}
+	return file_community_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ListCommunitiesResponse) GetCommunities() []*Community {
+func (x *ListCommunitiesResponse) GetCommunities() []*pb.Community {
 	if x != nil {
 		return x.Communities
 	}
 	return nil
 }
 
-func (x *ListCommunitiesResponse) GetPagination() *Pagination {
-	if x != nil {
-		return x.Pagination
+func (x *ListCommunitiesResponse) GetOffset() int32 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
-	return nil
+	return 0
+}
+
+func (x *ListCommunitiesResponse) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
 }
 
 type CreateCommunityRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateCommunityRequest) Reset() {
 	*x = CreateCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[4]
+	mi := &file_community_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -334,7 +165,7 @@ func (x *CreateCommunityRequest) String() string {
 func (*CreateCommunityRequest) ProtoMessage() {}
 
 func (x *CreateCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[4]
+	mi := &file_community_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -347,19 +178,12 @@ func (x *CreateCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCommunityRequest.ProtoReflect.Descriptor instead.
 func (*CreateCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{4}
+	return file_community_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateCommunityRequest) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *CreateCommunityRequest) GetDescription() string {
-	if x != nil {
-		return x.Description
 	}
 	return ""
 }
@@ -373,7 +197,7 @@ type GetCommunityRequest struct {
 
 func (x *GetCommunityRequest) Reset() {
 	*x = GetCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[5]
+	mi := &file_community_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -385,7 +209,7 @@ func (x *GetCommunityRequest) String() string {
 func (*GetCommunityRequest) ProtoMessage() {}
 
 func (x *GetCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[5]
+	mi := &file_community_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -398,7 +222,7 @@ func (x *GetCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCommunityRequest.ProtoReflect.Descriptor instead.
 func (*GetCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{5}
+	return file_community_service_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetCommunityRequest) GetId() string {
@@ -411,15 +235,14 @@ func (x *GetCommunityRequest) GetId() string {
 type UpdateCommunityRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateCommunityRequest) Reset() {
 	*x = UpdateCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[6]
+	mi := &file_community_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -431,7 +254,7 @@ func (x *UpdateCommunityRequest) String() string {
 func (*UpdateCommunityRequest) ProtoMessage() {}
 
 func (x *UpdateCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[6]
+	mi := &file_community_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -444,7 +267,7 @@ func (x *UpdateCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCommunityRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{6}
+	return file_community_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateCommunityRequest) GetId() string {
@@ -455,15 +278,8 @@ func (x *UpdateCommunityRequest) GetId() string {
 }
 
 func (x *UpdateCommunityRequest) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
-	}
-	return ""
-}
-
-func (x *UpdateCommunityRequest) GetDescription() string {
-	if x != nil && x.Description != nil {
-		return *x.Description
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -477,7 +293,7 @@ type DeleteCommunityRequest struct {
 
 func (x *DeleteCommunityRequest) Reset() {
 	*x = DeleteCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[7]
+	mi := &file_community_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -489,7 +305,7 @@ func (x *DeleteCommunityRequest) String() string {
 func (*DeleteCommunityRequest) ProtoMessage() {}
 
 func (x *DeleteCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[7]
+	mi := &file_community_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -502,7 +318,7 @@ func (x *DeleteCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCommunityRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{7}
+	return file_community_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeleteCommunityRequest) GetId() string {
@@ -516,63 +332,34 @@ var File_community_service_proto protoreflect.FileDescriptor
 
 const file_community_service_proto_rawDesc = "" +
 	"\n" +
-	"\x17community-service.proto\x12\tcommunity\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xe2\x01\n" +
-	"\tCommunity\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
-	"\bowner_id\x18\x02 \x01(\tR\aownerId\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x04 \x01(\tR\vdescription\x129\n" +
-	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
-	"\n" +
-	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x8c\x01\n" +
-	"\n" +
-	"Pagination\x12!\n" +
-	"\fcurrent_page\x18\x01 \x01(\x05R\vcurrentPage\x12\x19\n" +
-	"\bper_page\x18\x02 \x01(\x05R\aperPage\x12\x1f\n" +
-	"\vtotal_items\x18\x03 \x01(\x05R\n" +
-	"totalItems\x12\x1f\n" +
-	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages\"\x96\x02\n" +
+	"\x17community-service.proto\x12\tcommunity\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"\x87\x01\n" +
 	"\x16ListCommunitiesRequest\x12\x17\n" +
-	"\x04page\x18\x01 \x01(\x05H\x00R\x04page\x88\x01\x01\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05H\x01R\bpageSize\x88\x01\x01\x12\x1e\n" +
-	"\bowner_id\x18\x03 \x01(\tH\x02R\aownerId\x88\x01\x01\x12\x17\n" +
-	"\x04name\x18\x04 \x01(\tH\x03R\x04name\x88\x01\x01\x12\x1c\n" +
-	"\asort_by\x18\x05 \x01(\tH\x04R\x06sortBy\x88\x01\x01\x12\"\n" +
-	"\n" +
-	"sort_order\x18\x06 \x01(\tH\x05R\tsortOrder\x88\x01\x01B\a\n" +
-	"\x05_pageB\f\n" +
-	"\n" +
-	"_page_sizeB\v\n" +
-	"\t_owner_idB\a\n" +
-	"\x05_nameB\n" +
-	"\n" +
-	"\b_sort_byB\r\n" +
-	"\v_sort_order\"\x88\x01\n" +
-	"\x17ListCommunitiesResponse\x126\n" +
-	"\vcommunities\x18\x01 \x03(\v2\x14.community.CommunityR\vcommunities\x125\n" +
-	"\n" +
-	"pagination\x18\x02 \x01(\v2\x15.community.PaginationR\n" +
-	"pagination\"N\n" +
+	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x05H\x01R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x05H\x02R\x05limit\x88\x01\x01B\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\"\x9b\x01\n" +
+	"\x17ListCommunitiesResponse\x123\n" +
+	"\vcommunities\x18\x01 \x03(\v2\x11.models.CommunityR\vcommunities\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\",\n" +
 	"\x16CreateCommunityRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\"%\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"%\n" +
 	"\x13GetCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x81\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x16UpdateCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\x04name\x18\x02 \x01(\tH\x00R\x04name\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x01R\vdescription\x88\x01\x01B\a\n" +
-	"\x05_nameB\x0e\n" +
-	"\f_description\"(\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"(\n" +
 	"\x16DeleteCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\x9b\x04\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\x92\x04\n" +
 	"\x10CommunityService\x12n\n" +
-	"\x0fListCommunities\x12!.community.ListCommunitiesRequest\x1a\".community.ListCommunitiesResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/communities\x12c\n" +
-	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\x14.community.Community\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/communities\x12_\n" +
-	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x14.community.Community\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/communities/{id}\x12h\n" +
-	"\x0fUpdateCommunity\x12!.community.UpdateCommunityRequest\x1a\x14.community.Community\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/communities/{id}\x12g\n" +
+	"\x0fListCommunities\x12!.community.ListCommunitiesRequest\x1a\".community.ListCommunitiesResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/communities\x12`\n" +
+	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\x11.models.Community\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/communities\x12\\\n" +
+	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x11.models.Community\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/communities/{id}\x12e\n" +
+	"\x0fUpdateCommunity\x12!.community.UpdateCommunityRequest\x1a\x11.models.Community\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/communities/{id}\x12g\n" +
 	"\x0fDeleteCommunity\x12!.community.DeleteCommunityRequest\x1a\x16.google.protobuf.Empty\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/communities/{id}B\x1dZ\x1bgen/community-service/pb;pbb\x06proto3"
 
 var (
@@ -587,39 +374,34 @@ func file_community_service_proto_rawDescGZIP() []byte {
 	return file_community_service_proto_rawDescData
 }
 
-var file_community_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_community_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_community_service_proto_goTypes = []any{
-	(*Community)(nil),               // 0: community.Community
-	(*Pagination)(nil),              // 1: community.Pagination
-	(*ListCommunitiesRequest)(nil),  // 2: community.ListCommunitiesRequest
-	(*ListCommunitiesResponse)(nil), // 3: community.ListCommunitiesResponse
-	(*CreateCommunityRequest)(nil),  // 4: community.CreateCommunityRequest
-	(*GetCommunityRequest)(nil),     // 5: community.GetCommunityRequest
-	(*UpdateCommunityRequest)(nil),  // 6: community.UpdateCommunityRequest
-	(*DeleteCommunityRequest)(nil),  // 7: community.DeleteCommunityRequest
-	(*timestamppb.Timestamp)(nil),   // 8: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),           // 9: google.protobuf.Empty
+	(*ListCommunitiesRequest)(nil),  // 0: community.ListCommunitiesRequest
+	(*ListCommunitiesResponse)(nil), // 1: community.ListCommunitiesResponse
+	(*CreateCommunityRequest)(nil),  // 2: community.CreateCommunityRequest
+	(*GetCommunityRequest)(nil),     // 3: community.GetCommunityRequest
+	(*UpdateCommunityRequest)(nil),  // 4: community.UpdateCommunityRequest
+	(*DeleteCommunityRequest)(nil),  // 5: community.DeleteCommunityRequest
+	(*pb.Community)(nil),            // 6: models.Community
+	(*emptypb.Empty)(nil),           // 7: google.protobuf.Empty
 }
 var file_community_service_proto_depIdxs = []int32{
-	8, // 0: community.Community.created_at:type_name -> google.protobuf.Timestamp
-	8, // 1: community.Community.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 2: community.ListCommunitiesResponse.communities:type_name -> community.Community
-	1, // 3: community.ListCommunitiesResponse.pagination:type_name -> community.Pagination
-	2, // 4: community.CommunityService.ListCommunities:input_type -> community.ListCommunitiesRequest
-	4, // 5: community.CommunityService.CreateCommunity:input_type -> community.CreateCommunityRequest
-	5, // 6: community.CommunityService.GetCommunity:input_type -> community.GetCommunityRequest
-	6, // 7: community.CommunityService.UpdateCommunity:input_type -> community.UpdateCommunityRequest
-	7, // 8: community.CommunityService.DeleteCommunity:input_type -> community.DeleteCommunityRequest
-	3, // 9: community.CommunityService.ListCommunities:output_type -> community.ListCommunitiesResponse
-	0, // 10: community.CommunityService.CreateCommunity:output_type -> community.Community
-	0, // 11: community.CommunityService.GetCommunity:output_type -> community.Community
-	0, // 12: community.CommunityService.UpdateCommunity:output_type -> community.Community
-	9, // 13: community.CommunityService.DeleteCommunity:output_type -> google.protobuf.Empty
-	9, // [9:14] is the sub-list for method output_type
-	4, // [4:9] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	6, // 0: community.ListCommunitiesResponse.communities:type_name -> models.Community
+	0, // 1: community.CommunityService.ListCommunities:input_type -> community.ListCommunitiesRequest
+	2, // 2: community.CommunityService.CreateCommunity:input_type -> community.CreateCommunityRequest
+	3, // 3: community.CommunityService.GetCommunity:input_type -> community.GetCommunityRequest
+	4, // 4: community.CommunityService.UpdateCommunity:input_type -> community.UpdateCommunityRequest
+	5, // 5: community.CommunityService.DeleteCommunity:input_type -> community.DeleteCommunityRequest
+	1, // 6: community.CommunityService.ListCommunities:output_type -> community.ListCommunitiesResponse
+	6, // 7: community.CommunityService.CreateCommunity:output_type -> models.Community
+	6, // 8: community.CommunityService.GetCommunity:output_type -> models.Community
+	6, // 9: community.CommunityService.UpdateCommunity:output_type -> models.Community
+	7, // 10: community.CommunityService.DeleteCommunity:output_type -> google.protobuf.Empty
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_community_service_proto_init() }
@@ -627,15 +409,15 @@ func file_community_service_proto_init() {
 	if File_community_service_proto != nil {
 		return
 	}
-	file_community_service_proto_msgTypes[2].OneofWrappers = []any{}
-	file_community_service_proto_msgTypes[6].OneofWrappers = []any{}
+	file_community_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_community_service_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_community_service_proto_rawDesc), len(file_community_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

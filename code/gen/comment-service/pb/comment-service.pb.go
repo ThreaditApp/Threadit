@@ -7,11 +7,11 @@
 package pb
 
 import (
+	pb "gen/models/pb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -24,102 +24,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Comment struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	PostId        string                 `protobuf:"bytes,2,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
-	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
-	ParentId      string                 `protobuf:"bytes,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Comment) Reset() {
-	*x = Comment{}
-	mi := &file_comment_service_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Comment) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Comment) ProtoMessage() {}
-
-func (x *Comment) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Comment.ProtoReflect.Descriptor instead.
-func (*Comment) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Comment) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *Comment) GetPostId() string {
-	if x != nil {
-		return x.PostId
-	}
-	return ""
-}
-
-func (x *Comment) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *Comment) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-func (x *Comment) GetParentId() string {
-	if x != nil {
-		return x.ParentId
-	}
-	return ""
-}
-
-func (x *Comment) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
 type ListCommentsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PostId        string                 `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
-	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
-	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	ThreadId      string                 `protobuf:"bytes,1,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCommentsRequest) Reset() {
 	*x = ListCommentsRequest{}
-	mi := &file_comment_service_proto_msgTypes[1]
+	mi := &file_comment_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -131,7 +47,7 @@ func (x *ListCommentsRequest) String() string {
 func (*ListCommentsRequest) ProtoMessage() {}
 
 func (x *ListCommentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[1]
+	mi := &file_comment_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -144,41 +60,42 @@ func (x *ListCommentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCommentsRequest.ProtoReflect.Descriptor instead.
 func (*ListCommentsRequest) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{1}
+	return file_comment_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ListCommentsRequest) GetPostId() string {
+func (x *ListCommentsRequest) GetThreadId() string {
 	if x != nil {
-		return x.PostId
+		return x.ThreadId
 	}
 	return ""
 }
 
-func (x *ListCommentsRequest) GetPage() int32 {
-	if x != nil {
-		return x.Page
+func (x *ListCommentsRequest) GetOffset() int32 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
 	return 0
 }
 
-func (x *ListCommentsRequest) GetPageSize() int32 {
-	if x != nil {
-		return x.PageSize
+func (x *ListCommentsRequest) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
 	}
 	return 0
 }
 
 type ListCommentsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Comments      []*Comment             `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
-	Pagination    *Pagination            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Comments      []*pb.Comment          `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
+	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCommentsResponse) Reset() {
 	*x = ListCommentsResponse{}
-	mi := &file_comment_service_proto_msgTypes[2]
+	mi := &file_comment_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -190,7 +107,7 @@ func (x *ListCommentsResponse) String() string {
 func (*ListCommentsResponse) ProtoMessage() {}
 
 func (x *ListCommentsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[2]
+	mi := &file_comment_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -203,35 +120,42 @@ func (x *ListCommentsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCommentsResponse.ProtoReflect.Descriptor instead.
 func (*ListCommentsResponse) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{2}
+	return file_comment_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ListCommentsResponse) GetComments() []*Comment {
+func (x *ListCommentsResponse) GetComments() []*pb.Comment {
 	if x != nil {
 		return x.Comments
 	}
 	return nil
 }
 
-func (x *ListCommentsResponse) GetPagination() *Pagination {
-	if x != nil {
-		return x.Pagination
+func (x *ListCommentsResponse) GetOffset() int32 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
-	return nil
+	return 0
+}
+
+func (x *ListCommentsResponse) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
 }
 
 type CreateCommentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PostId        string                 `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ParentId      string                 `protobuf:"bytes,3,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	ParentId      *string                `protobuf:"bytes,3,opt,name=parent_id,json=parentId,proto3,oneof" json:"parent_id,omitempty"`
+	ThreadId      *string                `protobuf:"bytes,4,opt,name=thread_id,json=threadId,proto3,oneof" json:"thread_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateCommentRequest) Reset() {
 	*x = CreateCommentRequest{}
-	mi := &file_comment_service_proto_msgTypes[3]
+	mi := &file_comment_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -243,7 +167,7 @@ func (x *CreateCommentRequest) String() string {
 func (*CreateCommentRequest) ProtoMessage() {}
 
 func (x *CreateCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[3]
+	mi := &file_comment_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,14 +180,7 @@ func (x *CreateCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCommentRequest.ProtoReflect.Descriptor instead.
 func (*CreateCommentRequest) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *CreateCommentRequest) GetPostId() string {
-	if x != nil {
-		return x.PostId
-	}
-	return ""
+	return file_comment_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateCommentRequest) GetContent() string {
@@ -274,22 +191,29 @@ func (x *CreateCommentRequest) GetContent() string {
 }
 
 func (x *CreateCommentRequest) GetParentId() string {
-	if x != nil {
-		return x.ParentId
+	if x != nil && x.ParentId != nil {
+		return *x.ParentId
+	}
+	return ""
+}
+
+func (x *CreateCommentRequest) GetThreadId() string {
+	if x != nil && x.ThreadId != nil {
+		return *x.ThreadId
 	}
 	return ""
 }
 
 type CreateCommentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Comment       *Comment               `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
+	Comment       *pb.Comment            `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateCommentResponse) Reset() {
 	*x = CreateCommentResponse{}
-	mi := &file_comment_service_proto_msgTypes[4]
+	mi := &file_comment_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -301,7 +225,7 @@ func (x *CreateCommentResponse) String() string {
 func (*CreateCommentResponse) ProtoMessage() {}
 
 func (x *CreateCommentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[4]
+	mi := &file_comment_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -314,10 +238,10 @@ func (x *CreateCommentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCommentResponse.ProtoReflect.Descriptor instead.
 func (*CreateCommentResponse) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{4}
+	return file_comment_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateCommentResponse) GetComment() *Comment {
+func (x *CreateCommentResponse) GetComment() *pb.Comment {
 	if x != nil {
 		return x.Comment
 	}
@@ -333,7 +257,7 @@ type GetCommentRequest struct {
 
 func (x *GetCommentRequest) Reset() {
 	*x = GetCommentRequest{}
-	mi := &file_comment_service_proto_msgTypes[5]
+	mi := &file_comment_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -345,7 +269,7 @@ func (x *GetCommentRequest) String() string {
 func (*GetCommentRequest) ProtoMessage() {}
 
 func (x *GetCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[5]
+	mi := &file_comment_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -358,7 +282,7 @@ func (x *GetCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCommentRequest.ProtoReflect.Descriptor instead.
 func (*GetCommentRequest) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{5}
+	return file_comment_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetCommentRequest) GetId() string {
@@ -370,14 +294,14 @@ func (x *GetCommentRequest) GetId() string {
 
 type GetCommentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Comment       *Comment               `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
+	Comment       *pb.Comment            `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetCommentResponse) Reset() {
 	*x = GetCommentResponse{}
-	mi := &file_comment_service_proto_msgTypes[6]
+	mi := &file_comment_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -389,7 +313,7 @@ func (x *GetCommentResponse) String() string {
 func (*GetCommentResponse) ProtoMessage() {}
 
 func (x *GetCommentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[6]
+	mi := &file_comment_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -402,10 +326,10 @@ func (x *GetCommentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCommentResponse.ProtoReflect.Descriptor instead.
 func (*GetCommentResponse) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{6}
+	return file_comment_service_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *GetCommentResponse) GetComment() *Comment {
+func (x *GetCommentResponse) GetComment() *pb.Comment {
 	if x != nil {
 		return x.Comment
 	}
@@ -422,7 +346,7 @@ type UpdateCommentRequest struct {
 
 func (x *UpdateCommentRequest) Reset() {
 	*x = UpdateCommentRequest{}
-	mi := &file_comment_service_proto_msgTypes[7]
+	mi := &file_comment_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -434,7 +358,7 @@ func (x *UpdateCommentRequest) String() string {
 func (*UpdateCommentRequest) ProtoMessage() {}
 
 func (x *UpdateCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[7]
+	mi := &file_comment_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -447,7 +371,7 @@ func (x *UpdateCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCommentRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCommentRequest) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{7}
+	return file_comment_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateCommentRequest) GetId() string {
@@ -473,7 +397,7 @@ type DeleteCommentRequest struct {
 
 func (x *DeleteCommentRequest) Reset() {
 	*x = DeleteCommentRequest{}
-	mi := &file_comment_service_proto_msgTypes[8]
+	mi := &file_comment_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -485,7 +409,7 @@ func (x *DeleteCommentRequest) String() string {
 func (*DeleteCommentRequest) ProtoMessage() {}
 
 func (x *DeleteCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[8]
+	mi := &file_comment_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -498,7 +422,7 @@ func (x *DeleteCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCommentRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCommentRequest) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{8}
+	return file_comment_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteCommentRequest) GetId() string {
@@ -508,119 +432,42 @@ func (x *DeleteCommentRequest) GetId() string {
 	return ""
 }
 
-type Pagination struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	CurrentPage   int32                  `protobuf:"varint,1,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
-	PerPage       int32                  `protobuf:"varint,2,opt,name=per_page,json=perPage,proto3" json:"per_page,omitempty"`
-	TotalItems    int32                  `protobuf:"varint,3,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`
-	TotalPages    int32                  `protobuf:"varint,4,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Pagination) Reset() {
-	*x = Pagination{}
-	mi := &file_comment_service_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Pagination) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Pagination) ProtoMessage() {}
-
-func (x *Pagination) ProtoReflect() protoreflect.Message {
-	mi := &file_comment_service_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Pagination.ProtoReflect.Descriptor instead.
-func (*Pagination) Descriptor() ([]byte, []int) {
-	return file_comment_service_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *Pagination) GetCurrentPage() int32 {
-	if x != nil {
-		return x.CurrentPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetPerPage() int32 {
-	if x != nil {
-		return x.PerPage
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalItems() int32 {
-	if x != nil {
-		return x.TotalItems
-	}
-	return 0
-}
-
-func (x *Pagination) GetTotalPages() int32 {
-	if x != nil {
-		return x.TotalPages
-	}
-	return 0
-}
-
 var File_comment_service_proto protoreflect.FileDescriptor
 
 const file_comment_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15comment-service.proto\x12\acomment\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\"\xbd\x01\n" +
-	"\aComment\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\apost_id\x18\x02 \x01(\tR\x06postId\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x18\n" +
-	"\acontent\x18\x04 \x01(\tR\acontent\x12\x1b\n" +
-	"\tparent_id\x18\x05 \x01(\tR\bparentId\x129\n" +
+	"\x15comment-service.proto\x12\acomment\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x15models/messages.proto\"\x7f\n" +
+	"\x13ListCommentsRequest\x12\x1b\n" +
+	"\tthread_id\x18\x01 \x01(\tR\bthreadId\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\"\x90\x01\n" +
+	"\x14ListCommentsResponse\x12+\n" +
+	"\bcomments\x18\x01 \x03(\v2\x0f.models.CommentR\bcomments\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\"\x90\x01\n" +
+	"\x14CreateCommentRequest\x12\x18\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12 \n" +
+	"\tparent_id\x18\x03 \x01(\tH\x00R\bparentId\x88\x01\x01\x12 \n" +
+	"\tthread_id\x18\x04 \x01(\tH\x01R\bthreadId\x88\x01\x01B\f\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"_\n" +
-	"\x13ListCommentsRequest\x12\x17\n" +
-	"\apost_id\x18\x01 \x01(\tR\x06postId\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"y\n" +
-	"\x14ListCommentsResponse\x12,\n" +
-	"\bcomments\x18\x01 \x03(\v2\x10.comment.CommentR\bcomments\x123\n" +
+	"_parent_idB\f\n" +
 	"\n" +
-	"pagination\x18\x02 \x01(\v2\x13.comment.PaginationR\n" +
-	"pagination\"f\n" +
-	"\x14CreateCommentRequest\x12\x17\n" +
-	"\apost_id\x18\x01 \x01(\tR\x06postId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1b\n" +
-	"\tparent_id\x18\x03 \x01(\tR\bparentId\"C\n" +
-	"\x15CreateCommentResponse\x12*\n" +
-	"\acomment\x18\x01 \x01(\v2\x10.comment.CommentR\acomment\"#\n" +
+	"_thread_id\"B\n" +
+	"\x15CreateCommentResponse\x12)\n" +
+	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"#\n" +
 	"\x11GetCommentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"@\n" +
-	"\x12GetCommentResponse\x12*\n" +
-	"\acomment\x18\x01 \x01(\v2\x10.comment.CommentR\acomment\"@\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"?\n" +
+	"\x12GetCommentResponse\x12)\n" +
+	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"@\n" +
 	"\x14UpdateCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\"&\n" +
 	"\x14DeleteCommentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x8c\x01\n" +
-	"\n" +
-	"Pagination\x12!\n" +
-	"\fcurrent_page\x18\x01 \x01(\x05R\vcurrentPage\x12\x19\n" +
-	"\bper_page\x18\x02 \x01(\x05R\aperPage\x12\x1f\n" +
-	"\vtotal_items\x18\x03 \x01(\x05R\n" +
-	"totalItems\x12\x1f\n" +
-	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages2\xf8\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xf8\x03\n" +
 	"\x0eCommentService\x12^\n" +
 	"\fListComments\x12\x1c.comment.ListCommentsRequest\x1a\x1d.comment.ListCommentsResponse\"\x11\x82\xd3\xe4\x93\x02\v\x12\t/comments\x12d\n" +
 	"\rCreateComment\x12\x1d.comment.CreateCommentRequest\x1a\x1e.comment.CreateCommentResponse\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/comments\x12]\n" +
@@ -641,42 +488,38 @@ func file_comment_service_proto_rawDescGZIP() []byte {
 	return file_comment_service_proto_rawDescData
 }
 
-var file_comment_service_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_comment_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_comment_service_proto_goTypes = []any{
-	(*Comment)(nil),               // 0: comment.Comment
-	(*ListCommentsRequest)(nil),   // 1: comment.ListCommentsRequest
-	(*ListCommentsResponse)(nil),  // 2: comment.ListCommentsResponse
-	(*CreateCommentRequest)(nil),  // 3: comment.CreateCommentRequest
-	(*CreateCommentResponse)(nil), // 4: comment.CreateCommentResponse
-	(*GetCommentRequest)(nil),     // 5: comment.GetCommentRequest
-	(*GetCommentResponse)(nil),    // 6: comment.GetCommentResponse
-	(*UpdateCommentRequest)(nil),  // 7: comment.UpdateCommentRequest
-	(*DeleteCommentRequest)(nil),  // 8: comment.DeleteCommentRequest
-	(*Pagination)(nil),            // 9: comment.Pagination
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
+	(*ListCommentsRequest)(nil),   // 0: comment.ListCommentsRequest
+	(*ListCommentsResponse)(nil),  // 1: comment.ListCommentsResponse
+	(*CreateCommentRequest)(nil),  // 2: comment.CreateCommentRequest
+	(*CreateCommentResponse)(nil), // 3: comment.CreateCommentResponse
+	(*GetCommentRequest)(nil),     // 4: comment.GetCommentRequest
+	(*GetCommentResponse)(nil),    // 5: comment.GetCommentResponse
+	(*UpdateCommentRequest)(nil),  // 6: comment.UpdateCommentRequest
+	(*DeleteCommentRequest)(nil),  // 7: comment.DeleteCommentRequest
+	(*pb.Comment)(nil),            // 8: models.Comment
+	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
 }
 var file_comment_service_proto_depIdxs = []int32{
-	10, // 0: comment.Comment.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 1: comment.ListCommentsResponse.comments:type_name -> comment.Comment
-	9,  // 2: comment.ListCommentsResponse.pagination:type_name -> comment.Pagination
-	0,  // 3: comment.CreateCommentResponse.comment:type_name -> comment.Comment
-	0,  // 4: comment.GetCommentResponse.comment:type_name -> comment.Comment
-	1,  // 5: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
-	3,  // 6: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
-	5,  // 7: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
-	7,  // 8: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
-	8,  // 9: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
-	2,  // 10: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
-	4,  // 11: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
-	6,  // 12: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
-	11, // 13: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
-	11, // 14: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	8, // 0: comment.ListCommentsResponse.comments:type_name -> models.Comment
+	8, // 1: comment.CreateCommentResponse.comment:type_name -> models.Comment
+	8, // 2: comment.GetCommentResponse.comment:type_name -> models.Comment
+	0, // 3: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
+	2, // 4: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
+	4, // 5: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
+	6, // 6: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
+	7, // 7: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
+	1, // 8: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
+	3, // 9: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
+	5, // 10: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
+	9, // 11: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
+	9, // 12: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
+	8, // [8:13] is the sub-list for method output_type
+	3, // [3:8] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_comment_service_proto_init() }
@@ -684,13 +527,16 @@ func file_comment_service_proto_init() {
 	if File_comment_service_proto != nil {
 		return
 	}
+	file_comment_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_comment_service_proto_msgTypes[1].OneofWrappers = []any{}
+	file_comment_service_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_comment_service_proto_rawDesc), len(file_comment_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

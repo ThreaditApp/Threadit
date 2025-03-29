@@ -8,6 +8,7 @@ package pb
 
 import (
 	context "context"
+	pb "gen/models/pb"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,69 +21,45 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DBService_CreateUser_FullMethodName            = "/db.DBService/CreateUser"
-	DBService_GetUser_FullMethodName               = "/db.DBService/GetUser"
-	DBService_UpdateUser_FullMethodName            = "/db.DBService/UpdateUser"
-	DBService_DeleteUser_FullMethodName            = "/db.DBService/DeleteUser"
-	DBService_ListCommunities_FullMethodName       = "/db.DBService/ListCommunities"
-	DBService_CreateCommunity_FullMethodName       = "/db.DBService/CreateCommunity"
-	DBService_GetCommunity_FullMethodName          = "/db.DBService/GetCommunity"
-	DBService_UpdateCommunity_FullMethodName       = "/db.DBService/UpdateCommunity"
-	DBService_DeleteCommunity_FullMethodName       = "/db.DBService/DeleteCommunity"
-	DBService_ListThreads_FullMethodName           = "/db.DBService/ListThreads"
-	DBService_CreateThread_FullMethodName          = "/db.DBService/CreateThread"
-	DBService_GetThread_FullMethodName             = "/db.DBService/GetThread"
-	DBService_UpdateThread_FullMethodName          = "/db.DBService/UpdateThread"
-	DBService_DeleteThread_FullMethodName          = "/db.DBService/DeleteThread"
-	DBService_ListComments_FullMethodName          = "/db.DBService/ListComments"
-	DBService_CreateComment_FullMethodName         = "/db.DBService/CreateComment"
-	DBService_GetComment_FullMethodName            = "/db.DBService/GetComment"
-	DBService_UpdateComment_FullMethodName         = "/db.DBService/UpdateComment"
-	DBService_DeleteComment_FullMethodName         = "/db.DBService/DeleteComment"
-	DBService_FollowUser_FullMethodName            = "/db.DBService/FollowUser"
-	DBService_UnfollowUser_FullMethodName          = "/db.DBService/UnfollowUser"
-	DBService_GetFollowers_FullMethodName          = "/db.DBService/GetFollowers"
-	DBService_GetFollowing_FullMethodName          = "/db.DBService/GetFollowing"
-	DBService_FollowCommunity_FullMethodName       = "/db.DBService/FollowCommunity"
-	DBService_UnfollowCommunity_FullMethodName     = "/db.DBService/UnfollowCommunity"
-	DBService_GetCommunityFollowers_FullMethodName = "/db.DBService/GetCommunityFollowers"
+	DBService_ListCommunities_FullMethodName = "/db.DBService/ListCommunities"
+	DBService_CreateCommunity_FullMethodName = "/db.DBService/CreateCommunity"
+	DBService_GetCommunity_FullMethodName    = "/db.DBService/GetCommunity"
+	DBService_UpdateCommunity_FullMethodName = "/db.DBService/UpdateCommunity"
+	DBService_DeleteCommunity_FullMethodName = "/db.DBService/DeleteCommunity"
+	DBService_ListThreads_FullMethodName     = "/db.DBService/ListThreads"
+	DBService_CreateThread_FullMethodName    = "/db.DBService/CreateThread"
+	DBService_GetThread_FullMethodName       = "/db.DBService/GetThread"
+	DBService_UpdateThread_FullMethodName    = "/db.DBService/UpdateThread"
+	DBService_DeleteThread_FullMethodName    = "/db.DBService/DeleteThread"
+	DBService_ListComments_FullMethodName    = "/db.DBService/ListComments"
+	DBService_CreateComment_FullMethodName   = "/db.DBService/CreateComment"
+	DBService_GetComment_FullMethodName      = "/db.DBService/GetComment"
+	DBService_UpdateComment_FullMethodName   = "/db.DBService/UpdateComment"
+	DBService_DeleteComment_FullMethodName   = "/db.DBService/DeleteComment"
 )
 
 // DBServiceClient is the client API for DBService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DBServiceClient interface {
-	// user crud operations
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// community crud operations
 	ListCommunities(ctx context.Context, in *ListCommunitiesRequest, opts ...grpc.CallOption) (*ListCommunitiesResponse, error)
-	CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*Community, error)
-	GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*Community, error)
-	UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*Community, error)
+	CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*CreateCommunityResponse, error)
+	GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error)
+	UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteCommunity(ctx context.Context, in *DeleteCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// thread crud operations
 	ListThreads(ctx context.Context, in *ListThreadsRequest, opts ...grpc.CallOption) (*ListThreadsResponse, error)
-	CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*Thread, error)
-	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*Thread, error)
-	UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*Thread, error)
+	CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*CreateThreadResponse, error)
+	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error)
+	UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteThread(ctx context.Context, in *DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// comment crud operations
 	ListComments(ctx context.Context, in *ListCommentsRequest, opts ...grpc.CallOption) (*ListCommentsResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
-	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*Comment, error)
+	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*pb.Comment, error)
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// follower operations
-	FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	UnfollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetFollowers(ctx context.Context, in *GetFollowersRequest, opts ...grpc.CallOption) (*GetFollowersResponse, error)
-	GetFollowing(ctx context.Context, in *GetFollowingRequest, opts ...grpc.CallOption) (*GetFollowingResponse, error)
-	FollowCommunity(ctx context.Context, in *FollowCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	UnfollowCommunity(ctx context.Context, in *FollowCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetCommunityFollowers(ctx context.Context, in *GetCommunityFollowersRequest, opts ...grpc.CallOption) (*GetCommunityFollowersResponse, error)
 }
 
 type dBServiceClient struct {
@@ -91,46 +68,6 @@ type dBServiceClient struct {
 
 func NewDBServiceClient(cc grpc.ClientConnInterface) DBServiceClient {
 	return &dBServiceClient{cc}
-}
-
-func (c *dBServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, DBService_CreateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, DBService_GetUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_UpdateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_DeleteUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dBServiceClient) ListCommunities(ctx context.Context, in *ListCommunitiesRequest, opts ...grpc.CallOption) (*ListCommunitiesResponse, error) {
@@ -143,9 +80,9 @@ func (c *dBServiceClient) ListCommunities(ctx context.Context, in *ListCommuniti
 	return out, nil
 }
 
-func (c *dBServiceClient) CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*Community, error) {
+func (c *dBServiceClient) CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*CreateCommunityResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Community)
+	out := new(CreateCommunityResponse)
 	err := c.cc.Invoke(ctx, DBService_CreateCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -153,9 +90,9 @@ func (c *dBServiceClient) CreateCommunity(ctx context.Context, in *CreateCommuni
 	return out, nil
 }
 
-func (c *dBServiceClient) GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*Community, error) {
+func (c *dBServiceClient) GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Community)
+	out := new(pb.Community)
 	err := c.cc.Invoke(ctx, DBService_GetCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -163,9 +100,9 @@ func (c *dBServiceClient) GetCommunity(ctx context.Context, in *GetCommunityRequ
 	return out, nil
 }
 
-func (c *dBServiceClient) UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*Community, error) {
+func (c *dBServiceClient) UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Community)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, DBService_UpdateCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -193,9 +130,9 @@ func (c *dBServiceClient) ListThreads(ctx context.Context, in *ListThreadsReques
 	return out, nil
 }
 
-func (c *dBServiceClient) CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*Thread, error) {
+func (c *dBServiceClient) CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*CreateThreadResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Thread)
+	out := new(CreateThreadResponse)
 	err := c.cc.Invoke(ctx, DBService_CreateThread_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -203,9 +140,9 @@ func (c *dBServiceClient) CreateThread(ctx context.Context, in *CreateThreadRequ
 	return out, nil
 }
 
-func (c *dBServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*Thread, error) {
+func (c *dBServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Thread)
+	out := new(pb.Thread)
 	err := c.cc.Invoke(ctx, DBService_GetThread_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -213,9 +150,9 @@ func (c *dBServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, o
 	return out, nil
 }
 
-func (c *dBServiceClient) UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*Thread, error) {
+func (c *dBServiceClient) UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Thread)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, DBService_UpdateThread_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -253,9 +190,9 @@ func (c *dBServiceClient) CreateComment(ctx context.Context, in *CreateCommentRe
 	return out, nil
 }
 
-func (c *dBServiceClient) GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*Comment, error) {
+func (c *dBServiceClient) GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*pb.Comment, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Comment)
+	out := new(pb.Comment)
 	err := c.cc.Invoke(ctx, DBService_GetComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -283,111 +220,28 @@ func (c *dBServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRe
 	return out, nil
 }
 
-func (c *dBServiceClient) FollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_FollowUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) UnfollowUser(ctx context.Context, in *FollowUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_UnfollowUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) GetFollowers(ctx context.Context, in *GetFollowersRequest, opts ...grpc.CallOption) (*GetFollowersResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetFollowersResponse)
-	err := c.cc.Invoke(ctx, DBService_GetFollowers_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) GetFollowing(ctx context.Context, in *GetFollowingRequest, opts ...grpc.CallOption) (*GetFollowingResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetFollowingResponse)
-	err := c.cc.Invoke(ctx, DBService_GetFollowing_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) FollowCommunity(ctx context.Context, in *FollowCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_FollowCommunity_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) UnfollowCommunity(ctx context.Context, in *FollowCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DBService_UnfollowCommunity_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBServiceClient) GetCommunityFollowers(ctx context.Context, in *GetCommunityFollowersRequest, opts ...grpc.CallOption) (*GetCommunityFollowersResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCommunityFollowersResponse)
-	err := c.cc.Invoke(ctx, DBService_GetCommunityFollowers_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DBServiceServer is the server API for DBService service.
 // All implementations must embed UnimplementedDBServiceServer
 // for forward compatibility.
 type DBServiceServer interface {
-	// user crud operations
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
-	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
-	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// community crud operations
 	ListCommunities(context.Context, *ListCommunitiesRequest) (*ListCommunitiesResponse, error)
-	CreateCommunity(context.Context, *CreateCommunityRequest) (*Community, error)
-	GetCommunity(context.Context, *GetCommunityRequest) (*Community, error)
-	UpdateCommunity(context.Context, *UpdateCommunityRequest) (*Community, error)
+	CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error)
+	GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error)
+	UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error)
 	DeleteCommunity(context.Context, *DeleteCommunityRequest) (*emptypb.Empty, error)
 	// thread crud operations
 	ListThreads(context.Context, *ListThreadsRequest) (*ListThreadsResponse, error)
-	CreateThread(context.Context, *CreateThreadRequest) (*Thread, error)
-	GetThread(context.Context, *GetThreadRequest) (*Thread, error)
-	UpdateThread(context.Context, *UpdateThreadRequest) (*Thread, error)
+	CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error)
+	GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error)
+	UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error)
 	DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error)
 	// comment crud operations
 	ListComments(context.Context, *ListCommentsRequest) (*ListCommentsResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
-	GetComment(context.Context, *GetCommentRequest) (*Comment, error)
+	GetComment(context.Context, *GetCommentRequest) (*pb.Comment, error)
 	UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
-	// follower operations
-	FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
-	UnfollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error)
-	GetFollowers(context.Context, *GetFollowersRequest) (*GetFollowersResponse, error)
-	GetFollowing(context.Context, *GetFollowingRequest) (*GetFollowingResponse, error)
-	FollowCommunity(context.Context, *FollowCommunityRequest) (*emptypb.Empty, error)
-	UnfollowCommunity(context.Context, *FollowCommunityRequest) (*emptypb.Empty, error)
-	GetCommunityFollowers(context.Context, *GetCommunityFollowersRequest) (*GetCommunityFollowersResponse, error)
 	mustEmbedUnimplementedDBServiceServer()
 }
 
@@ -398,28 +252,16 @@ type DBServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDBServiceServer struct{}
 
-func (UnimplementedDBServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
-}
-func (UnimplementedDBServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
-}
-func (UnimplementedDBServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
-}
-func (UnimplementedDBServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
-}
 func (UnimplementedDBServiceServer) ListCommunities(context.Context, *ListCommunitiesRequest) (*ListCommunitiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCommunities not implemented")
 }
-func (UnimplementedDBServiceServer) CreateCommunity(context.Context, *CreateCommunityRequest) (*Community, error) {
+func (UnimplementedDBServiceServer) CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCommunity not implemented")
 }
-func (UnimplementedDBServiceServer) GetCommunity(context.Context, *GetCommunityRequest) (*Community, error) {
+func (UnimplementedDBServiceServer) GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommunity not implemented")
 }
-func (UnimplementedDBServiceServer) UpdateCommunity(context.Context, *UpdateCommunityRequest) (*Community, error) {
+func (UnimplementedDBServiceServer) UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCommunity not implemented")
 }
 func (UnimplementedDBServiceServer) DeleteCommunity(context.Context, *DeleteCommunityRequest) (*emptypb.Empty, error) {
@@ -428,13 +270,13 @@ func (UnimplementedDBServiceServer) DeleteCommunity(context.Context, *DeleteComm
 func (UnimplementedDBServiceServer) ListThreads(context.Context, *ListThreadsRequest) (*ListThreadsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListThreads not implemented")
 }
-func (UnimplementedDBServiceServer) CreateThread(context.Context, *CreateThreadRequest) (*Thread, error) {
+func (UnimplementedDBServiceServer) CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThread not implemented")
 }
-func (UnimplementedDBServiceServer) GetThread(context.Context, *GetThreadRequest) (*Thread, error) {
+func (UnimplementedDBServiceServer) GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetThread not implemented")
 }
-func (UnimplementedDBServiceServer) UpdateThread(context.Context, *UpdateThreadRequest) (*Thread, error) {
+func (UnimplementedDBServiceServer) UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateThread not implemented")
 }
 func (UnimplementedDBServiceServer) DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error) {
@@ -446,7 +288,7 @@ func (UnimplementedDBServiceServer) ListComments(context.Context, *ListCommentsR
 func (UnimplementedDBServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
 }
-func (UnimplementedDBServiceServer) GetComment(context.Context, *GetCommentRequest) (*Comment, error) {
+func (UnimplementedDBServiceServer) GetComment(context.Context, *GetCommentRequest) (*pb.Comment, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
 }
 func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error) {
@@ -454,27 +296,6 @@ func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommen
 }
 func (UnimplementedDBServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
-}
-func (UnimplementedDBServiceServer) FollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FollowUser not implemented")
-}
-func (UnimplementedDBServiceServer) UnfollowUser(context.Context, *FollowUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnfollowUser not implemented")
-}
-func (UnimplementedDBServiceServer) GetFollowers(context.Context, *GetFollowersRequest) (*GetFollowersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFollowers not implemented")
-}
-func (UnimplementedDBServiceServer) GetFollowing(context.Context, *GetFollowingRequest) (*GetFollowingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFollowing not implemented")
-}
-func (UnimplementedDBServiceServer) FollowCommunity(context.Context, *FollowCommunityRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FollowCommunity not implemented")
-}
-func (UnimplementedDBServiceServer) UnfollowCommunity(context.Context, *FollowCommunityRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnfollowCommunity not implemented")
-}
-func (UnimplementedDBServiceServer) GetCommunityFollowers(context.Context, *GetCommunityFollowersRequest) (*GetCommunityFollowersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCommunityFollowers not implemented")
 }
 func (UnimplementedDBServiceServer) mustEmbedUnimplementedDBServiceServer() {}
 func (UnimplementedDBServiceServer) testEmbeddedByValue()                   {}
@@ -495,78 +316,6 @@ func RegisterDBServiceServer(s grpc.ServiceRegistrar, srv DBServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&DBService_ServiceDesc, srv)
-}
-
-func _DBService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).CreateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_CreateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).GetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_GetUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).GetUser(ctx, req.(*GetUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).UpdateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_UpdateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).DeleteUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_DeleteUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _DBService_ListCommunities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -839,132 +588,6 @@ func _DBService_DeleteComment_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBService_FollowUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FollowUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).FollowUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_FollowUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).FollowUser(ctx, req.(*FollowUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_UnfollowUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FollowUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).UnfollowUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_UnfollowUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).UnfollowUser(ctx, req.(*FollowUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_GetFollowers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetFollowersRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).GetFollowers(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_GetFollowers_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).GetFollowers(ctx, req.(*GetFollowersRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_GetFollowing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetFollowingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).GetFollowing(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_GetFollowing_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).GetFollowing(ctx, req.(*GetFollowingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_FollowCommunity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FollowCommunityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).FollowCommunity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_FollowCommunity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).FollowCommunity(ctx, req.(*FollowCommunityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_UnfollowCommunity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FollowCommunityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).UnfollowCommunity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_UnfollowCommunity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).UnfollowCommunity(ctx, req.(*FollowCommunityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBService_GetCommunityFollowers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCommunityFollowersRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBServiceServer).GetCommunityFollowers(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBService_GetCommunityFollowers_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBServiceServer).GetCommunityFollowers(ctx, req.(*GetCommunityFollowersRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // DBService_ServiceDesc is the grpc.ServiceDesc for DBService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -972,22 +595,6 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "db.DBService",
 	HandlerType: (*DBServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "CreateUser",
-			Handler:    _DBService_CreateUser_Handler,
-		},
-		{
-			MethodName: "GetUser",
-			Handler:    _DBService_GetUser_Handler,
-		},
-		{
-			MethodName: "UpdateUser",
-			Handler:    _DBService_UpdateUser_Handler,
-		},
-		{
-			MethodName: "DeleteUser",
-			Handler:    _DBService_DeleteUser_Handler,
-		},
 		{
 			MethodName: "ListCommunities",
 			Handler:    _DBService_ListCommunities_Handler,
@@ -1047,34 +654,6 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteComment",
 			Handler:    _DBService_DeleteComment_Handler,
-		},
-		{
-			MethodName: "FollowUser",
-			Handler:    _DBService_FollowUser_Handler,
-		},
-		{
-			MethodName: "UnfollowUser",
-			Handler:    _DBService_UnfollowUser_Handler,
-		},
-		{
-			MethodName: "GetFollowers",
-			Handler:    _DBService_GetFollowers_Handler,
-		},
-		{
-			MethodName: "GetFollowing",
-			Handler:    _DBService_GetFollowing_Handler,
-		},
-		{
-			MethodName: "FollowCommunity",
-			Handler:    _DBService_FollowCommunity_Handler,
-		},
-		{
-			MethodName: "UnfollowCommunity",
-			Handler:    _DBService_UnfollowCommunity_Handler,
-		},
-		{
-			MethodName: "GetCommunityFollowers",
-			Handler:    _DBService_GetCommunityFollowers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

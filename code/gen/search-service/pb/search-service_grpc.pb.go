@@ -20,7 +20,6 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	SearchService_GlobalSearch_FullMethodName    = "/search.SearchService/GlobalSearch"
-	SearchService_UserSearch_FullMethodName      = "/search.SearchService/UserSearch"
 	SearchService_CommunitySearch_FullMethodName = "/search.SearchService/CommunitySearch"
 	SearchService_ThreadSearch_FullMethodName    = "/search.SearchService/ThreadSearch"
 )
@@ -30,7 +29,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SearchServiceClient interface {
 	GlobalSearch(ctx context.Context, in *GlobalSearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error)
-	UserSearch(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error)
 	CommunitySearch(ctx context.Context, in *CommunitySearchRequest, opts ...grpc.CallOption) (*CommunitySearchResponse, error)
 	ThreadSearch(ctx context.Context, in *ThreadSearchRequest, opts ...grpc.CallOption) (*ThreadSearchResponse, error)
 }
@@ -47,16 +45,6 @@ func (c *searchServiceClient) GlobalSearch(ctx context.Context, in *GlobalSearch
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GlobalSearchResponse)
 	err := c.cc.Invoke(ctx, SearchService_GlobalSearch_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *searchServiceClient) UserSearch(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserSearchResponse)
-	err := c.cc.Invoke(ctx, SearchService_UserSearch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +76,6 @@ func (c *searchServiceClient) ThreadSearch(ctx context.Context, in *ThreadSearch
 // for forward compatibility.
 type SearchServiceServer interface {
 	GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error)
-	UserSearch(context.Context, *UserSearchRequest) (*UserSearchResponse, error)
 	CommunitySearch(context.Context, *CommunitySearchRequest) (*CommunitySearchResponse, error)
 	ThreadSearch(context.Context, *ThreadSearchRequest) (*ThreadSearchResponse, error)
 	mustEmbedUnimplementedSearchServiceServer()
@@ -103,9 +90,6 @@ type UnimplementedSearchServiceServer struct{}
 
 func (UnimplementedSearchServiceServer) GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GlobalSearch not implemented")
-}
-func (UnimplementedSearchServiceServer) UserSearch(context.Context, *UserSearchRequest) (*UserSearchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserSearch not implemented")
 }
 func (UnimplementedSearchServiceServer) CommunitySearch(context.Context, *CommunitySearchRequest) (*CommunitySearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommunitySearch not implemented")
@@ -148,24 +132,6 @@ func _SearchService_GlobalSearch_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SearchServiceServer).GlobalSearch(ctx, req.(*GlobalSearchRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SearchService_UserSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserSearchRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SearchServiceServer).UserSearch(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: SearchService_UserSearch_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SearchServiceServer).UserSearch(ctx, req.(*UserSearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -216,10 +182,6 @@ var SearchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GlobalSearch",
 			Handler:    _SearchService_GlobalSearch_Handler,
-		},
-		{
-			MethodName: "UserSearch",
-			Handler:    _SearchService_UserSearch_Handler,
 		},
 		{
 			MethodName: "CommunitySearch",

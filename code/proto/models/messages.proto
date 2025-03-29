@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package models;
+
+option go_package = "gen/models/pb;models";
+
+message Community {
+  string id = 1;
+  string name = 2;
+  repeated string threads = 3;
+}
+
+message Thread {
+  string id = 1;
+  string community_id = 2;
+  string title = 3;
+  string content = 4;
+  string ups = 5;
+  string downs = 6;
+}
+
+message Comment {
+  string id = 1;
+  string content = 2;
+  string ups = 3;
+  string downs = 4;
+  optional string parent_id = 5;
+  optional string thread_id = 6;
+}
