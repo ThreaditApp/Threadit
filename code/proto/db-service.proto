@@ -121,19 +121,16 @@ message CreateCommunityRequest {
 
 message GetCommunityRequest {
   string id = 1;
-  optional string owner_id = 2;
 }
 
 message UpdateCommunityRequest {
   string id = 1;
-  string owner_id = 2;
   optional string name = 3;
   optional string description = 4;
 }
 
 message DeleteCommunityRequest {
   string id = 1;
-  string owner_id = 2;
 }
 
 message Thread {
@@ -174,14 +171,12 @@ message GetThreadRequest {
 
 message UpdateThreadRequest {
   string id = 1;
-  string author_id = 2;
   optional string title = 3;
   optional string content = 4;
 }
 
 message DeleteThreadRequest {
   string id = 1;
-  string author_id = 2;
 }
 
 message Comment {
