@@ -91,7 +91,11 @@ func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRe
 
 	filter := bson.M{}
 	if in.GetOwnerId() != "" {
-		filter["owner_id"] = in.GetOwnerId()
+		ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid owner ID: %v", err)
+		}
+		filter["owner_id"] = ownerId
 	}
 	if in.GetName() != "" {
 		searchTerm := ".*" + in.GetName() + ".*"
@@ -177,10 +181,15 @@ func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRe
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid owner ID: %v", err)
+	}
+
 	now := timestamppb.Now()
 
 	community := bson.M{
-		"owner_id":    in.GetOwnerId(),
+		"owner_id":    ownerId,
 		"name":        in.GetName(),
 		"description": in.GetDescription(),
 		"created_at":  now.AsTime(),
@@ -214,12 +223,16 @@ func (s *DBServer) GetCommunity(ctx context.Context, in *pb.GetCommunityRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
 	filter := bson.M{
-		"_id": in.GetId(),
+		"_id": id,
 	}
 
 	var community bson.M
-	err := collection.FindOne(ctx, filter).Decode(&community)
+	err = collection.FindOne(ctx, filter).Decode(&community)
 	if err != nil {
 		return nil, err
 	}
@@ -234,8 +247,12 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
 	filter := bson.M{
-		"_id": in.GetId(),
+		"_id": id,
 	}
 
 	update := bson.M{
@@ -260,7 +277,7 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 
 	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
 	var updatedCommunity bson.M
-	err := collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedCommunity)
+	err = collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedCommunity)
 	if err != nil {
 		return nil, err
 	}
@@ -275,11 +292,15 @@ func (s *DBServer) DeleteCommunity(ctx context.Context, in *pb.DeleteCommunityRe
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
 	filter := bson.M{
-		"_id": in.GetId(),
+		"_id": id,
 	}
 
-	_, err := collection.DeleteOne(ctx, filter)
+	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +314,7 @@ func ConvertToProtoCommunity(community bson.M) *pb.Community {
 
 	return &pb.Community{
 		Id:          community["_id"].(primitive.ObjectID).Hex(),
-		OwnerId:     community["owner_id"].(string),
+		OwnerId:     community["owner_id"].(primitive.ObjectID).Hex(),
 		Name:        community["name"].(string),
 		Description: community["description"].(string),
 		CreatedAt:   createdAt,
@@ -306,10 +327,18 @@ func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (
 
 	filter := bson.M{}
 	if in.GetCommunityId() != "" {
-		filter["community_id"] = in.GetCommunityId()
+		communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid community ID: %v", err)
+		}
+		filter["community_id"] = communityId
 	}
 	if in.GetAuthorId() != "" {
-		filter["author_id"] = in.GetAuthorId()
+		authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid author ID: %v", err)
+		}
+		filter["author_id"] = authorId
 	}
 	if in.GetTitle() != "" {
 		searchTerm := ".*" + in.GetTitle() + ".*"
@@ -395,11 +424,21 @@ func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
+
+	authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid author ID: %v", err)
+	}
+
 	now := timestamppb.Now()
 
 	thread := bson.M{
-		"community_id": in.GetCommunityId(),
-		"author_id":    in.GetAuthorId(),
+		"community_id": communityId,
+		"author_id":    authorId,
 		"title":        in.GetTitle(),
 		"content":      in.GetContent(),
 		"created_at":   now.AsTime(),
@@ -434,12 +473,17 @@ func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
+	}
+
 	filter := bson.M{
-		"_id": in.GetId(),
+		"_id": id,
 	}
 
 	var thread bson.M
-	err := collection.FindOne(ctx, filter).Decode(&thread)
+	err = collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
 		return nil, err
 	}
@@ -454,8 +498,13 @@ func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
+	}
+
 	filter := bson.M{
-		"_id": in.GetId(),
+		"_id": id,
 	}
 
 	update := bson.M{
@@ -480,7 +529,7 @@ func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest)
 
 	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
 	var updatedThread bson.M
-	err := collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedThread)
+	err = collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedThread)
 	if err != nil {
 		return nil, err
 	}
@@ -495,11 +544,16 @@ func (s *DBServer) DeleteThread(ctx context.Context, in *pb.DeleteThreadRequest)
 		return nil, fmt.Errorf("missing required fields")
 	}
 
-	filter := bson.M{
-		"_id": in.GetId(),
+	id, err := primitive.ObjectIDFromHex(in.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid thread ID: %v", err)
 	}
 
-	_, err := collection.DeleteOne(ctx, filter)
+	filter := bson.M{
+		"_id": id,
+	}
+
+	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -513,8 +567,8 @@ func ConvertToProtoThread(thread bson.M) *pb.Thread {
 
 	return &pb.Thread{
 		Id:          thread["_id"].(primitive.ObjectID).Hex(),
-		CommunityId: thread["community_id"].(string),
-		AuthorId:    thread["author_id"].(string),
+		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
+		AuthorId:    thread["author_id"].(primitive.ObjectID).Hex(),
 		Title:       thread["title"].(string),
 		Content:     thread["content"].(string),
 		CreatedAt:   createdAt,
