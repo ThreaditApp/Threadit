@@ -120,14 +120,14 @@ const file_vote_service_proto_rawDesc = "" +
 	"\tthread_id\x18\x01 \x01(\tR\bthreadId\"3\n" +
 	"\x12VoteCommentRequest\x12\x1d\n" +
 	"\n" +
-	"comment_id\x18\x01 \x01(\tR\tcommentId2\xec\x04\n" +
-	"\vVoteService\x12_\n" +
-	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/vote/thread/upvote\x12c\n" +
-	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/vote/thread/downvote\x12c\n" +
-	"\x10RemoveThreadVote\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/vote/thread/remove\x12b\n" +
-	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/vote/comment/upvote\x12f\n" +
-	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/vote/comment/downvote\x12f\n" +
-	"\x11RemoveCommentVote\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/vote/comment/removeB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
+	"comment_id\x18\x01 \x01(\tR\tcommentId2\xb7\x05\n" +
+	"\vVoteService\x12k\n" +
+	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/thread/{thread_id}/upvote\x12o\n" +
+	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/thread/{thread_id}/downvote\x12o\n" +
+	"\x10RemoveThreadVote\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/thread/{thread_id}/remove\x12o\n" +
+	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/comment/{comment_id}/upvote\x12s\n" +
+	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\".\x82\xd3\xe4\x93\x02(:\x01*\"#/vote/comment/{comment_id}/downvote\x12s\n" +
+	"\x11RemoveCommentVote\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/comment/{comment_id}/removeB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
 
 var (
 	file_vote_service_proto_rawDescOnce sync.Once

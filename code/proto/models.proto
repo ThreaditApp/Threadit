@@ -24,6 +24,6 @@ message Comment {
   string content = 2;
   string ups = 3;
   string downs = 4;
-  optional string parent_id = 5;
-  optional string thread_id = 6;
+  optional string parent_comment_id = 5;
+  optional string parent_thread_id = 6;
 }

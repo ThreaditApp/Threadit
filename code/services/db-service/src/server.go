@@ -3,7 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
-	"gen/db-service/pb"
+	dbpb "gen/db-service/pb"
+	models "gen/models/pb"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,78 +16,11 @@ import (
 )
 
 type DBServer struct {
-	pb.UnimplementedDBServiceServer
+	dbpb.UnimplementedDBServiceServer
 	Mongo *mongo.Client
 }
 
-func (s *DBServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("users")
-	user := bson.M{
-		"username": in.GetUsername(),
-		"email":    in.GetEmail(),
-		"bio":      in.GetBio(),
-	}
-
-	_, err := collection.InsertOne(ctx, user)
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
-}
-
-func (s *DBServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("users")
-	filter := bson.M{
-		"id:": in.GetId(),
-	}
-	var user bson.M
-	err := collection.FindOne(ctx, filter).Decode(&user)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.GetUserResponse{
-		Username: user["username"].(string),
-		Email:    user["email"].(string),
-		Bio:      user["bio"].(string),
-	}, nil
-}
-
-func (s *DBServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*emptypb.Empty, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("users")
-	filter := bson.M{
-		"id": in.GetId(),
-	}
-
-	// TODO: update only non-empty fields
-	update := bson.M{
-		"$set": bson.M{
-			"username": in.GetUsername(),
-			"email":    in.GetEmail(),
-			"bio":      in.GetBio(),
-		},
-	}
-	_, err := collection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
-}
-
-func (s *DBServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*emptypb.Empty, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("users")
-	filter := bson.M{
-		"id": in.GetId(),
-	}
-	_, err := collection.DeleteOne(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
-}
-
-func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRequest) (*pb.ListCommunitiesResponse, error) {
+func (s *DBServer) ListCommunities(ctx context.Context, in *dbpb.ListCommunitiesRequest) (*dbpb.ListCommunitiesResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	filter := bson.M{}
@@ -148,7 +82,7 @@ func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRe
 	}
 	defer cursor.Close(ctx)
 
-	var communities []*pb.Community
+	var communities []*models.Community
 	for cursor.Next(ctx) {
 		var community bson.M
 		if err := cursor.Decode(&community); err != nil {
@@ -163,9 +97,9 @@ func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRe
 
 	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
 
-	return &pb.ListCommunitiesResponse{
+	return &dbpb.ListCommunitiesResponse{
 		Communities: communities,
-		Pagination: &pb.Pagination{
+		Pagination: &dbpb.Pagination{
 			CurrentPage: int32(page),
 			PerPage:     int32(pageSize),
 			TotalItems:  int32(totalItems),
@@ -174,7 +108,7 @@ func (s *DBServer) ListCommunities(ctx context.Context, in *pb.ListCommunitiesRe
 	}, nil
 }
 
-func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRequest) (*pb.Community, error) {
+func (s *DBServer) CreateCommunity(ctx context.Context, in *dbpb.CreateCommunityRequest) (*models.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	if in.GetOwnerId() == "" || in.GetName() == "" || in.GetDescription() == "" {
@@ -206,17 +140,13 @@ func (s *DBServer) CreateCommunity(ctx context.Context, in *pb.CreateCommunityRe
 		return nil, fmt.Errorf("failed to parse inserted ID")
 	}
 
-	return &pb.Community{
-		Id:          objectID.Hex(),
-		OwnerId:     in.GetOwnerId(),
-		Name:        in.GetName(),
-		Description: in.GetDescription(),
-		CreatedAt:   now,
-		UpdatedAt:   now,
+	return &models.Community{
+		Id:   objectID.Hex(),
+		Name: in.GetName(),
 	}, nil
 }
 
-func (s *DBServer) GetCommunity(ctx context.Context, in *pb.GetCommunityRequest) (*pb.Community, error) {
+func (s *DBServer) GetCommunity(ctx context.Context, in *dbpb.GetCommunityRequest) (*models.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	if in.GetId() == "" {
@@ -240,7 +170,7 @@ func (s *DBServer) GetCommunity(ctx context.Context, in *pb.GetCommunityRequest)
 	return ConvertToProtoCommunity(community), nil
 }
 
-func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRequest) (*pb.Community, error) {
+func (s *DBServer) UpdateCommunity(ctx context.Context, in *dbpb.UpdateCommunityRequest) (*models.Community, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	if in.GetId() == "" {
@@ -285,7 +215,7 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, in *pb.UpdateCommunityRe
 	return ConvertToProtoCommunity(updatedCommunity), nil
 }
 
-func (s *DBServer) DeleteCommunity(ctx context.Context, in *pb.DeleteCommunityRequest) (*emptypb.Empty, error) {
+func (s *DBServer) DeleteCommunity(ctx context.Context, in *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("communities")
 
 	if in.GetId() == "" {
@@ -308,21 +238,14 @@ func (s *DBServer) DeleteCommunity(ctx context.Context, in *pb.DeleteCommunityRe
 	return &emptypb.Empty{}, nil
 }
 
-func ConvertToProtoCommunity(community bson.M) *pb.Community {
-	createdAt := timestamppb.New(community["created_at"].(primitive.DateTime).Time())
-	updatedAt := timestamppb.New(community["updated_at"].(primitive.DateTime).Time())
-
-	return &pb.Community{
-		Id:          community["_id"].(primitive.ObjectID).Hex(),
-		OwnerId:     community["owner_id"].(primitive.ObjectID).Hex(),
-		Name:        community["name"].(string),
-		Description: community["description"].(string),
-		CreatedAt:   createdAt,
-		UpdatedAt:   updatedAt,
+func ConvertToProtoCommunity(community bson.M) *models.Community {
+	return &models.Community{
+		Id:   community["_id"].(primitive.ObjectID).Hex(),
+		Name: community["name"].(string),
 	}
 }
 
-func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
+func (s *DBServer) ListThreads(ctx context.Context, in *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	filter := bson.M{}
@@ -391,7 +314,7 @@ func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (
 	}
 	defer cursor.Close(ctx)
 
-	var threads []*pb.Thread
+	var threads []*models.Thread
 	for cursor.Next(ctx) {
 		var thread bson.M
 		if err := cursor.Decode(&thread); err != nil {
@@ -406,9 +329,9 @@ func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (
 
 	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
 
-	return &pb.ListThreadsResponse{
+	return &dbpb.ListThreadsResponse{
 		Threads: threads,
-		Pagination: &pb.Pagination{
+		Pagination: &dbpb.Pagination{
 			CurrentPage: int32(page),
 			PerPage:     int32(pageSize),
 			TotalItems:  int32(totalItems),
@@ -417,7 +340,7 @@ func (s *DBServer) ListThreads(ctx context.Context, in *pb.ListThreadsRequest) (
 	}, nil
 }
 
-func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest) (*pb.Thread, error) {
+func (s *DBServer) CreateThread(ctx context.Context, in *dbpb.CreateThreadRequest) (*models.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	if in.GetCommunityId() == "" || in.GetAuthorId() == "" || in.GetTitle() == "" || in.GetContent() == "" {
@@ -455,18 +378,16 @@ func (s *DBServer) CreateThread(ctx context.Context, in *pb.CreateThreadRequest)
 		return nil, fmt.Errorf("failed to parse inserted ID")
 	}
 
-	return &pb.Thread{
+	return &models.Thread{
 		Id:          objectID.Hex(),
 		CommunityId: in.GetCommunityId(),
 		AuthorId:    in.GetAuthorId(),
 		Title:       in.GetTitle(),
 		Content:     in.GetContent(),
-		CreatedAt:   now,
-		UpdatedAt:   now,
 	}, nil
 }
 
-func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.Thread, error) {
+func (s *DBServer) GetThread(ctx context.Context, in *dbpb.GetThreadRequest) (*models.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	if in.Id == "" {
@@ -491,7 +412,7 @@ func (s *DBServer) GetThread(ctx context.Context, in *pb.GetThreadRequest) (*pb.
 	return ConvertToProtoThread(thread), nil
 }
 
-func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest) (*pb.Thread, error) {
+func (s *DBServer) UpdateThread(ctx context.Context, in *dbpb.UpdateThreadRequest) (*models.Thread, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	if in.GetId() == "" {
@@ -537,7 +458,7 @@ func (s *DBServer) UpdateThread(ctx context.Context, in *pb.UpdateThreadRequest)
 	return ConvertToProtoThread(updatedThread), nil
 }
 
-func (s *DBServer) DeleteThread(ctx context.Context, in *pb.DeleteThreadRequest) (*emptypb.Empty, error) {
+func (s *DBServer) DeleteThread(ctx context.Context, in *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Database("mongo-database").Collection("threads")
 
 	if in.GetId() == "" {
@@ -561,11 +482,11 @@ func (s *DBServer) DeleteThread(ctx context.Context, in *pb.DeleteThreadRequest)
 	return &emptypb.Empty{}, nil
 }
 
-func ConvertToProtoThread(thread bson.M) *pb.Thread {
+func ConvertToProtoThread(thread bson.M) *models.Thread {
 	createdAt := timestamppb.New(thread["created_at"].(primitive.DateTime).Time())
 	updatedAt := timestamppb.New(thread["updated_at"].(primitive.DateTime).Time())
 
-	return &pb.Thread{
+	return &models.Thread{
 		Id:          thread["_id"].(primitive.ObjectID).Hex(),
 		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
 		AuthorId:    thread["author_id"].(primitive.ObjectID).Hex(),

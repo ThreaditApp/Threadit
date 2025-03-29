@@ -166,15 +166,15 @@ func (x *Thread) GetDowns() string {
 }
 
 type Comment struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	Ups           string                 `protobuf:"bytes,3,opt,name=ups,proto3" json:"ups,omitempty"`
-	Downs         string                 `protobuf:"bytes,4,opt,name=downs,proto3" json:"downs,omitempty"`
-	ParentId      *string                `protobuf:"bytes,5,opt,name=parent_id,json=parentId,proto3,oneof" json:"parent_id,omitempty"`
-	ThreadId      *string                `protobuf:"bytes,6,opt,name=thread_id,json=threadId,proto3,oneof" json:"thread_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Content         string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	Ups             string                 `protobuf:"bytes,3,opt,name=ups,proto3" json:"ups,omitempty"`
+	Downs           string                 `protobuf:"bytes,4,opt,name=downs,proto3" json:"downs,omitempty"`
+	ParentCommentId *string                `protobuf:"bytes,5,opt,name=parent_comment_id,json=parentCommentId,proto3,oneof" json:"parent_comment_id,omitempty"`
+	ParentThreadId  *string                `protobuf:"bytes,6,opt,name=parent_thread_id,json=parentThreadId,proto3,oneof" json:"parent_thread_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Comment) Reset() {
@@ -235,16 +235,16 @@ func (x *Comment) GetDowns() string {
 	return ""
 }
 
-func (x *Comment) GetParentId() string {
-	if x != nil && x.ParentId != nil {
-		return *x.ParentId
+func (x *Comment) GetParentCommentId() string {
+	if x != nil && x.ParentCommentId != nil {
+		return *x.ParentCommentId
 	}
 	return ""
 }
 
-func (x *Comment) GetThreadId() string {
-	if x != nil && x.ThreadId != nil {
-		return *x.ThreadId
+func (x *Comment) GetParentThreadId() string {
+	if x != nil && x.ParentThreadId != nil {
+		return *x.ParentThreadId
 	}
 	return ""
 }
@@ -264,18 +264,16 @@ const file_models_proto_rawDesc = "" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12\x18\n" +
 	"\acontent\x18\x04 \x01(\tR\acontent\x12\x10\n" +
 	"\x03ups\x18\x05 \x01(\tR\x03ups\x12\x14\n" +
-	"\x05downs\x18\x06 \x01(\tR\x05downs\"\xbb\x01\n" +
+	"\x05downs\x18\x06 \x01(\tR\x05downs\"\xe6\x01\n" +
 	"\aComment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\x12\x10\n" +
 	"\x03ups\x18\x03 \x01(\tR\x03ups\x12\x14\n" +
-	"\x05downs\x18\x04 \x01(\tR\x05downs\x12 \n" +
-	"\tparent_id\x18\x05 \x01(\tH\x00R\bparentId\x88\x01\x01\x12 \n" +
-	"\tthread_id\x18\x06 \x01(\tH\x01R\bthreadId\x88\x01\x01B\f\n" +
-	"\n" +
-	"_parent_idB\f\n" +
-	"\n" +
-	"_thread_idB\x0fZ\rgen/pb;modelsb\x06proto3"
+	"\x05downs\x18\x04 \x01(\tR\x05downs\x12/\n" +
+	"\x11parent_comment_id\x18\x05 \x01(\tH\x00R\x0fparentCommentId\x88\x01\x01\x12-\n" +
+	"\x10parent_thread_id\x18\x06 \x01(\tH\x01R\x0eparentThreadId\x88\x01\x01B\x14\n" +
+	"\x12_parent_comment_idB\x13\n" +
+	"\x11_parent_thread_idB\x0fZ\rgen/pb;modelsb\x06proto3"
 
 var (
 	file_models_proto_rawDescOnce sync.Once
