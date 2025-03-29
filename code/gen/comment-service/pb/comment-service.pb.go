@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -579,7 +580,7 @@ var File_comment_service_proto protoreflect.FileDescriptor
 
 const file_comment_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15comment-service.proto\x12\acomment\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xbd\x01\n" +
+	"\x15comment-service.proto\x12\acomment\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\"\xbd\x01\n" +
 	"\aComment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\apost_id\x18\x02 \x01(\tR\x06postId\x12\x17\n" +
@@ -619,14 +620,14 @@ const file_comment_service_proto_rawDesc = "" +
 	"\vtotal_items\x18\x03 \x01(\x05R\n" +
 	"totalItems\x12\x1f\n" +
 	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages2\x84\x03\n" +
-	"\x0eCommentService\x12K\n" +
-	"\fListComments\x12\x1c.comment.ListCommentsRequest\x1a\x1d.comment.ListCommentsResponse\x12N\n" +
-	"\rCreateComment\x12\x1d.comment.CreateCommentRequest\x1a\x1e.comment.CreateCommentResponse\x12E\n" +
+	"totalPages2\xf8\x03\n" +
+	"\x0eCommentService\x12^\n" +
+	"\fListComments\x12\x1c.comment.ListCommentsRequest\x1a\x1d.comment.ListCommentsResponse\"\x11\x82\xd3\xe4\x93\x02\v\x12\t/comments\x12d\n" +
+	"\rCreateComment\x12\x1d.comment.CreateCommentRequest\x1a\x1e.comment.CreateCommentResponse\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/comments\x12]\n" +
 	"\n" +
-	"GetComment\x12\x1a.comment.GetCommentRequest\x1a\x1b.comment.GetCommentResponse\x12F\n" +
-	"\rUpdateComment\x12\x1d.comment.UpdateCommentRequest\x1a\x16.google.protobuf.Empty\x12F\n" +
-	"\rDeleteComment\x12\x1d.comment.DeleteCommentRequest\x1a\x16.google.protobuf.EmptyB\x1bZ\x19gen/comment-service/pb;pbb\x06proto3"
+	"GetComment\x12\x1a.comment.GetCommentRequest\x1a\x1b.comment.GetCommentResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/comments/{id}\x12a\n" +
+	"\rUpdateComment\x12\x1d.comment.UpdateCommentRequest\x1a\x16.google.protobuf.Empty\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*2\x0e/comments/{id}\x12^\n" +
+	"\rDeleteComment\x12\x1d.comment.DeleteCommentRequest\x1a\x16.google.protobuf.Empty\"\x16\x82\xd3\xe4\x93\x02\x10*\x0e/comments/{id}B\x1bZ\x19gen/comment-service/pb;pbb\x06proto3"
 
 var (
 	file_comment_service_proto_rawDescOnce sync.Once

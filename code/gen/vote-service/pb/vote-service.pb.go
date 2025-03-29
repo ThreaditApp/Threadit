@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -114,19 +115,19 @@ var File_vote_service_proto protoreflect.FileDescriptor
 
 const file_vote_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12vote-service.proto\x12\x04vote\x1a\x1bgoogle/protobuf/empty.proto\"0\n" +
+	"\x12vote-service.proto\x12\x04vote\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\"0\n" +
 	"\x11VoteThreadRequest\x12\x1b\n" +
 	"\tthread_id\x18\x01 \x01(\tR\bthreadId\"3\n" +
 	"\x12VoteCommentRequest\x12\x1d\n" +
 	"\n" +
-	"comment_id\x18\x01 \x01(\tR\tcommentId2\xa5\x03\n" +
-	"\vVoteService\x12?\n" +
-	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\x12A\n" +
-	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\x12C\n" +
-	"\x10RemoveThreadVote\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\x12A\n" +
-	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\x12C\n" +
-	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\x12E\n" +
-	"\x11RemoveCommentVote\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.EmptyB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
+	"comment_id\x18\x01 \x01(\tR\tcommentId2\xec\x04\n" +
+	"\vVoteService\x12_\n" +
+	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/vote/thread/upvote\x12c\n" +
+	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/vote/thread/downvote\x12c\n" +
+	"\x10RemoveThreadVote\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/vote/thread/remove\x12b\n" +
+	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/vote/comment/upvote\x12f\n" +
+	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/vote/comment/downvote\x12f\n" +
+	"\x11RemoveCommentVote\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/vote/comment/removeB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
 
 var (
 	file_vote_service_proto_rawDescOnce sync.Once

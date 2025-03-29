@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -393,7 +394,7 @@ var File_search_service_proto protoreflect.FileDescriptor
 
 const file_search_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14search-service.proto\x12\x06search\"+\n" +
+	"\x14search-service.proto\x12\x06search\x1a\x1cgoogle/api/annotations.proto\"+\n" +
 	"\x13GlobalSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"u\n" +
 	"\x14GlobalSearchResponse\x12\x1d\n" +
@@ -413,13 +414,13 @@ const file_search_service_proto_rawDesc = "" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"5\n" +
 	"\x14ThreadSearchResponse\x12\x1d\n" +
 	"\n" +
-	"thread_ids\x18\x01 \x03(\tR\tthreadIds2\xbe\x02\n" +
-	"\rSearchService\x12I\n" +
-	"\fGlobalSearch\x12\x1b.search.GlobalSearchRequest\x1a\x1c.search.GlobalSearchResponse\x12C\n" +
+	"thread_ids\x18\x01 \x03(\tR\tthreadIds2\x98\x03\n" +
+	"\rSearchService\x12Z\n" +
+	"\fGlobalSearch\x12\x1b.search.GlobalSearchRequest\x1a\x1c.search.GlobalSearchResponse\"\x0f\x82\xd3\xe4\x93\x02\t\x12\a/search\x12Y\n" +
 	"\n" +
-	"UserSearch\x12\x19.search.UserSearchRequest\x1a\x1a.search.UserSearchResponse\x12R\n" +
-	"\x0fCommunitySearch\x12\x1e.search.CommunitySearchRequest\x1a\x1f.search.CommunitySearchResponse\x12I\n" +
-	"\fThreadSearch\x12\x1b.search.ThreadSearchRequest\x1a\x1c.search.ThreadSearchResponseB\x1aZ\x18gen/search-service/pb;pbb\x06proto3"
+	"UserSearch\x12\x19.search.UserSearchRequest\x1a\x1a.search.UserSearchResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/search/user\x12m\n" +
+	"\x0fCommunitySearch\x12\x1e.search.CommunitySearchRequest\x1a\x1f.search.CommunitySearchResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/search/community\x12a\n" +
+	"\fThreadSearch\x12\x1b.search.ThreadSearchRequest\x1a\x1c.search.ThreadSearchResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/search/threadB\x1aZ\x18gen/search-service/pb;pbb\x06proto3"
 
 var (
 	file_search_service_proto_rawDescOnce sync.Once

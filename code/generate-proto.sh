@@ -14,6 +14,7 @@ SERVICE_NAME="$1"
 # get paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROTO_DIR="$SCRIPT_DIR/proto"
+GOOGLE_API_DIR="$PROTO_DIR/google/api"
 PROTO_FILE="$PROTO_DIR/${SERVICE_NAME}.proto"
 GEN_DIR="$SCRIPT_DIR/gen"
 OUT_DIR="$GEN_DIR/$SERVICE_NAME/pb"
@@ -38,6 +39,8 @@ protoc \
   --go_opt=paths=source_relative \
   --go-grpc_out="$OUT_DIR" \
   --go-grpc_opt=paths=source_relative \
+  --grpc-gateway_out="." \
+  --proto_path="$GOOGLE_API_DIR" \
   --proto_path="$PROTO_DIR" \
   "$PROTO_FILE"
 

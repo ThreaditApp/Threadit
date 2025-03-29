@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -539,7 +540,7 @@ var File_thread_service_proto protoreflect.FileDescriptor
 
 const file_thread_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfe\x01\n" +
+	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xfe\x01\n" +
 	"\x06Thread\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\fcommunity_id\x18\x02 \x01(\tR\vcommunityId\x12\x1b\n" +
@@ -596,13 +597,14 @@ const file_thread_service_proto_rawDesc = "" +
 	"\n" +
 	"\b_content\"%\n" +
 	"\x13DeleteThreadRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xcd\x02\n" +
-	"\rThreadService\x12F\n" +
-	"\vListThreads\x12\x1a.thread.ListThreadsRequest\x1a\x1b.thread.ListThreadsResponse\x12;\n" +
-	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x0e.thread.Thread\x125\n" +
-	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x0e.thread.Thread\x12;\n" +
-	"\fUpdateThread\x12\x1b.thread.UpdateThreadRequest\x1a\x0e.thread.Thread\x12C\n" +
-	"\fDeleteThread\x12\x1b.thread.DeleteThreadRequest\x1a\x16.google.protobuf.EmptyB\x1aZ\x18gen/thread-service/pb;pbb\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id2\xbc\x03\n" +
+	"\rThreadService\x12X\n" +
+	"\vListThreads\x12\x1a.thread.ListThreadsRequest\x1a\x1b.thread.ListThreadsResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
+	"\x12\b/threads\x12P\n" +
+	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x0e.thread.Thread\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/threads\x12L\n" +
+	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x0e.thread.Thread\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/threads/{id}\x12U\n" +
+	"\fUpdateThread\x12\x1b.thread.UpdateThreadRequest\x1a\x0e.thread.Thread\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*2\r/threads/{id}\x12Z\n" +
+	"\fDeleteThread\x12\x1b.thread.DeleteThreadRequest\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f*\r/threads/{id}B\x1aZ\x18gen/thread-service/pb;pbb\x06proto3"
 
 var (
 	file_thread_service_proto_rawDescOnce sync.Once

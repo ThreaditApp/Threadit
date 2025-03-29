@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
@@ -299,7 +300,7 @@ var File_feed_service_proto protoreflect.FileDescriptor
 
 const file_feed_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12feed-service.proto\x12\x04feed\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf5\x01\n" +
+	"\x12feed-service.proto\x12\x04feed\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xf5\x01\n" +
 	"\x06Thread\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12!\n" +
@@ -326,9 +327,9 @@ const file_feed_service_proto_rawDesc = "" +
 	"\vtotal_items\x18\x03 \x01(\x05R\n" +
 	"totalItems\x12\x1f\n" +
 	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
-	"totalPages2Q\n" +
-	"\vFeedService\x12B\n" +
-	"\vGetUserFeed\x12\x18.feed.GetUserFeedRequest\x1a\x19.feed.GetUserFeedResponseB\x18Z\x16gen/feed-service/pb;pbb\x06proto3"
+	"totalPages2`\n" +
+	"\vFeedService\x12Q\n" +
+	"\vGetUserFeed\x12\x18.feed.GetUserFeedRequest\x1a\x19.feed.GetUserFeedResponse\"\r\x82\xd3\xe4\x93\x02\a\x12\x05/feedB\x18Z\x16gen/feed-service/pb;pbb\x06proto3"
 
 var (
 	file_feed_service_proto_rawDescOnce sync.Once

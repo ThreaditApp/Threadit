@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,7 +25,7 @@ var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12user-service.proto\x12\x04user2\r\n" +
+	"\x12user-service.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto2\r\n" +
 	"\vUserServiceB\x18Z\x16gen/user-service/pb;pbb\x06proto3"
 
 var file_user_service_proto_goTypes = []any{}

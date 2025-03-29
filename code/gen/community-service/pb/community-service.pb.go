@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -515,7 +516,7 @@ var File_community_service_proto protoreflect.FileDescriptor
 
 const file_community_service_proto_rawDesc = "" +
 	"\n" +
-	"\x17community-service.proto\x12\tcommunity\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x01\n" +
+	"\x17community-service.proto\x12\tcommunity\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xe2\x01\n" +
 	"\tCommunity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bowner_id\x18\x02 \x01(\tR\aownerId\x12\x12\n" +
@@ -566,13 +567,13 @@ const file_community_service_proto_rawDesc = "" +
 	"\x05_nameB\x0e\n" +
 	"\f_description\"(\n" +
 	"\x16DeleteCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\x98\x03\n" +
-	"\x10CommunityService\x12X\n" +
-	"\x0fListCommunities\x12!.community.ListCommunitiesRequest\x1a\".community.ListCommunitiesResponse\x12J\n" +
-	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\x14.community.Community\x12D\n" +
-	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x14.community.Community\x12J\n" +
-	"\x0fUpdateCommunity\x12!.community.UpdateCommunityRequest\x1a\x14.community.Community\x12L\n" +
-	"\x0fDeleteCommunity\x12!.community.DeleteCommunityRequest\x1a\x16.google.protobuf.EmptyB\x1dZ\x1bgen/community-service/pb;pbb\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id2\x9b\x04\n" +
+	"\x10CommunityService\x12n\n" +
+	"\x0fListCommunities\x12!.community.ListCommunitiesRequest\x1a\".community.ListCommunitiesResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/communities\x12c\n" +
+	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\x14.community.Community\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/communities\x12_\n" +
+	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x14.community.Community\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/communities/{id}\x12h\n" +
+	"\x0fUpdateCommunity\x12!.community.UpdateCommunityRequest\x1a\x14.community.Community\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/communities/{id}\x12g\n" +
+	"\x0fDeleteCommunity\x12!.community.DeleteCommunityRequest\x1a\x16.google.protobuf.Empty\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/communities/{id}B\x1dZ\x1bgen/community-service/pb;pbb\x06proto3"
 
 var (
 	file_community_service_proto_rawDescOnce sync.Once

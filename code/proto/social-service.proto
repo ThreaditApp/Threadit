@@ -5,16 +5,54 @@ package social;
 option go_package = "gen/social-service/pb;pb";
 
 import "google/protobuf/empty.proto";
-
+import "google/api/annotations.proto";
 
 service SocialService {
-  rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty);
-	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty);
-	rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
-	rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse);
-	rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
-	rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty);
-	rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse);
+  rpc FollowUser (FollowUserRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/social/follow/user"
+			body: "*"
+		};
+	}
+
+	rpc UnfollowUser (FollowUserRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			delete: "/social/follow/user"
+			body: "*"
+		};
+	}
+
+	rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse) {
+		option (google.api.http) = {
+			get: "/social/followers/{user_id}"
+		};
+	}
+
+	rpc GetFollowing (GetFollowingRequest) returns (GetFollowingResponse) {
+		option (google.api.http) = {
+			get: "/social/following/{user_id}"
+		};
+	}
+
+	rpc FollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/social/follow/community"
+			body: "*"
+		};
+	}
+
+	rpc UnfollowCommunity (FollowCommunityRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			delete: "/social/follow/community"
+			body: "*"
+		};
+	}
+
+	rpc GetCommunityFollowers (GetCommunityFollowersRequest) returns (GetCommunityFollowersResponse) {
+		option (google.api.http) = {
+			get: "/social/community/followers/{community_id}"
+		};
+	}
 }
 
 message FollowUserRequest {

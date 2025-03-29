@@ -4,11 +4,32 @@ package search;
 
 option go_package = "gen/search-service/pb;pb";
 
+import "google/api/annotations.proto";
+
 service SearchService {
-	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse);
-	rpc UserSearch (UserSearchRequest) returns (UserSearchResponse);
-	rpc CommunitySearch (CommunitySearchRequest) returns (CommunitySearchResponse);
-	rpc ThreadSearch (ThreadSearchRequest) returns (ThreadSearchResponse);
+	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse) {
+		option (google.api.http) = {
+			get: "/search"
+		};
+	}
+
+	rpc UserSearch (UserSearchRequest) returns (UserSearchResponse) {
+		option (google.api.http) = {
+			get: "/search/user"
+		};
+	}
+
+	rpc CommunitySearch (CommunitySearchRequest) returns (CommunitySearchResponse) {
+		option (google.api.http) = {
+			get: "/search/community"
+		};
+	}
+
+	rpc ThreadSearch (ThreadSearchRequest) returns (ThreadSearchResponse) {
+		option (google.api.http) = {
+			get: "/search/thread"
+		};
+	}
 }
 
 message GlobalSearchRequest {
