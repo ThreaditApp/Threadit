@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -21,7 +20,7 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 	if req.GetThreadId() != "" {
 		threadId, err := primitive.ObjectIDFromHex(req.GetThreadId())
 		if err != nil {
-			return nil, fmt.Errorf("invalid thread ID: %v", err)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid thread id: %v", err)
 		}
 		filter["thread_id"] = threadId
 	}
@@ -45,7 +44,7 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 		}
 		enumInt, ok := models.CommentParentType_value[comment.ParentType]
 		if !ok {
-			return nil, fmt.Errorf("invalid CommentParentType: %s", comment.ParentType)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid parent type: %v", comment.ParentType)
 		}
 		results = append(results, &models.Comment{
 			Id:         comment.ID,
@@ -96,7 +95,7 @@ func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) 
 	collection := s.Mongo.Collection("comments")
 	id, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
-		return nil, fmt.Errorf("invalid comment ID: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid comment id: %v", err)
 	}
 	filter := bson.M{
 		"_id": id,
@@ -104,11 +103,11 @@ func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) 
 	var comment bson.M
 	err = collection.FindOne(ctx, filter).Decode(&comment)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "comment not found: %v", err)
 	}
 	enumInt, ok := models.CommentParentType_value[comment["parent_type"].(string)]
 	if !ok {
-		return nil, fmt.Errorf("invalid CommentParentType: %s", comment["parent_type"])
+		return nil, status.Errorf(codes.InvalidArgument, "invalid parent type: %v", comment["parent_type"])
 	}
 	return &models.Comment{
 		Id:         comment["_id"].(primitive.ObjectID).Hex(),

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -78,7 +77,7 @@ func (s *DBServer) GetCommunity(ctx context.Context, req *dbpb.GetCommunityReque
 	collection := s.Mongo.Collection("communities")
 	id, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid community ID: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
 	}
 	filter := bson.M{
 		"_id": id,

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	commentpb "gen/comment-service/pb"
 	popularpb "gen/popular-service/pb"
 	threadpb "gen/thread-service/pb"
@@ -22,7 +21,7 @@ func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.Ge
 		SortBy: &sortBy,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling thread service: %w", err)
+		return nil, err
 	}
 	return &popularpb.GetPopularThreadsResponse{
 		Threads: res.Threads,
@@ -32,12 +31,12 @@ func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.Ge
 func (s *PopularServer) GetPopularComments(ctx context.Context, req *popularpb.GetPopularCommentsRequest) (*popularpb.GetPopularCommentsResponse, error) {
 	sortBy := "votes"
 	res, err := s.CommentClient.ListComments(ctx, &commentpb.ListCommentsRequest{
-		Offset:   req.Offset,
-		Limit:    req.Limit,
-		SortBy:   &sortBy,
+		Offset: req.Offset,
+		Limit:  req.Limit,
+		SortBy: &sortBy,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling comment service: %w", err)
+		return nil, err
 	}
 	return &popularpb.GetPopularCommentsResponse{
 		Comments: res.Comments,
