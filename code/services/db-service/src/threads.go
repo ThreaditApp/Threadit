@@ -39,6 +39,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 			Content     string `bson:"content"`
 			Ups         int32  `bson:"ups"`
 			Downs       int32  `bson:"downs"`
+			NumComments int32  `bson:"num_comments"`
 		}
 		if err := cursor.Decode(&thread); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to decode thread: %v", err)
@@ -50,6 +51,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 			Content:     thread.Content,
 			Ups:         thread.Ups,
 			Downs:       thread.Downs,
+			NumComments: thread.NumComments,
 		})
 	}
 	if err := cursor.Err(); err != nil {
@@ -70,12 +72,18 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 		CommunityId: req.GetCommunityId(),
 		Title:       req.GetTitle(),
 		Content:     req.GetContent(),
+		Ups:         0,
+		Downs:       0,
+		NumComments: 0,
 	}
 	doc := bson.M{
 		"_id":          thread.Id,
 		"community_id": thread.CommunityId,
 		"title":        thread.Title,
 		"content":      thread.Content,
+		"ups":          thread.Ups,
+		"downs":        thread.Downs,
+		"num_comments": thread.NumComments,
 	}
 	_, err := collection.InsertOne(ctx, doc)
 	if err != nil {
@@ -115,6 +123,7 @@ func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*
 		Content:     thread["content"].(string),
 		Ups:         thread["ups"].(int32),
 		Downs:       thread["downs"].(int32),
+		NumComments: thread["num_comments"].(int32),
 	}, nil
 }
 
@@ -130,14 +139,24 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 	if req.Content != nil {
 		setFields["content"] = req.GetContent()
 	}
+	if req.NumCommentsOffset != nil {
+		offset := req.GetNumCommentsOffset()
+		if offset == 1 {
+			incFields["num_comments"] = 1
+		} else if offset == -1 {
+			incFields["num_comments"] = -1
+		} else {
+			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+		}
+	}
 	if req.VoteOffset != nil {
 		offset := req.GetVoteOffset()
-		if offset > 0 {
-			incFields["ups"] = offset
-		} else if offset < 0 {
-			incFields["downs"] = -offset // ensure it's positive
+		if offset == 1 {
+			incFields["ups"] = 1
+		} else if offset == -1 {
+			incFields["downs"] = 1
 		} else {
-			return nil, status.Errorf(codes.InvalidArgument, "vote offset cannot be zero")
+			return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset %d", req.VoteOffset)
 		}
 	}
 	if len(setFields) > 0 {

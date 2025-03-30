@@ -65,10 +65,10 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 	if req.Id == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
-	if req.Name == "" {
+	if req.GetName() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "name is required")
 	}
-	if len(req.Name) < 3 || len(req.Name) > 50 {
+	if len(req.GetName()) < 3 || len(req.GetName()) > 50 {
 		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
 	}
 	_, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
