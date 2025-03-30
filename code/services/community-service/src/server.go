@@ -5,6 +5,7 @@ import (
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+	"math"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -71,9 +72,13 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 	if len(req.GetName()) < 3 || len(req.GetName()) > 50 {
 		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
 	}
+	if math.Abs(float64(req.GetNumThreadsOffset())) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid num threads offset %d", req.GetNumThreadsOffset())
+	}
 	_, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
-		Id:   req.Id,
-		Name: req.Name,
+		Id:               req.Id,
+		Name:             req.Name,
+		NumThreadsOffset: req.NumThreadsOffset,
 	})
 	if err != nil {
 		return nil, err

@@ -6,6 +6,7 @@ import (
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	threadpb "gen/thread-service/pb"
+	"math"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -98,11 +99,19 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.Update
 	if req.Content != nil && len(*req.Content) > 500 {
 		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of 500 characters")
 	}
+	if req.VoteOffset != nil && math.Abs(float64(*req.VoteOffset)) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid votes offset %d", req.VoteOffset)
+	}
+	if req.NumCommentsOffset != nil && math.Abs(float64(*req.NumCommentsOffset)) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+	}
 
 	// update comment
 	_, err := s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
-		Id:      req.Id,
-		Content: req.Content,
+		Id:                req.Id,
+		Content:           req.Content,
+		VoteOffset:        req.VoteOffset,
+		NumCommentsOffset: req.NumCommentsOffset,
 	})
 	if err != nil {
 		return nil, err

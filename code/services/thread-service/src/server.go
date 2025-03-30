@@ -6,6 +6,7 @@ import (
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	threadpb "gen/thread-service/pb"
+	"math"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -93,10 +94,18 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 	if req.Content != nil && *req.Content != "" && (len(*req.Content) < 3 || len(*req.Content) > 500) {
 		return nil, status.Errorf(codes.InvalidArgument, "content must be between 3 and 500 characters long")
 	}
+	if req.VoteOffset != nil && math.Abs(float64(*req.VoteOffset)) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset %d", req.VoteOffset)
+	}
+	if req.NumCommentsOffset != nil && math.Abs(float64(*req.NumCommentsOffset)) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+	}
 	_, err := s.DBClient.UpdateThread(ctx, &dbpb.UpdateThreadRequest{
-		Id:      req.Id,
-		Title:   req.Title,
-		Content: req.Content,
+		Id:                req.Id,
+		Title:             req.Title,
+		Content:           req.Content,
+		VoteOffset:        req.VoteOffset,
+		NumCommentsOffset: req.NumCommentsOffset,
 	})
 	if err != nil {
 		return nil, err
