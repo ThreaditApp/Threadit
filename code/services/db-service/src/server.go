@@ -5,6 +5,8 @@ import (
 	"fmt"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,573 +14,517 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type DBServer struct {
 	dbpb.UnimplementedDBServiceServer
-	Mongo *mongo.Client
+	Mongo *mongo.Database
 }
 
-func (s *DBServer) ListCommunities(ctx context.Context, in *dbpb.ListCommunitiesRequest) (*dbpb.ListCommunitiesResponse, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("communities")
-
+func (s *DBServer) ListCommunities(ctx context.Context, req *dbpb.ListCommunitiesRequest) (*dbpb.ListCommunitiesResponse, error) {
+	collection := s.Mongo.Collection("communities")
 	filter := bson.M{}
-	if in.GetOwnerId() != "" {
-		ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
-		if err != nil {
-			return nil, fmt.Errorf("invalid owner ID: %v", err)
-		}
-		filter["owner_id"] = ownerId
-	}
-	if in.GetName() != "" {
-		searchTerm := ".*" + in.GetName() + ".*"
-		filter["$or"] = []bson.M{
-			{"name": bson.M{"$regex": searchTerm, "$options": "i"}},
-		}
+	if req.GetName() != "" {
+		filter["name"] = bson.M{"$regex": req.GetName(), "$options": "i"} // case-insensitive name match
 	}
 
-	page := int64(1)
-	pageSize := int64(25)
-	if in.GetPage() > 0 {
-		page = int64(in.GetPage())
-	}
-	if in.GetPageSize() > 0 {
-		pageSize = int64(in.GetPageSize())
-	}
-
-	skip := (page - 1) * pageSize
-
-	sortField := "created_at"
-	sortOrder := int32(-1)
-	if in.GetSortBy() != "" {
-		sortBy := strings.ToLower(in.GetSortBy())
-		if sortBy == "updated_at" { // allowed fields
-			sortField = sortBy
-		}
-	}
-	if in.GetSortOrder() != "" {
-		inSortOrder := strings.ToLower(in.GetSortOrder())
-		if inSortOrder == "asc" {
-			sortOrder = 1
-		}
-	}
-
-	sortOptions := bson.D{{Key: sortField, Value: sortOrder}}
-
-	totalItems, err := collection.CountDocuments(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	findOptions := options.Find().
-		SetSkip(skip).
-		SetLimit(pageSize).
-		SetSort(sortOptions)
-
+	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), "")
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to find communities: %v", err)
 	}
 	defer cursor.Close(ctx)
 
-	var communities []*models.Community
+	var results []*models.Community
 	for cursor.Next(ctx) {
-		var community bson.M
-		if err := cursor.Decode(&community); err != nil {
-			return nil, err
+		var community struct {
+			ID      string   `bson:"_id"`
+			Name    string   `bson:"name"`
+			Threads []string `bson:"threads"`
 		}
-		communities = append(communities, ConvertToProtoCommunity(community))
+		if err := cursor.Decode(&community); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to decode community: %v", err)
+		}
+		results = append(results, &models.Community{
+			Id:      community.ID,
+			Name:    community.Name,
+			Threads: community.Threads,
+		})
 	}
 
 	if err := cursor.Err(); err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "cursor error: %v", err)
 	}
-
-	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
-
 	return &dbpb.ListCommunitiesResponse{
-		Communities: communities,
-		Pagination: &dbpb.Pagination{
-			CurrentPage: int32(page),
-			PerPage:     int32(pageSize),
-			TotalItems:  int32(totalItems),
-			TotalPages:  int32(totalPages),
-		},
+		Communities: results,
 	}, nil
 }
 
-func (s *DBServer) CreateCommunity(ctx context.Context, in *dbpb.CreateCommunityRequest) (*models.Community, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("communities")
-
-	if in.GetOwnerId() == "" || in.GetName() == "" || in.GetDescription() == "" {
-		return nil, fmt.Errorf("missing required fields")
+func (s *DBServer) CreateCommunity(ctx context.Context, req *dbpb.CreateCommunityRequest) (*models.Community, error) {
+	communityID := generateUniqueId()
+	community := &models.Community{
+		Id:      communityID,
+		Name:    req.GetName(),
+		Threads: []string{},
+	}
+	doc := bson.M{
+		"_id":     community.Id,
+		"name":    community.Name,
+		"threads": community.Threads,
 	}
 
-	ownerId, err := primitive.ObjectIDFromHex(in.GetOwnerId())
+	collection := s.Mongo.Collection("communities")
+	_, err := collection.InsertOne(ctx, doc)
 	if err != nil {
-		return nil, fmt.Errorf("invalid owner ID: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to create community: %v", err)
 	}
-
-	now := timestamppb.Now()
-
-	community := bson.M{
-		"owner_id":    ownerId,
-		"name":        in.GetName(),
-		"description": in.GetDescription(),
-		"created_at":  now.AsTime(),
-		"updated_at":  now.AsTime(),
-	}
-
-	res, err := collection.InsertOne(ctx, community)
-	if err != nil {
-		return nil, err
-	}
-
-	objectID, ok := res.InsertedID.(primitive.ObjectID)
-	if !ok {
-		return nil, fmt.Errorf("failed to parse inserted ID")
-	}
-
-	return &models.Community{
-		Id:   objectID.Hex(),
-		Name: in.GetName(),
-	}, nil
+	return community, nil
 }
 
-func (s *DBServer) GetCommunity(ctx context.Context, in *dbpb.GetCommunityRequest) (*models.Community, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("communities")
-
-	if in.GetId() == "" {
-		return nil, fmt.Errorf("missing required fields")
-	}
-
-	id, err := primitive.ObjectIDFromHex(in.GetId())
+func (s *DBServer) GetCommunity(ctx context.Context, req *dbpb.GetCommunityRequest) (*models.Community, error) {
+	collection := s.Mongo.Collection("communities")
+	id, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid community ID: %v", err)
 	}
 	filter := bson.M{
 		"_id": id,
 	}
-
 	var community bson.M
 	err = collection.FindOne(ctx, filter).Decode(&community)
 	if err != nil {
 		return nil, err
 	}
-
-	return ConvertToProtoCommunity(community), nil
-}
-
-func (s *DBServer) UpdateCommunity(ctx context.Context, in *dbpb.UpdateCommunityRequest) (*models.Community, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("communities")
-
-	if in.GetId() == "" {
-		return nil, fmt.Errorf("missing required fields")
-	}
-
-	id, err := primitive.ObjectIDFromHex(in.GetId())
-	if err != nil {
-		return nil, fmt.Errorf("invalid community ID: %v", err)
-	}
-	filter := bson.M{
-		"_id": id,
-	}
-
-	update := bson.M{
-		"$set": bson.M{
-			"updated_at": timestamppb.Now().AsTime(),
-		},
-	}
-
-	updateFields := bson.M{}
-	if in.GetName() != "" {
-		updateFields["name"] = in.GetName()
-	}
-	if in.GetDescription() != "" {
-		updateFields["content"] = in.GetDescription()
-	}
-
-	if len(updateFields) > 0 {
-		for k, v := range updateFields {
-			update["$set"].(bson.M)[k] = v
-		}
-	}
-
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-	var updatedCommunity bson.M
-	err = collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedCommunity)
-	if err != nil {
-		return nil, err
-	}
-
-	return ConvertToProtoCommunity(updatedCommunity), nil
-}
-
-func (s *DBServer) DeleteCommunity(ctx context.Context, in *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("communities")
-
-	if in.GetId() == "" {
-		return nil, fmt.Errorf("missing required fields")
-	}
-
-	id, err := primitive.ObjectIDFromHex(in.GetId())
-	if err != nil {
-		return nil, fmt.Errorf("invalid community ID: %v", err)
-	}
-	filter := bson.M{
-		"_id": id,
-	}
-
-	_, err = collection.DeleteOne(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func ConvertToProtoCommunity(community bson.M) *models.Community {
 	return &models.Community{
 		Id:   community["_id"].(primitive.ObjectID).Hex(),
 		Name: community["name"].(string),
-	}
+	}, nil
 }
 
-func (s *DBServer) ListThreads(ctx context.Context, in *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("threads")
+func (s *DBServer) UpdateCommunity(ctx context.Context, req *dbpb.UpdateCommunityRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("communities")
+	filter := bson.M{"_id": req.GetId()}
+	update := bson.M{"$set": bson.M{"name": req.GetName()}}
 
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update community: %v", err)
+	}
+	if result.MatchedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "community not found")
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *DBServer) DeleteCommunity(ctx context.Context, req *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("communities")
+
+	// attempt deletion
+	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete community: %v", err)
+	}
+	if result.DeletedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "community not found")
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
+	collection := s.Mongo.Collection("threads")
+
+	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
+	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
 	filter := bson.M{}
-	if in.GetCommunityId() != "" {
-		communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+	if req.GetCommunityId() != "" {
+		communityId, err := primitive.ObjectIDFromHex(req.GetCommunityId())
 		if err != nil {
 			return nil, fmt.Errorf("invalid community ID: %v", err)
 		}
 		filter["community_id"] = communityId
 	}
-	if in.GetAuthorId() != "" {
-		authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
-		if err != nil {
-			return nil, fmt.Errorf("invalid author ID: %v", err)
-		}
-		filter["author_id"] = authorId
+	if req.GetTitle() != "" {
+		filter["title"] = bson.M{"$regex": req.GetTitle(), "$options": "i"} // case-insensitive title match
 	}
-	if in.GetTitle() != "" {
-		searchTerm := ".*" + in.GetTitle() + ".*"
-		filter["$or"] = []bson.M{
-			{"title": bson.M{"$regex": searchTerm, "$options": "i"}},
-		}
-	}
-
-	page := int64(1)
-	pageSize := int64(25)
-	if in.GetPage() > 0 {
-		page = int64(in.GetPage())
-	}
-	if in.GetPageSize() > 0 {
-		pageSize = int64(in.GetPageSize())
-	}
-
-	skip := (page - 1) * pageSize
-
-	sortField := "created_at"
-	sortOrder := int32(-1)
-	if in.GetSortBy() != "" {
-		sortBy := strings.ToLower(in.GetSortBy())
-		if sortBy == "updated_at" { // allowed fields
-			sortField = sortBy
-		}
-	}
-	if in.GetSortOrder() != "" {
-		inSortOrder := strings.ToLower(in.GetSortOrder())
-		if inSortOrder == "asc" {
-			sortOrder = 1
-		}
-	}
-
-	sortOptions := bson.D{{Key: sortField, Value: sortOrder}}
-
-	totalItems, err := collection.CountDocuments(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	findOptions := options.Find().
-		SetSkip(skip).
-		SetLimit(pageSize).
-		SetSort(sortOptions)
 
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to find threads: %v", err)
 	}
 	defer cursor.Close(ctx)
-
-	var threads []*models.Thread
+	var results []*models.Thread
 	for cursor.Next(ctx) {
-		var thread bson.M
-		if err := cursor.Decode(&thread); err != nil {
-			return nil, err
+		var thread struct {
+			ID          string `bson:"_id"`
+			CommunityId string `bson:"community_id"`
+			Title       string `bson:"title"`
+			Content     string `bson:"content"`
+			Ups         int32  `bson:"ups"`
+			Downs       int32  `bson:"downs"`
 		}
-		threads = append(threads, ConvertToProtoThread(thread))
+		if err := cursor.Decode(&thread); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to decode thread: %v", err)
+		}
+		results = append(results, &models.Thread{
+			Id:          thread.ID,
+			CommunityId: thread.CommunityId,
+			Title:       thread.Title,
+			Content:     thread.Content,
+			Ups:         thread.Ups,
+			Downs:       thread.Downs,
+		})
 	}
-
 	if err := cursor.Err(); err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "cursor error: %v", err)
 	}
-
-	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
-
 	return &dbpb.ListThreadsResponse{
-		Threads: threads,
-		Pagination: &dbpb.Pagination{
-			CurrentPage: int32(page),
-			PerPage:     int32(pageSize),
-			TotalItems:  int32(totalItems),
-			TotalPages:  int32(totalPages),
-		},
+		Threads: results,
 	}, nil
 }
 
-func (s *DBServer) CreateThread(ctx context.Context, in *dbpb.CreateThreadRequest) (*models.Thread, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("threads")
+func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadRequest) (*models.Thread, error) {
+	collection := s.Mongo.Collection("threads")
 
-	if in.GetCommunityId() == "" || in.GetAuthorId() == "" || in.GetTitle() == "" || in.GetContent() == "" {
-		return nil, fmt.Errorf("missing required fields")
+	// create thread
+	threadID := generateUniqueId()
+	thread := &models.Thread{
+		Id:          threadID,
+		CommunityId: req.GetCommunityId(),
+		Title:       req.GetTitle(),
+		Content:     req.GetContent(),
+	}
+	doc := bson.M{
+		"_id":          thread.Id,
+		"community_id": thread.CommunityId,
+		"title":        thread.Title,
+		"content":      thread.Content,
+	}
+	_, err := collection.InsertOne(ctx, doc)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create thread: %v", err)
 	}
 
-	communityId, err := primitive.ObjectIDFromHex(in.GetCommunityId())
+	// update the community with the new thread ID
+	communityCollection := s.Mongo.Collection("communities")
+	communityID, err := primitive.ObjectIDFromHex(thread.CommunityId)
 	if err != nil {
 		return nil, fmt.Errorf("invalid community ID: %v", err)
 	}
-
-	authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+	update := bson.M{
+		"$addToSet": bson.M{
+			"threads": thread.Id,
+		},
+	}
+	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": communityID}, update)
 	if err != nil {
-		return nil, fmt.Errorf("invalid author ID: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
 	}
-
-	now := timestamppb.Now()
-
-	thread := bson.M{
-		"community_id": communityId,
-		"author_id":    authorId,
-		"title":        in.GetTitle(),
-		"content":      in.GetContent(),
-		"created_at":   now.AsTime(),
-		"updated_at":   now.AsTime(),
-	}
-
-	res, err := collection.InsertOne(ctx, thread)
-	if err != nil {
-		return nil, err
-	}
-
-	objectID, ok := res.InsertedID.(primitive.ObjectID)
-	if !ok {
-		return nil, fmt.Errorf("failed to parse inserted ID")
-	}
-
-	return &models.Thread{
-		Id:          objectID.Hex(),
-		CommunityId: in.GetCommunityId(),
-		AuthorId:    in.GetAuthorId(),
-		Title:       in.GetTitle(),
-		Content:     in.GetContent(),
-	}, nil
+	return thread, nil
 }
 
-func (s *DBServer) GetThread(ctx context.Context, in *dbpb.GetThreadRequest) (*models.Thread, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("threads")
-
-	if in.Id == "" {
-		return nil, fmt.Errorf("missing required fields")
-	}
-
-	id, err := primitive.ObjectIDFromHex(in.GetId())
+func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*models.Thread, error) {
+	collection := s.Mongo.Collection("threads")
+	id, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
 		return nil, fmt.Errorf("invalid thread ID: %v", err)
 	}
-
 	filter := bson.M{
 		"_id": id,
 	}
-
 	var thread bson.M
 	err = collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
 		return nil, err
 	}
-
-	return ConvertToProtoThread(thread), nil
+	return &models.Thread{
+		Id:          thread["_id"].(primitive.ObjectID).Hex(),
+		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
+		Title:       thread["title"].(string),
+		Content:     thread["content"].(string),
+		Ups:         thread["ups"].(int32),
+		Downs:       thread["downs"].(int32),
+	}, nil
 }
 
-func (s *DBServer) UpdateThread(ctx context.Context, in *dbpb.UpdateThreadRequest) (*models.Thread, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("threads")
+func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("threads")
+	update := bson.M{}
+	setFields := bson.M{}
+	incFields := bson.M{}
 
-	if in.GetId() == "" {
-		return nil, fmt.Errorf("missing required fields")
+	if req.Title != nil {
+		setFields["title"] = req.GetTitle()
 	}
-
-	id, err := primitive.ObjectIDFromHex(in.GetId())
-	if err != nil {
-		return nil, fmt.Errorf("invalid thread ID: %v", err)
+	if req.Content != nil {
+		setFields["content"] = req.GetContent()
 	}
-
-	filter := bson.M{
-		"_id": id,
-	}
-
-	update := bson.M{
-		"$set": bson.M{
-			"updated_at": timestamppb.Now().AsTime(),
-		},
-	}
-
-	updateFields := bson.M{}
-	if in.GetTitle() != "" {
-		updateFields["title"] = in.GetTitle()
-	}
-	if in.GetContent() != "" {
-		updateFields["content"] = in.GetContent()
-	}
-
-	if len(updateFields) > 0 {
-		for k, v := range updateFields {
-			update["$set"].(bson.M)[k] = v
+	if req.VoteOffset != nil {
+		offset := req.GetVoteOffset()
+		if offset > 0 {
+			incFields["ups"] = offset
+		} else if offset < 0 {
+			incFields["downs"] = -offset // ensure it's positive
+		} else {
+			return nil, status.Errorf(codes.InvalidArgument, "vote offset cannot be zero")
 		}
 	}
-
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-	var updatedThread bson.M
-	err = collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedThread)
-	if err != nil {
-		return nil, err
+	if len(setFields) > 0 {
+		update["$set"] = setFields
+	}
+	if len(incFields) > 0 {
+		update["$inc"] = incFields
+	}
+	if len(update) == 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "no update fields provided")
 	}
 
-	return ConvertToProtoThread(updatedThread), nil
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": req.GetId()}, update)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update thread: %v", err)
+	}
+	if result.MatchedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "thread not found")
+	}
+	return &emptypb.Empty{}, nil
 }
 
-func (s *DBServer) DeleteThread(ctx context.Context, in *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("threads")
+func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("threads")
 
-	if in.GetId() == "" {
-		return nil, fmt.Errorf("missing required fields")
-	}
+	// get thread
+	threadRes, err := s.GetThread(ctx, &dbpb.GetThreadRequest{Id: req.GetId()})
 
-	id, err := primitive.ObjectIDFromHex(in.GetId())
+	// attempt deletion
+	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
-		return nil, fmt.Errorf("invalid thread ID: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete thread: %v", err)
+	}
+	if result.DeletedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "thread not found")
 	}
 
-	filter := bson.M{
-		"_id": id,
-	}
-
-	_, err = collection.DeleteOne(ctx, filter)
+	// remove thread id from the community
+	communityCollection := s.Mongo.Collection("communities")
+	communityID, err := primitive.ObjectIDFromHex(threadRes.GetCommunityId())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid community ID: %v", err)
+	}
+	update := bson.M{
+		"$pull": bson.M{
+			"threads": req.GetId(),
+		},
+	}
+	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": communityID}, update)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
 	}
 
 	return &emptypb.Empty{}, nil
 }
 
-func ConvertToProtoThread(thread bson.M) *models.Thread {
-	createdAt := timestamppb.New(thread["created_at"].(primitive.DateTime).Time())
-	updatedAt := timestamppb.New(thread["updated_at"].(primitive.DateTime).Time())
-
-	return &models.Thread{
-		Id:          thread["_id"].(primitive.ObjectID).Hex(),
-		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
-		AuthorId:    thread["author_id"].(primitive.ObjectID).Hex(),
-		Title:       thread["title"].(string),
-		Content:     thread["content"].(string),
-		CreatedAt:   createdAt,
-		UpdatedAt:   updatedAt,
-	}
-}
-
-func (s *DBServer) ListComments(ctx context.Context, in *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
-	collection := s.Mongo.Database("mongo-database").Collection("comments")
-
+func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
+	collection := s.Mongo.Collection("comments")
+	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
+	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
 	filter := bson.M{}
-	if in.GetThreadId() != "" {
-		threadId, err := primitive.ObjectIDFromHex(in.GetThreadId())
+	if req.GetThreadId() != "" {
+		threadId, err := primitive.ObjectIDFromHex(req.GetThreadId())
 		if err != nil {
 			return nil, fmt.Errorf("invalid thread ID: %v", err)
 		}
 		filter["thread_id"] = threadId
 	}
-	if in.GetAuthorId() != "" {
-		authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
-		if err != nil {
-			return nil, fmt.Errorf("invalid author ID: %v", err)
-		}
-		filter["author_id"] = authorId
-	}
-	if in.GetContent() != "" {
-		searchTerm := ".*" + in.GetContent() + ".*"
-		filter["$or"] = []bson.M{
-			{"content": bson.M{"$regex": searchTerm, "$options": "i"}},
-		}
-	}
-
-	page := int64(1)
-	pageSize := int64(25)
-	if in.GetPage() > 0 {
-		page = int64(in.GetPage())
-	}
-	if in.GetPageSize() > 0 {
-		pageSize = int64(in.GetPageSize())
-	}
-
-	skip := (page - 1) * pageSize
-
-	sortField := "created_at"
-	sortOrder := int32(-1)
-	if in.GetSortBy() != "" {
-		sortBy := strings.ToLower(in.GetSortBy())
-		if sortBy == "updated_at" { // allowed fields
-			sortField = sortBy
-		}
-	}
-	if in.GetSortOrder() != "" {
-		inSortOrder := strings.ToLower(in.GetSortOrder())
-		if inSortOrder == "asc" {
-			sortOrder = 1
-		}
-	}
-
-	sortOptions := bson.D{{Key: sortField, Value: sortOrder}}
-
-	totalItems, err := collection.CountDocuments(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-
-	findOptions := options.Find().
-		SetSkip(skip).
-		SetLimit(pageSize).
-		SetSort(sortOptions)
-
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to find comments: %v", err)
 	}
 	defer cursor.Close(ctx)
-	var comments []*models.Comment
+	var results []*models.Comment
 	for cursor.Next(ctx) {
-		var comment bson.M
-		if err := cursor.Decode(&comment); err != nil {
-			return nil, err
+		var comment struct {
+			ID         string `bson:"_id"`
+			Content    string `bson:"content"`
+			Ups        int32  `bson:"ups"`
+			Downs      int32  `bson:"downs"`
+			ParentId   string `bson:"parent_id"`
+			ParentType string `bson:"parent_type"`
 		}
-		comments = append(comments, ConvertToProtoComment(comment))
+		if err := cursor.Decode(&comment); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to decode comment: %v", err)
+		}
+		enumInt, ok := models.CommentParentType_value[comment.ParentType]
+		if !ok {
+			return nil, fmt.Errorf("invalid CommentParentType: %s", comment.ParentType)
+		}
+		results = append(results, &models.Comment{
+			Id:         comment.ID,
+			Content:    comment.Content,
+			Ups:        comment.Ups,
+			Downs:      comment.Downs,
+			ParentId:   comment.ParentId,
+			ParentType: models.CommentParentType(enumInt),
+		})
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, status.Errorf(codes.Internal, "cursor error: %v", err)
+	}
+	return &dbpb.ListCommentsResponse{
+		Comments: results,
+	}, nil
+}
+
+func (s *DBServer) CreateComment(ctx context.Context, req *dbpb.CreateCommentRequest) (*models.Comment, error) {
+	collection := s.Mongo.Collection("comments")
+	commentID := generateUniqueId()
+	comment := &models.Comment{
+		Id:         commentID,
+		Content:    req.GetContent(),
+		Ups:        0,
+		Downs:      0,
+		ParentId:   req.GetParentId(),
+		ParentType: req.GetParentType(),
+	}
+	doc := bson.M{
+		"_id":         comment.Id,
+		"content":     comment.Content,
+		"ups":         comment.Ups,
+		"downs":       comment.Downs,
+		"parent_id":   comment.ParentId,
+		"parent_type": comment.ParentType.String(),
 	}
 
-	if err := cursor.Err(); err != nil {
+	if _, err := collection.InsertOne(ctx, doc); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create comment: %v", err)
+	}
+	return comment, nil
+}
+
+func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) (*models.Comment, error) {
+	collection := s.Mongo.Collection("comments")
+	id, err := primitive.ObjectIDFromHex(req.GetId())
+	if err != nil {
+		return nil, fmt.Errorf("invalid comment ID: %v", err)
+	}
+	filter := bson.M{
+		"_id": id,
+	}
+	var comment bson.M
+	err = collection.FindOne(ctx, filter).Decode(&comment)
+	if err != nil {
 		return nil, err
 	}
-	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
-	return &dbpb.ListCommentsResponse{
-		Comments: comments,
+	enumInt, ok := models.CommentParentType_value[comment["parent_type"].(string)]
+	if !ok {
+		return nil, fmt.Errorf("invalid CommentParentType: %s", comment["parent_type"])
+	}
+	return &models.Comment{
+		Id:         comment["_id"].(primitive.ObjectID).Hex(),
+		Content:    comment["content"].(string),
+		Ups:        comment["ups"].(int32),
+		Downs:      comment["downs"].(int32),
+		ParentId:   comment["parent_id"].(string),
+		ParentType: models.CommentParentType(enumInt),
 	}, nil
+}
+
+func (s *DBServer) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("comments")
+	update := bson.M{}
+	setFields := bson.M{}
+	incFields := bson.M{}
+
+	if req.Content != nil {
+		setFields["content"] = req.GetContent()
+	}
+	if req.VoteOffset != nil {
+		offset := req.GetVoteOffset()
+		if offset > 0 {
+			incFields["ups"] = offset
+		} else if offset < 0 {
+			incFields["downs"] = -offset // ensure it's positive
+		} else {
+			return nil, status.Errorf(codes.InvalidArgument, "vote offset cannot be zero")
+		}
+	}
+	if len(setFields) > 0 {
+		update["$set"] = setFields
+	}
+	if len(incFields) > 0 {
+		update["$inc"] = incFields
+	}
+	if len(update) == 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "no update fields provided")
+	}
+
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": req.GetId()}, update)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update comment: %v", err)
+	}
+	if result.MatchedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "comment not found")
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *DBServer) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentRequest) (*emptypb.Empty, error) {
+	collection := s.Mongo.Collection("comments")
+
+	// get comment
+	commentRes, err := s.GetComment(ctx, &dbpb.GetCommentRequest{Id: req.GetId()})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get comment: %v", err)
+	}
+
+	// attempt deletion
+	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete comment: %v", err)
+	}
+	if result.DeletedCount == 0 {
+		return nil, status.Errorf(codes.NotFound, "comment not found")
+	}
+
+	// remove comment id from the parent
+	var parentUpdate bson.M
+	if commentRes.GetParentType() == models.CommentParentType_THREAD {
+		parentUpdate = bson.M{
+			"$pull": bson.M{
+				"comments": req.GetId(),
+			},
+		}
+	} else if commentRes.GetParentType() == models.CommentParentType_COMMENT {
+		parentUpdate = bson.M{
+			"$pull": bson.M{
+				"comments": req.GetId(),
+			},
+		}
+	} else {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid parent type")
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": commentRes.GetParentId()}, parentUpdate)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update parent with comment: %v", err)
+	}
+	
+	return &emptypb.Empty{}, nil
+}
+
+
+func getFindOptions(offset int32, limit int32, sortBy string) *options.FindOptions {
+	findOptions := options.Find()
+	if offset > 0 {
+		findOptions.SetSkip(int64(offset))
+	}
+	if limit > 0 {
+		findOptions.SetLimit(int64(limit))
+	}
+	if sortBy != "" {
+		findOptions.SetSort(bson.D{{Key: sortBy, Value: -1}}) // sort in descending order
+	}
+	return findOptions
+}
+
+func generateUniqueId() string {
+	id := primitive.NewObjectID()
+	return id.Hex()
 }

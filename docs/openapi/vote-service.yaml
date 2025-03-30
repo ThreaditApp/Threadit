@@ -12,7 +12,7 @@ tags:
   - name: Votes
     description: Operations related to votes
 paths:
-  /votes/thread/{thread_id}/upvote:
+  /votes/thread/{thread_id}/up:
     post:
       operationId: upvoteThread
       tags:
@@ -47,7 +47,7 @@ paths:
           $ref: "#/components/responses/Conflict"
       security:
         - bearerAuth: []
-  /votes/thread/{thread_id}/downvote:
+  /votes/thread/{thread_id}/down:
     post:
       operationId: downvoteThread
       tags:
@@ -82,7 +82,7 @@ paths:
           $ref: "#/components/responses/Conflict"
       security:
         - bearerAuth: []
-  /votes/comment/{comment_id}/upvote:
+  /votes/comment/{comment_id}/up:
     post:
       operationId: upvoteComment
       tags:
@@ -117,7 +117,7 @@ paths:
           $ref: "#/components/responses/Conflict"
       security:
         - bearerAuth: []
-  /votes/comment/{comment_id}/downvote:
+  /votes/comment/{comment_id}/down:
     post:
       operationId: downvoteComment
       tags:
@@ -150,72 +150,6 @@ paths:
           $ref: "#/components/responses/NotFound"
         "409":
           $ref: "#/components/responses/Conflict"
-      security:
-        - bearerAuth: []
-  /votes/comment/{comment_id}:
-    delete:
-      operationId: removeCommentVote
-      tags:
-        - vote-service
-      summary: Remove Comment Vote
-      parameters:
-        - $ref: "#/components/parameters/comment_id"
-      responses:
-        "200":
-          description: The logged user successfully removed the vote in the comment.
-          content:
-            application/json:
-              schema:
-                type: "null"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          description: Authentication is required to access the requested resource. The
-            client must include the appropriate credentials.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearerAuth: []
-  /votes/thread/{thread_id}:
-    delete:
-      operationId: removeThreadVote
-      tags:
-        - vote-service
-      summary: Remove Thread Vote
-      parameters:
-        - $ref: "#/components/parameters/thread_id"
-      responses:
-        "200":
-          description: The logged user successfully removed the vote in the thread.
-          content:
-            application/json:
-              schema:
-                type: "null"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          description: Authentication is required to access the requested resource. The
-            client must include the appropriate credentials.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
-        "404":
-          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
 components:
