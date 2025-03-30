@@ -120,12 +120,12 @@ const file_vote_service_proto_rawDesc = "" +
 	"\tthread_id\x18\x01 \x01(\tR\bthreadId\"3\n" +
 	"\x12VoteCommentRequest\x12\x1d\n" +
 	"\n" +
-	"comment_id\x18\x01 \x01(\tR\tcommentId2\xc1\x03\n" +
-	"\vVoteService\x12g\n" +
-	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/vote/thread/{thread_id}/up\x12k\n" +
-	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/vote/thread/{thread_id}/down\x12k\n" +
-	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/vote/comment/{comment_id}/up\x12o\n" +
-	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/comment/{comment_id}/downB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
+	"comment_id\x18\x01 \x01(\tR\tcommentId2\xc5\x03\n" +
+	"\vVoteService\x12h\n" +
+	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/votes/thread/{thread_id}/up\x12l\n" +
+	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/votes/thread/{thread_id}/down\x12l\n" +
+	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/votes/comment/{comment_id}/up\x12p\n" +
+	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"+\x82\xd3\xe4\x93\x02%:\x01*\" /votes/comment/{comment_id}/downB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
 
 var (
 	file_vote_service_proto_rawDescOnce sync.Once

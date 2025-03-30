@@ -215,7 +215,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/up"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/votes/thread/{thread_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -235,7 +235,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/down"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/votes/thread/{thread_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -255,7 +255,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/up"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/votes/comment/{comment_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -275,7 +275,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/down"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/votes/comment/{comment_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -333,7 +333,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/up"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/votes/thread/{thread_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -350,7 +350,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/down"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/votes/thread/{thread_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -367,7 +367,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/up"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/votes/comment/{comment_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -384,7 +384,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/down"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/votes/comment/{comment_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -401,10 +401,10 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_VoteService_UpvoteThread_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "up"}, ""))
-	pattern_VoteService_DownvoteThread_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "down"}, ""))
-	pattern_VoteService_UpvoteComment_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "up"}, ""))
-	pattern_VoteService_DownvoteComment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "down"}, ""))
+	pattern_VoteService_UpvoteThread_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"votes", "thread", "thread_id", "up"}, ""))
+	pattern_VoteService_DownvoteThread_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"votes", "thread", "thread_id", "down"}, ""))
+	pattern_VoteService_UpvoteComment_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"votes", "comment", "comment_id", "up"}, ""))
+	pattern_VoteService_DownvoteComment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"votes", "comment", "comment_id", "down"}, ""))
 )
 
 var (
