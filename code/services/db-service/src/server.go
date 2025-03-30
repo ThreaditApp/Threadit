@@ -497,4 +497,88 @@ func ConvertToProtoThread(thread bson.M) *models.Thread {
 	}
 }
 
-// TODO: implement other methods
+func (s *DBServer) ListComments(ctx context.Context, in *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
+	collection := s.Mongo.Database("mongo-database").Collection("comments")
+
+	filter := bson.M{}
+	if in.GetThreadId() != "" {
+		threadId, err := primitive.ObjectIDFromHex(in.GetThreadId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid thread ID: %v", err)
+		}
+		filter["thread_id"] = threadId
+	}
+	if in.GetAuthorId() != "" {
+		authorId, err := primitive.ObjectIDFromHex(in.GetAuthorId())
+		if err != nil {
+			return nil, fmt.Errorf("invalid author ID: %v", err)
+		}
+		filter["author_id"] = authorId
+	}
+	if in.GetContent() != "" {
+		searchTerm := ".*" + in.GetContent() + ".*"
+		filter["$or"] = []bson.M{
+			{"content": bson.M{"$regex": searchTerm, "$options": "i"}},
+		}
+	}
+
+	page := int64(1)
+	pageSize := int64(25)
+	if in.GetPage() > 0 {
+		page = int64(in.GetPage())
+	}
+	if in.GetPageSize() > 0 {
+		pageSize = int64(in.GetPageSize())
+	}
+
+	skip := (page - 1) * pageSize
+
+	sortField := "created_at"
+	sortOrder := int32(-1)
+	if in.GetSortBy() != "" {
+		sortBy := strings.ToLower(in.GetSortBy())
+		if sortBy == "updated_at" { // allowed fields
+			sortField = sortBy
+		}
+	}
+	if in.GetSortOrder() != "" {
+		inSortOrder := strings.ToLower(in.GetSortOrder())
+		if inSortOrder == "asc" {
+			sortOrder = 1
+		}
+	}
+
+	sortOptions := bson.D{{Key: sortField, Value: sortOrder}}
+
+	totalItems, err := collection.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	findOptions := options.Find().
+		SetSkip(skip).
+		SetLimit(pageSize).
+		SetSort(sortOptions)
+
+	cursor, err := collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var comments []*models.Comment
+	for cursor.Next(ctx) {
+		var comment bson.M
+		if err := cursor.Decode(&comment); err != nil {
+			return nil, err
+		}
+		comments = append(comments, ConvertToProtoComment(comment))
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	totalPages := (totalItems + pageSize - 1) / pageSize // ceiling division
+	return &dbpb.ListCommentsResponse{
+		Comments: comments,
+	}, nil
+}

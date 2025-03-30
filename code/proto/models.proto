@@ -32,4 +32,3 @@ enum CommentParentType {
   THREAD = 0;
   COMMENT = 1;
 }
-

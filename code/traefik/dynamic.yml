@@ -18,15 +18,6 @@ http:
           X-User-Id: "640f2a1a080f645b9a1d54bc"
 
   routers:
-    users:
-      rule: "PathPrefix(`/api/users`)"
-      service: "user-service"
-      entryPoints: ["web"]
-      middlewares:
-        - "cors"
-        - "api-strip-prefix"
-        - "auth"
-
     communities:
       rule: "PathPrefix(`/api/communities`)"
       service: "community-service"
@@ -63,15 +54,6 @@ http:
         - "api-strip-prefix"
         - "auth"
 
-    social:
-      rule: "PathPrefix(`/api/social`)"
-      service: "social-service"
-      entryPoints: ["web"]
-      middlewares:
-        - "cors"
-        - "api-strip-prefix"
-        - "auth"
-
     search:
       rule: "PathPrefix(`/api/search`)"
       service: "search-service"
@@ -81,9 +63,9 @@ http:
         - "api-strip-prefix"
         - "auth"
 
-    feeds:
-      rule: "PathPrefix(`/api/feed`)"
-      service: "feed-service"
+    popular:
+      rule: "PathPrefix(`/api/popular`)"
+      service: "popular-service"
       entryPoints: ["web"]
       middlewares:
         - "cors"
@@ -91,10 +73,6 @@ http:
         - "auth"
 
   services: # TODO: Check if env variables can be used
-    user-service:
-      loadBalancer:
-        servers:
-          - url: "http://grpc-gateway:8080/users"
 
     community-service:
       loadBalancer:
@@ -116,17 +94,12 @@ http:
         servers:
           - url: "http://grpc-gateway:8080/votes"
 
-    social-service:
-      loadBalancer:
-        servers:
-          - url: "http://grpc-gateway:8080/social"
-
     search-service:
       loadBalancer:
         servers:
           - url: "http://grpc-gateway:8080/search"
 
-    feed-service:
+    popular-service:
       loadBalancer:
         servers:
-          - url: "http://grpc-gateway:8080/feed"
+          - url: "http://grpc-gateway:8080/popular"

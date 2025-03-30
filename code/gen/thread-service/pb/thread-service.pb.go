@@ -28,8 +28,8 @@ type ListThreadsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CommunityId   *string                `protobuf:"bytes,1,opt,name=community_id,json=communityId,proto3,oneof" json:"community_id,omitempty"`
 	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
-	Offset        *string                `protobuf:"bytes,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
-	Limit         *string                `protobuf:"bytes,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	Offset        *int32                 `protobuf:"varint,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	SortBy        *string                `protobuf:"bytes,5,opt,name=sort_by,json=sortBy,proto3,oneof" json:"sort_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -79,18 +79,18 @@ func (x *ListThreadsRequest) GetTitle() string {
 	return ""
 }
 
-func (x *ListThreadsRequest) GetOffset() string {
+func (x *ListThreadsRequest) GetOffset() int32 {
 	if x != nil && x.Offset != nil {
 		return *x.Offset
 	}
-	return ""
+	return 0
 }
 
-func (x *ListThreadsRequest) GetLimit() string {
+func (x *ListThreadsRequest) GetLimit() int32 {
 	if x != nil && x.Limit != nil {
 		return *x.Limit
 	}
-	return ""
+	return 0
 }
 
 func (x *ListThreadsRequest) GetSortBy() string {
@@ -456,8 +456,8 @@ const file_thread_service_proto_rawDesc = "" +
 	"\x12ListThreadsRequest\x12&\n" +
 	"\fcommunity_id\x18\x01 \x01(\tH\x00R\vcommunityId\x88\x01\x01\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x01R\x05title\x88\x01\x01\x12\x1b\n" +
-	"\x06offset\x18\x03 \x01(\tH\x02R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x04 \x01(\tH\x03R\x05limit\x88\x01\x01\x12\x1c\n" +
+	"\x06offset\x18\x03 \x01(\x05H\x02R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x04 \x01(\x05H\x03R\x05limit\x88\x01\x01\x12\x1c\n" +
 	"\asort_by\x18\x05 \x01(\tH\x04R\x06sortBy\x88\x01\x01B\x0f\n" +
 	"\r_community_idB\b\n" +
 	"\x06_titleB\t\n" +

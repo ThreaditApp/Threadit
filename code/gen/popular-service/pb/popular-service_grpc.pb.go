@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PopularService_GetPopularThreads_FullMethodName  = "/feed.PopularService/GetPopularThreads"
-	PopularService_GetPopularComments_FullMethodName = "/feed.PopularService/GetPopularComments"
+	PopularService_GetPopularThreads_FullMethodName  = "/popular.PopularService/GetPopularThreads"
+	PopularService_GetPopularComments_FullMethodName = "/popular.PopularService/GetPopularComments"
 )
 
 // PopularServiceClient is the client API for PopularService service.
@@ -142,7 +142,7 @@ func _PopularService_GetPopularComments_Handler(srv interface{}, ctx context.Con
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PopularService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "feed.PopularService",
+	ServiceName: "popular.PopularService",
 	HandlerType: (*PopularServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

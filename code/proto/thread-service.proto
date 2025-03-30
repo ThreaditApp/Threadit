@@ -45,8 +45,8 @@ service ThreadService {
 message ListThreadsRequest {
   optional string community_id = 1;
   optional string title = 2;
-  optional string offset = 3;
-  optional string limit = 4;
+  optional int32 offset = 3;
+  optional int32 limit = 4;
   optional string sort_by = 5;
 }
 

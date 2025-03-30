@@ -6,23 +6,23 @@ WORKDIR /app
 COPY gen/ gen/
 
 # Copy the folder with the service source code
-COPY services/feed-service services/feed-service
+COPY services/popular-service services/popular-service
 
 # Download dependencies
 WORKDIR /app/gen
 RUN go mod download
-WORKDIR /app/services/feed-service
+WORKDIR /app/services/popular-service
 RUN go mod download
 
 # Build the service binary
-WORKDIR /app/services/feed-service
-RUN go build -o feed-service .
+WORKDIR /app/services/popular-service
+RUN go build -o popular-service .
 
 # Use a minimal runtime environment
 FROM gcr.io/distroless/base-debian12
 
 WORKDIR /root/
 
-COPY --from=builder /app/services/feed-service/feed-service .
+COPY --from=builder /app/services/popular-service/popular-service .
 
-CMD ["./feed-service"]
+CMD ["./popular-service"]
