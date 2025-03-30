@@ -10,28 +10,28 @@ import "google/api/annotations.proto";
 service VoteService {
   rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/thread/{thread_id}/up"
+      post: "/votes/thread/{thread_id}/up"
       body: "*"
     };
   }
 
   rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/thread/{thread_id}/down"
+      post: "/votes/thread/{thread_id}/down"
       body: "*"
     };
   }
 
   rpc UpvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/comment/{comment_id}/up"
+      post: "/votes/comment/{comment_id}/up"
       body: "*"
     };
   }
 
   rpc DownvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/comment/{comment_id}/down"
+      post: "/votes/comment/{comment_id}/down"
       body: "*"
     };
   }

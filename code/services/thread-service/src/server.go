@@ -85,9 +85,6 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 	if req.Id == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
-	if req.Title == nil && req.Content == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "at least one of title or content is required")
-	}
 	if req.Title != nil && *req.Title != "" && (len(*req.Title) < 3 || len(*req.Title) > 50) {
 		return nil, status.Errorf(codes.InvalidArgument, "title must be between 3 and 50 characters long")
 	}
