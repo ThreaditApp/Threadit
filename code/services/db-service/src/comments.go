@@ -15,7 +15,7 @@ import (
 func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
 	collection := s.Mongo.Collection("comments")
 	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
-	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
+	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), sortBy)
 	filter := bson.M{}
 	if req.GetThreadId() != "" {
 		filter["thread_id"] = req.GetThreadId()

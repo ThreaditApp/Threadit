@@ -20,13 +20,13 @@ type CommentServer struct {
 
 func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
 	// input validation
-	if req.ThreadId == nil || *req.ThreadId == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "thread_id is required")
+	if req.ThreadId != nil && *req.ThreadId == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "thread id cannot be empty")
 	}
 	if req.Offset != nil && *req.Offset < 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
 	}
-	if req.Limit == nil || *req.Limit <= 0 {
+	if req.Limit != nil && *req.Limit <= 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
 	}
 
@@ -48,7 +48,7 @@ func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCom
 func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.CreateCommentRequest) (*commentpb.CreateCommentResponse, error) {
 	// input validation
 	if req.ParentId == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "parent_id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "parent id is required")
 	}
 	if req.Content == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "content is required")

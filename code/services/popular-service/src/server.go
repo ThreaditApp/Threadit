@@ -21,7 +21,7 @@ func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.Ge
 	if req.Offset != nil && *req.Offset < 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
 	}
-	if req.Limit == nil || *req.Limit <= 0 {
+	if req.Limit != nil && *req.Limit <= 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
 	}
 
@@ -44,7 +44,7 @@ func (s *PopularServer) GetPopularComments(ctx context.Context, req *popularpb.G
 	if req.Offset != nil && *req.Offset < 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
 	}
-	if req.Limit == nil || *req.Limit <= 0 {
+	if req.Limit != nil && *req.Limit <= 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
 	}
 

@@ -16,7 +16,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 	collection := s.Mongo.Collection("threads")
 
 	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
-	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
+	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), sortBy)
 	filter := bson.M{}
 	if req.GetCommunityId() != "" {
 		filter["community_id"] = req.GetCommunityId()
