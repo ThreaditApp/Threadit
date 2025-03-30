@@ -1,56 +1,56 @@
 services:
-#  traefik:
-#    image: traefik:latest
-#    container_name: traefik
-#    restart: always
-#    command:
-#      - "--api.insecure=true"
-#      - "--providers.docker"
-#      - "--providers.file.filename=/etc/traefik/dynamic.yml"
-#      - "--entrypoints.web.address=:${TRAEFIK_HTTP_PORT}"
-#    ports:
-#      - "${TRAEFIK_HTTP_PORT}:80"
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-#      - "./traefik:/etc/traefik:ro"
-#    networks:
-#      - threadit-network
-#
-#  grpc-gateway:
-#    build:
-#      context: .
-#      dockerfile: grpc-gateway/Dockerfile
-#    container_name: grpc-gateway
-#    restart: always
-#    depends_on:
-#      - community-service
-#      - thread-service
-#      - comment-service
-#      - vote-service
-#      - search-service
-#      - popular-service
-#    environment:
-#      GRPC_GATEWAY_PORT: ${GRPC_GATEWAY_PORT}
-#      COMMUNITY_SERVICE_HOST: community-service
-#      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      COMMENT_SERVICE_HOST: comment-service
-#      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#      VOTE_SERVICE_HOST: vote-service
-#      VOTE_SERVICE_PORT: ${VOTE_SERVICE_PORT}
-#      SEARCH_SERVICE_HOST: search-service
-#      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
-#      POPULAR_SERVICE_HOST: popular-service
-#      POPULAR_SERVICE_PORT: ${POPULAR_SERVICE_PORT}
-#    ports:
-#      - "${GRPC_GATEWAY_PORT}:${GRPC_GATEWAY_PORT}"
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.grpc-gateway.rule=Host(`localhost`)"
-#      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=${GRPC_GATEWAY_PORT}"
-#    networks:
-#      - threadit-network
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--entrypoints.web.address=:${TRAEFIK_HTTP_PORT}"
+    ports:
+      - "${TRAEFIK_HTTP_PORT}:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik:/etc/traefik:ro"
+    networks:
+      - threadit-network
+
+  grpc-gateway:
+    build:
+      context: .
+      dockerfile: grpc-gateway/Dockerfile
+    container_name: grpc-gateway
+    restart: always
+    depends_on:
+      - community-service
+      - thread-service
+      - comment-service
+      - vote-service
+      - search-service
+      - popular-service
+    environment:
+      GRPC_GATEWAY_PORT: ${GRPC_GATEWAY_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+      VOTE_SERVICE_HOST: vote-service
+      VOTE_SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      SEARCH_SERVICE_HOST: search-service
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      POPULAR_SERVICE_HOST: popular-service
+      POPULAR_SERVICE_PORT: ${POPULAR_SERVICE_PORT}
+    ports:
+      - "${GRPC_GATEWAY_PORT}:${GRPC_GATEWAY_PORT}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grpc-gateway.rule=Host(`localhost`)"
+      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=${GRPC_GATEWAY_PORT}"
+    networks:
+      - threadit-network
 
   mongodb:
     image: mongo:latest
@@ -85,122 +85,122 @@ services:
     networks:
       - threadit-network
 
-#  community-service:
-#    build:
-#      context: .
-#      dockerfile: services/community-service/Dockerfile
-#    container_name: community-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#    environment:
-#      SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-#
-#  thread-service:
-#    build:
-#      context: .
-#      dockerfile: services/thread-service/Dockerfile
-#    container_name: thread-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#      - community-service
-#    environment:
-#      SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#      COMMUNITY_SERVICE_HOST: community-service
-#      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#    ports:
-#      - "${THREAD_SERVICE_PORT}:${THREAD_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-#
-#  comment-service:
-#    build:
-#      context: .
-#      dockerfile: services/comment-service/Dockerfile
-#    container_name: comment-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#      - thread-service
-#    environment:
-#      SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#    ports:
-#      - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-#
-#  vote-service:
-#    build:
-#      context: .
-#      dockerfile: services/vote-service/Dockerfile
-#    container_name: vote-service
-#    restart: always
-#    depends_on:
-#      - thread-service
-#      - comment-service
-#    environment:
-#      SERVICE_PORT: ${VOTE_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      COMMENT_SERVICE_HOST: comment-service
-#      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#    ports:
-#      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-#
-#  search-service:
-#    build:
-#      context: .
-#      dockerfile: services/search-service/Dockerfile
-#    container_name: search-service
-#    restart: always
-#    depends_on:
-#       - community-service
-#       - thread-service
-#    environment:
-#      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
-#      COMMUNITY_SERVICE_HOST: community-service
-#      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#    ports:
-#      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-#
-#  popular-service:
-#    build:
-#      context: .
-#      dockerfile: services/popular-service/Dockerfile
-#    container_name: popular-service
-#    restart: always
-#    depends_on:
-#      - comment-service
-#      - thread-service
-#    environment:
-#      SERVICE_PORT: ${POPULAR_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      COMMENT_SERVICE_HOST: comment-service
-#      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#    ports:
-#      - "${POPULAR_SERVICE_PORT}:${POPULAR_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  community-service:
+    build:
+      context: .
+      dockerfile: services/community-service/Dockerfile
+    container_name: community-service
+    restart: always
+    depends_on:
+      - db-service
+    environment:
+      SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+    ports:
+      - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  thread-service:
+    build:
+      context: .
+      dockerfile: services/thread-service/Dockerfile
+    container_name: thread-service
+    restart: always
+    depends_on:
+      - db-service
+      - community-service
+    environment:
+      SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+    ports:
+      - "${THREAD_SERVICE_PORT}:${THREAD_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  comment-service:
+    build:
+      context: .
+      dockerfile: services/comment-service/Dockerfile
+    container_name: comment-service
+    restart: always
+    depends_on:
+      - db-service
+      - thread-service
+    environment:
+      SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+    ports:
+      - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  vote-service:
+    build:
+      context: .
+      dockerfile: services/vote-service/Dockerfile
+    container_name: vote-service
+    restart: always
+    depends_on:
+      - thread-service
+      - comment-service
+    environment:
+      SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+    ports:
+      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  search-service:
+    build:
+      context: .
+      dockerfile: services/search-service/Dockerfile
+    container_name: search-service
+    restart: always
+    depends_on:
+       - community-service
+       - thread-service
+    environment:
+      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+    ports:
+      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
+    networks:
+      - threadit-network
+
+  popular-service:
+    build:
+      context: .
+      dockerfile: services/popular-service/Dockerfile
+    container_name: popular-service
+    restart: always
+    depends_on:
+      - comment-service
+      - thread-service
+    environment:
+      SERVICE_PORT: ${POPULAR_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+    ports:
+      - "${POPULAR_SERVICE_PORT}:${POPULAR_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
 volumes:
   db_data:
