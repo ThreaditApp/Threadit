@@ -22,7 +22,7 @@ service CommunityService {
     };
   }
 
-  rpc GetCommunity(GetCommunityRequest) returns (GetCommunityResponse) {
+  rpc GetCommunity(GetCommunityRequest) returns (models.Community) {
     option (google.api.http) = {
       get: "/communities/{id}"
     };
@@ -62,10 +62,6 @@ message CreateCommunityResponse {
 
 message GetCommunityRequest {
   string id = 1;
-}
-
-message GetCommunityResponse {
-  models.Community community = 1;
 }
 
 message UpdateCommunityRequest {

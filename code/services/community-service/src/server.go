@@ -5,6 +5,7 @@ import (
 	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
+	models "gen/models/pb"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -39,17 +40,14 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.
 	}, nil
 }
 
-func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*communitypb.GetCommunityResponse, error) {
+func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error) {
 	res, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-
-	return &communitypb.GetCommunityResponse{
-		Community: res.Community,
-	}, nil
+	return res, nil
 }
 
 func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest) (*emptypb.Empty, error) {

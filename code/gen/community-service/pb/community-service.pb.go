@@ -260,50 +260,6 @@ func (x *GetCommunityRequest) GetId() string {
 	return ""
 }
 
-type GetCommunityResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Community     *pb.Community          `protobuf:"bytes,1,opt,name=community,proto3" json:"community,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetCommunityResponse) Reset() {
-	*x = GetCommunityResponse{}
-	mi := &file_community_service_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetCommunityResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetCommunityResponse) ProtoMessage() {}
-
-func (x *GetCommunityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetCommunityResponse.ProtoReflect.Descriptor instead.
-func (*GetCommunityResponse) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *GetCommunityResponse) GetCommunity() *pb.Community {
-	if x != nil {
-		return x.Community
-	}
-	return nil
-}
-
 type UpdateCommunityRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -314,7 +270,7 @@ type UpdateCommunityRequest struct {
 
 func (x *UpdateCommunityRequest) Reset() {
 	*x = UpdateCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[6]
+	mi := &file_community_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -326,7 +282,7 @@ func (x *UpdateCommunityRequest) String() string {
 func (*UpdateCommunityRequest) ProtoMessage() {}
 
 func (x *UpdateCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[6]
+	mi := &file_community_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -339,7 +295,7 @@ func (x *UpdateCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCommunityRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{6}
+	return file_community_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UpdateCommunityRequest) GetId() string {
@@ -365,7 +321,7 @@ type DeleteCommunityRequest struct {
 
 func (x *DeleteCommunityRequest) Reset() {
 	*x = DeleteCommunityRequest{}
-	mi := &file_community_service_proto_msgTypes[7]
+	mi := &file_community_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -377,7 +333,7 @@ func (x *DeleteCommunityRequest) String() string {
 func (*DeleteCommunityRequest) ProtoMessage() {}
 
 func (x *DeleteCommunityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_community_service_proto_msgTypes[7]
+	mi := &file_community_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -390,7 +346,7 @@ func (x *DeleteCommunityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCommunityRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCommunityRequest) Descriptor() ([]byte, []int) {
-	return file_community_service_proto_rawDescGZIP(), []int{7}
+	return file_community_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteCommunityRequest) GetId() string {
@@ -419,18 +375,16 @@ const file_community_service_proto_rawDesc = "" +
 	"\x17CreateCommunityResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
 	"\x13GetCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"G\n" +
-	"\x14GetCommunityResponse\x12/\n" +
-	"\tcommunity\x18\x01 \x01(\v2\x11.models.CommunityR\tcommunity\"<\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x16UpdateCommunityRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"(\n" +
 	"\x16DeleteCommunityRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xb6\x04\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xa8\x04\n" +
 	"\x10CommunityService\x12n\n" +
 	"\x0fListCommunities\x12!.community.ListCommunitiesRequest\x1a\".community.ListCommunitiesResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/communities\x12q\n" +
-	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\".community.CreateCommunityResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/communities\x12j\n" +
-	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x1f.community.GetCommunityResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/communities/{id}\x12j\n" +
+	"\x0fCreateCommunity\x12!.community.CreateCommunityRequest\x1a\".community.CreateCommunityResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/communities\x12\\\n" +
+	"\fGetCommunity\x12\x1e.community.GetCommunityRequest\x1a\x11.models.Community\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/communities/{id}\x12j\n" +
 	"\x0fUpdateCommunity\x12!.community.UpdateCommunityRequest\x1a\x16.google.protobuf.Empty\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/communities/{id}\x12g\n" +
 	"\x0fDeleteCommunity\x12!.community.DeleteCommunityRequest\x1a\x16.google.protobuf.Empty\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/communities/{id}B\x1dZ\x1bgen/community-service/pb;pbb\x06proto3"
 
@@ -446,37 +400,35 @@ func file_community_service_proto_rawDescGZIP() []byte {
 	return file_community_service_proto_rawDescData
 }
 
-var file_community_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_community_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_community_service_proto_goTypes = []any{
 	(*ListCommunitiesRequest)(nil),  // 0: community.ListCommunitiesRequest
 	(*ListCommunitiesResponse)(nil), // 1: community.ListCommunitiesResponse
 	(*CreateCommunityRequest)(nil),  // 2: community.CreateCommunityRequest
 	(*CreateCommunityResponse)(nil), // 3: community.CreateCommunityResponse
 	(*GetCommunityRequest)(nil),     // 4: community.GetCommunityRequest
-	(*GetCommunityResponse)(nil),    // 5: community.GetCommunityResponse
-	(*UpdateCommunityRequest)(nil),  // 6: community.UpdateCommunityRequest
-	(*DeleteCommunityRequest)(nil),  // 7: community.DeleteCommunityRequest
-	(*pb.Community)(nil),            // 8: models.Community
-	(*emptypb.Empty)(nil),           // 9: google.protobuf.Empty
+	(*UpdateCommunityRequest)(nil),  // 5: community.UpdateCommunityRequest
+	(*DeleteCommunityRequest)(nil),  // 6: community.DeleteCommunityRequest
+	(*pb.Community)(nil),            // 7: models.Community
+	(*emptypb.Empty)(nil),           // 8: google.protobuf.Empty
 }
 var file_community_service_proto_depIdxs = []int32{
-	8, // 0: community.ListCommunitiesResponse.communities:type_name -> models.Community
-	8, // 1: community.GetCommunityResponse.community:type_name -> models.Community
-	0, // 2: community.CommunityService.ListCommunities:input_type -> community.ListCommunitiesRequest
-	2, // 3: community.CommunityService.CreateCommunity:input_type -> community.CreateCommunityRequest
-	4, // 4: community.CommunityService.GetCommunity:input_type -> community.GetCommunityRequest
-	6, // 5: community.CommunityService.UpdateCommunity:input_type -> community.UpdateCommunityRequest
-	7, // 6: community.CommunityService.DeleteCommunity:input_type -> community.DeleteCommunityRequest
-	1, // 7: community.CommunityService.ListCommunities:output_type -> community.ListCommunitiesResponse
-	3, // 8: community.CommunityService.CreateCommunity:output_type -> community.CreateCommunityResponse
-	5, // 9: community.CommunityService.GetCommunity:output_type -> community.GetCommunityResponse
-	9, // 10: community.CommunityService.UpdateCommunity:output_type -> google.protobuf.Empty
-	9, // 11: community.CommunityService.DeleteCommunity:output_type -> google.protobuf.Empty
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	7, // 0: community.ListCommunitiesResponse.communities:type_name -> models.Community
+	0, // 1: community.CommunityService.ListCommunities:input_type -> community.ListCommunitiesRequest
+	2, // 2: community.CommunityService.CreateCommunity:input_type -> community.CreateCommunityRequest
+	4, // 3: community.CommunityService.GetCommunity:input_type -> community.GetCommunityRequest
+	5, // 4: community.CommunityService.UpdateCommunity:input_type -> community.UpdateCommunityRequest
+	6, // 5: community.CommunityService.DeleteCommunity:input_type -> community.DeleteCommunityRequest
+	1, // 6: community.CommunityService.ListCommunities:output_type -> community.ListCommunitiesResponse
+	3, // 7: community.CommunityService.CreateCommunity:output_type -> community.CreateCommunityResponse
+	7, // 8: community.CommunityService.GetCommunity:output_type -> models.Community
+	8, // 9: community.CommunityService.UpdateCommunity:output_type -> google.protobuf.Empty
+	8, // 10: community.CommunityService.DeleteCommunity:output_type -> google.protobuf.Empty
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_community_service_proto_init() }
@@ -491,7 +443,7 @@ func file_community_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_community_service_proto_rawDesc), len(file_community_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

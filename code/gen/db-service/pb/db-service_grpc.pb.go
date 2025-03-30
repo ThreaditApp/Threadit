@@ -8,6 +8,7 @@ package pb
 
 import (
 	context "context"
+	pb "gen/pb"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -44,19 +45,19 @@ type DBServiceClient interface {
 	// community crud operations
 	ListCommunities(ctx context.Context, in *ListCommunitiesRequest, opts ...grpc.CallOption) (*ListCommunitiesResponse, error)
 	CreateCommunity(ctx context.Context, in *CreateCommunityRequest, opts ...grpc.CallOption) (*CreateCommunityResponse, error)
-	GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*GetCommunityResponse, error)
+	GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error)
 	UpdateCommunity(ctx context.Context, in *UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteCommunity(ctx context.Context, in *DeleteCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// thread crud operations
 	ListThreads(ctx context.Context, in *ListThreadsRequest, opts ...grpc.CallOption) (*ListThreadsResponse, error)
 	CreateThread(ctx context.Context, in *CreateThreadRequest, opts ...grpc.CallOption) (*CreateThreadResponse, error)
-	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*GetThreadResponse, error)
+	GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error)
 	UpdateThread(ctx context.Context, in *UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteThread(ctx context.Context, in *DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// comment crud operations
 	ListComments(ctx context.Context, in *ListCommentsRequest, opts ...grpc.CallOption) (*ListCommentsResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
-	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
+	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*pb.Community, error)
 	UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -89,9 +90,9 @@ func (c *dBServiceClient) CreateCommunity(ctx context.Context, in *CreateCommuni
 	return out, nil
 }
 
-func (c *dBServiceClient) GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*GetCommunityResponse, error) {
+func (c *dBServiceClient) GetCommunity(ctx context.Context, in *GetCommunityRequest, opts ...grpc.CallOption) (*pb.Community, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCommunityResponse)
+	out := new(pb.Community)
 	err := c.cc.Invoke(ctx, DBService_GetCommunity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -139,9 +140,9 @@ func (c *dBServiceClient) CreateThread(ctx context.Context, in *CreateThreadRequ
 	return out, nil
 }
 
-func (c *dBServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*GetThreadResponse, error) {
+func (c *dBServiceClient) GetThread(ctx context.Context, in *GetThreadRequest, opts ...grpc.CallOption) (*pb.Thread, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetThreadResponse)
+	out := new(pb.Thread)
 	err := c.cc.Invoke(ctx, DBService_GetThread_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -189,9 +190,9 @@ func (c *dBServiceClient) CreateComment(ctx context.Context, in *CreateCommentRe
 	return out, nil
 }
 
-func (c *dBServiceClient) GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error) {
+func (c *dBServiceClient) GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*pb.Community, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCommentResponse)
+	out := new(pb.Community)
 	err := c.cc.Invoke(ctx, DBService_GetComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -226,19 +227,19 @@ type DBServiceServer interface {
 	// community crud operations
 	ListCommunities(context.Context, *ListCommunitiesRequest) (*ListCommunitiesResponse, error)
 	CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error)
-	GetCommunity(context.Context, *GetCommunityRequest) (*GetCommunityResponse, error)
+	GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error)
 	UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error)
 	DeleteCommunity(context.Context, *DeleteCommunityRequest) (*emptypb.Empty, error)
 	// thread crud operations
 	ListThreads(context.Context, *ListThreadsRequest) (*ListThreadsResponse, error)
 	CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error)
-	GetThread(context.Context, *GetThreadRequest) (*GetThreadResponse, error)
+	GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error)
 	UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error)
 	DeleteThread(context.Context, *DeleteThreadRequest) (*emptypb.Empty, error)
 	// comment crud operations
 	ListComments(context.Context, *ListCommentsRequest) (*ListCommentsResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
-	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
+	GetComment(context.Context, *GetCommentRequest) (*pb.Community, error)
 	UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDBServiceServer()
@@ -257,7 +258,7 @@ func (UnimplementedDBServiceServer) ListCommunities(context.Context, *ListCommun
 func (UnimplementedDBServiceServer) CreateCommunity(context.Context, *CreateCommunityRequest) (*CreateCommunityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCommunity not implemented")
 }
-func (UnimplementedDBServiceServer) GetCommunity(context.Context, *GetCommunityRequest) (*GetCommunityResponse, error) {
+func (UnimplementedDBServiceServer) GetCommunity(context.Context, *GetCommunityRequest) (*pb.Community, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommunity not implemented")
 }
 func (UnimplementedDBServiceServer) UpdateCommunity(context.Context, *UpdateCommunityRequest) (*emptypb.Empty, error) {
@@ -272,7 +273,7 @@ func (UnimplementedDBServiceServer) ListThreads(context.Context, *ListThreadsReq
 func (UnimplementedDBServiceServer) CreateThread(context.Context, *CreateThreadRequest) (*CreateThreadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThread not implemented")
 }
-func (UnimplementedDBServiceServer) GetThread(context.Context, *GetThreadRequest) (*GetThreadResponse, error) {
+func (UnimplementedDBServiceServer) GetThread(context.Context, *GetThreadRequest) (*pb.Thread, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetThread not implemented")
 }
 func (UnimplementedDBServiceServer) UpdateThread(context.Context, *UpdateThreadRequest) (*emptypb.Empty, error) {
@@ -287,7 +288,7 @@ func (UnimplementedDBServiceServer) ListComments(context.Context, *ListCommentsR
 func (UnimplementedDBServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
 }
-func (UnimplementedDBServiceServer) GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error) {
+func (UnimplementedDBServiceServer) GetComment(context.Context, *GetCommentRequest) (*pb.Community, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
 }
 func (UnimplementedDBServiceServer) UpdateComment(context.Context, *UpdateCommentRequest) (*emptypb.Empty, error) {
