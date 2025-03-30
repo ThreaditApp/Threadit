@@ -26,7 +26,7 @@ service DBService {
   // comment crud operations
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment(GetCommentRequest) returns (models.Community);
+  rpc GetComment(GetCommentRequest) returns (models.Comment);
   rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
 }

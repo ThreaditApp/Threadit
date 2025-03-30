@@ -9,12 +9,13 @@ import (
 	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
 	votepb "gen/vote-service/pb"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func getGrpcServerAddress(hostEnvVar string, portEnvVar string) string {
@@ -29,17 +30,8 @@ func getGrpcServerAddress(hostEnvVar string, portEnvVar string) string {
 	return fmt.Sprintf("%s:%s", host, port)
 }
 
-func matchHeader(key string) (string, bool) {
-	if key == "X-User-Id" {
-		return "x-user-id", true
-	}
-	return key, false
-}
-
 func main() {
-	gwmux := runtime.NewServeMux(
-		runtime.WithIncomingHeaderMatcher(matchHeader),
-	)
+	gwmux := runtime.NewServeMux()
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
@@ -68,7 +60,7 @@ func main() {
 		log.Fatalf("Failed to register gRPC gateway: %v", err)
 	}
 
-	err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("FEED_SERVICE_HOST", "FEED_SERVICE_PORT"), opts)
+	err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("POPULAR_SERVICE_HOST", "POPULAR_SERVICE_PORT"), opts)
 	if err != nil {
 		log.Fatalf("Failed to register gRPC gateway: %v", err)
 	}
@@ -80,7 +72,7 @@ func main() {
 		log.Fatalf("missing GRPC_GATEWAY_PORT env var")
 	}
 
-	fmt.Printf("gRPC Gateway server listening on :%s", port)
+	log.Printf("gRPC Gateway server listening on :%s", port)
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
 		log.Fatalf("Failed to start HTTP server: %v", err)
