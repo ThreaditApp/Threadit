@@ -22,7 +22,7 @@ service CommentService {
     };
   }
 
-  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {
+  rpc GetComment(GetCommentRequest) returns (models.Comment) {
     option (google.api.http) = {
       get: "/comments/{id}"
     };
@@ -65,10 +65,6 @@ message CreateCommentResponse {
 
 message GetCommentRequest {
   string id = 1;
-}
-
-message GetCommentResponse {
-  models.Comment comment = 1;
 }
 
 message UpdateCommentRequest {

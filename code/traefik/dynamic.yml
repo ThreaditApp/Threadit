@@ -12,11 +12,6 @@ http:
       stripPrefix:
         prefixes: ["/api"]
 
-    auth: # TODO: Implement authentication middleware
-      headers:
-        customRequestHeaders:
-          X-User-Id: "640f2a1a080f645b9a1d54bc"
-
   routers:
     communities:
       rule: "PathPrefix(`/api/communities`)"
@@ -25,7 +20,6 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
     threads:
       rule: "PathPrefix(`/api/threads`)"
@@ -34,7 +28,6 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
     comments:
       rule: "PathPrefix(`/api/comments`)"
@@ -43,7 +36,6 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
     votes:
       rule: "PathPrefix(`/api/votes`)"
@@ -52,7 +44,6 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
     search:
       rule: "PathPrefix(`/api/search`)"
@@ -61,7 +52,6 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
     popular:
       rule: "PathPrefix(`/api/popular`)"
@@ -70,10 +60,8 @@ http:
       middlewares:
         - "cors"
         - "api-strip-prefix"
-        - "auth"
 
   services: # TODO: Check if env variables can be used
-
     community-service:
       loadBalancer:
         servers:

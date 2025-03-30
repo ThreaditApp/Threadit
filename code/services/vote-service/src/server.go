@@ -2,10 +2,11 @@ package server
 
 import (
 	"context"
-	"fmt"
 	commentpb "gen/comment-service/pb"
 	threadpb "gen/thread-service/pb"
 	votepb "gen/vote-service/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -40,23 +41,29 @@ func (s *VoteServer) RemoveCommentVote(ctx context.Context, req *votepb.VoteComm
 }
 
 func (s *VoteServer) updateThreadVote(ctx context.Context, req *votepb.VoteThreadRequest, value int32) (*emptypb.Empty, error) {
+	if req.GetThreadId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid thread id")
+	}
 	_, err := s.ThreadClient.UpdateThread(ctx, &threadpb.UpdateThreadRequest{
 		Id:         req.ThreadId,
 		VoteOffset: &value,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
 
 func (s *VoteServer) updateCommentVote(ctx context.Context, req *votepb.VoteCommentRequest, value int32) (*emptypb.Empty, error) {
+	if req.GetCommentId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid comment id")
+	}
 	_, err := s.CommentClient.UpdateComment(ctx, &commentpb.UpdateCommentRequest{
 		Id:         req.CommentId,
 		VoteOffset: &value,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }

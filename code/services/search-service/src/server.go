@@ -2,11 +2,12 @@ package server
 
 import (
 	"context"
-	"fmt"
 	communitypb "gen/community-service/pb"
 	models "gen/models/pb"
 	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type SearchServer struct {
@@ -16,6 +17,10 @@ type SearchServer struct {
 }
 
 func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.GlobalSearchResponse, error) {
+	reqErr := validateSearchRequest(req)
+	if reqErr != nil {
+		return nil, reqErr
+	}
 	communityResults, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -31,6 +36,10 @@ func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchReq
 }
 
 func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.CommunitySearchResponse, error) {
+	reqErr := validateSearchRequest(req)
+	if reqErr != nil {
+		return nil, reqErr
+	}
 	results, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -41,6 +50,10 @@ func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.Search
 }
 
 func (s *SearchServer) ThreadSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.ThreadSearchResponse, error) {
+	reqErr := validateSearchRequest(req)
+	if reqErr != nil {
+		return nil, reqErr
+	}
 	results, err := s.searchThreads(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -55,7 +68,7 @@ func (s *SearchServer) searchCommunities(ctx context.Context, query *string) ([]
 		Name: query,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling community service: %w", err)
+		return nil, err
 	}
 	return res.Communities, nil
 }
@@ -65,7 +78,20 @@ func (s *SearchServer) searchThreads(ctx context.Context, query *string) ([]*mod
 		Title: query,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling thread service: %w", err)
+		return nil, err
 	}
 	return res.Threads, nil
+}
+
+func validateSearchRequest(req *searchpb.SearchRequest) error {
+	if req.GetQuery() == "" {
+		return status.Error(codes.InvalidArgument, "query is empty")
+	}
+	if req.GetOffset() < 0 {
+		return status.Error(codes.InvalidArgument, "offset cannot be negative")
+	}
+	if req.GetLimit() < 0 {
+		return status.Error(codes.InvalidArgument, "limit cannot be negative")
+	}
+	return nil
 }

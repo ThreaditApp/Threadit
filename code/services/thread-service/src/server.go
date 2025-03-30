@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
+	models "gen/models/pb"
 	threadpb "gen/thread-service/pb"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -24,7 +24,7 @@ func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThread
 		SortBy:      req.SortBy,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &threadpb.ListThreadsResponse{
 		Threads: res.Threads,
@@ -37,7 +37,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 		Id: req.CommunityId,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling community service: %w", err)
+		return nil, err
 	}
 
 	// create thread
@@ -47,23 +47,21 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 		Content:     req.Content,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &threadpb.CreateThreadResponse{
 		Id: res.Id,
 	}, nil
 }
 
-func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadRequest) (*threadpb.GetThreadResponse, error) {
+func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadRequest) (*models.Thread, error) {
 	res, err := s.DBClient.GetThread(ctx, &dbpb.GetThreadRequest{
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
-	return &threadpb.GetThreadResponse{
-		Thread: res.Thread,
-	}, nil
+	return res, nil
 }
 
 func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
@@ -73,7 +71,7 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 		Content: req.Content,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
@@ -83,7 +81,7 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }

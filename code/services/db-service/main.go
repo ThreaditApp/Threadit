@@ -19,7 +19,6 @@ func main() {
 	if mongoURI == "" {
 		log.Fatalf("missing MONGO_URI env var")
 	}
-	clientOptions := options.Client().ApplyURI(mongoURI)
 
 	// get env port
 	port := os.Getenv("SERVICE_PORT")
@@ -27,17 +26,31 @@ func main() {
 		log.Fatalf("missing SERVICE_PORT env var")
 	}
 
+	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
-
-	defer func(client *mongo.Client, ctx context.Context) {
-		err := client.Disconnect(ctx)
-		if err != nil {
+	defer func() {
+		if err := client.Disconnect(context.Background()); err != nil {
 			log.Fatalf("Failed to disconnect from MongoDB: %v", err)
 		}
-	}(client, context.Background())
+	}()
+
+	// Database name in mongodb
+	databaseName := "threadit"
+
+	// Paths to JSON files inside the container
+	threadsPath := "/dataset/threads.json"
+	communitiesPath := "/dataset/communities.json"
+
+	// Load data into MongoDB
+	if err := loadThreads(client, databaseName, threadsPath); err != nil {
+		log.Fatalf("Error loading threads: %v", err)
+	}
+	if err := loadCommunities(client, databaseName, communitiesPath); err != nil {
+		log.Fatalf("Error loading communities: %v", err)
+	}
 
 	// start gRPC server
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
@@ -46,7 +59,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	mongoDatabase := client.Database("mongo-database")
+	mongoDatabase := client.Database(databaseName)
 	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
 		Mongo: mongoDatabase,
 	})

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	commentpb "gen/comment-service/pb"
 	dbpb "gen/db-service/pb"
+	threadpb "gen/thread-service/pb"
 	"log"
 	"net"
 	"os"
@@ -35,9 +36,14 @@ func main() {
 	dbConn := connectGrpcClient("DB_SERVICE_HOST", "DB_SERVICE_PORT")
 	defer dbConn.Close()
 
-	// create community service with database service
+	// connect to thread service
+	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
+	defer threadConn.Close()
+
+	// create comment service with database service and thread
 	commentService := &server.CommentServer{
-		DBClient: dbpb.NewDBServiceClient(dbConn),
+		DBClient:     dbpb.NewDBServiceClient(dbConn),
+		ThreadClient: threadpb.NewThreadServiceClient(threadConn),
 	}
 
 	// get env port

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	commentpb "gen/comment-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
@@ -24,7 +23,7 @@ func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCom
 		SortBy:   req.SortBy,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &commentpb.ListCommentsResponse{
 		Comments: res.Comments,
@@ -46,7 +45,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 		})
 	}
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 
 	// create comment
@@ -56,23 +55,21 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 		ParentType: req.ParentType,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &commentpb.CreateCommentResponse{
 		Id: res.Id,
 	}, nil
 }
 
-func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*commentpb.GetCommentResponse, error) {
+func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*models.Comment, error) {
 	res, err := s.DBClient.GetComment(ctx, &dbpb.GetCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
-	return &commentpb.GetCommentResponse{
-		Comment: res.Comment,
-	}, nil
+	return res, nil
 }
 
 func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
@@ -81,7 +78,7 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.Update
 		Content: req.Content,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return nil, nil
 }
@@ -91,7 +88,7 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.Delete
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
