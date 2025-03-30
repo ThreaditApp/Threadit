@@ -120,14 +120,12 @@ const file_vote_service_proto_rawDesc = "" +
 	"\tthread_id\x18\x01 \x01(\tR\bthreadId\"3\n" +
 	"\x12VoteCommentRequest\x12\x1d\n" +
 	"\n" +
-	"comment_id\x18\x01 \x01(\tR\tcommentId2\xb7\x05\n" +
-	"\vVoteService\x12k\n" +
-	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/thread/{thread_id}/upvote\x12o\n" +
-	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/thread/{thread_id}/downvote\x12o\n" +
-	"\x10RemoveThreadVote\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/thread/{thread_id}/remove\x12o\n" +
-	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/comment/{comment_id}/upvote\x12s\n" +
-	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\".\x82\xd3\xe4\x93\x02(:\x01*\"#/vote/comment/{comment_id}/downvote\x12s\n" +
-	"\x11RemoveCommentVote\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\",\x82\xd3\xe4\x93\x02&:\x01*\"!/vote/comment/{comment_id}/removeB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
+	"comment_id\x18\x01 \x01(\tR\tcommentId2\xc1\x03\n" +
+	"\vVoteService\x12g\n" +
+	"\fUpvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/vote/thread/{thread_id}/up\x12k\n" +
+	"\x0eDownvoteThread\x12\x17.vote.VoteThreadRequest\x1a\x16.google.protobuf.Empty\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/vote/thread/{thread_id}/down\x12k\n" +
+	"\rUpvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/vote/comment/{comment_id}/up\x12o\n" +
+	"\x0fDownvoteComment\x12\x18.vote.VoteCommentRequest\x1a\x16.google.protobuf.Empty\"*\x82\xd3\xe4\x93\x02$:\x01*\"\x1f/vote/comment/{comment_id}/downB\x18Z\x16gen/vote-service/pb;pbb\x06proto3"
 
 var (
 	file_vote_service_proto_rawDescOnce sync.Once
@@ -150,18 +148,14 @@ var file_vote_service_proto_goTypes = []any{
 var file_vote_service_proto_depIdxs = []int32{
 	0, // 0: vote.VoteService.UpvoteThread:input_type -> vote.VoteThreadRequest
 	0, // 1: vote.VoteService.DownvoteThread:input_type -> vote.VoteThreadRequest
-	0, // 2: vote.VoteService.RemoveThreadVote:input_type -> vote.VoteThreadRequest
-	1, // 3: vote.VoteService.UpvoteComment:input_type -> vote.VoteCommentRequest
-	1, // 4: vote.VoteService.DownvoteComment:input_type -> vote.VoteCommentRequest
-	1, // 5: vote.VoteService.RemoveCommentVote:input_type -> vote.VoteCommentRequest
-	2, // 6: vote.VoteService.UpvoteThread:output_type -> google.protobuf.Empty
-	2, // 7: vote.VoteService.DownvoteThread:output_type -> google.protobuf.Empty
-	2, // 8: vote.VoteService.RemoveThreadVote:output_type -> google.protobuf.Empty
-	2, // 9: vote.VoteService.UpvoteComment:output_type -> google.protobuf.Empty
-	2, // 10: vote.VoteService.DownvoteComment:output_type -> google.protobuf.Empty
-	2, // 11: vote.VoteService.RemoveCommentVote:output_type -> google.protobuf.Empty
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
+	1, // 2: vote.VoteService.UpvoteComment:input_type -> vote.VoteCommentRequest
+	1, // 3: vote.VoteService.DownvoteComment:input_type -> vote.VoteCommentRequest
+	2, // 4: vote.VoteService.UpvoteThread:output_type -> google.protobuf.Empty
+	2, // 5: vote.VoteService.DownvoteThread:output_type -> google.protobuf.Empty
+	2, // 6: vote.VoteService.UpvoteComment:output_type -> google.protobuf.Empty
+	2, // 7: vote.VoteService.DownvoteComment:output_type -> google.protobuf.Empty
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

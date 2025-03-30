@@ -133,8 +133,8 @@ type Thread struct {
 	CommunityId   string                 `protobuf:"bytes,2,opt,name=community_id,json=communityId,proto3" json:"community_id,omitempty"`
 	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
 	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
-	Ups           string                 `protobuf:"bytes,5,opt,name=ups,proto3" json:"ups,omitempty"`
-	Downs         string                 `protobuf:"bytes,6,opt,name=downs,proto3" json:"downs,omitempty"`
+	Ups           int32                  `protobuf:"varint,5,opt,name=ups,proto3" json:"ups,omitempty"`
+	Downs         int32                  `protobuf:"varint,6,opt,name=downs,proto3" json:"downs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -197,26 +197,26 @@ func (x *Thread) GetContent() string {
 	return ""
 }
 
-func (x *Thread) GetUps() string {
+func (x *Thread) GetUps() int32 {
 	if x != nil {
 		return x.Ups
 	}
-	return ""
+	return 0
 }
 
-func (x *Thread) GetDowns() string {
+func (x *Thread) GetDowns() int32 {
 	if x != nil {
 		return x.Downs
 	}
-	return ""
+	return 0
 }
 
 type Comment struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	Ups           string                 `protobuf:"bytes,3,opt,name=ups,proto3" json:"ups,omitempty"`
-	Downs         string                 `protobuf:"bytes,4,opt,name=downs,proto3" json:"downs,omitempty"`
+	Ups           int32                  `protobuf:"varint,3,opt,name=ups,proto3" json:"ups,omitempty"`
+	Downs         int32                  `protobuf:"varint,4,opt,name=downs,proto3" json:"downs,omitempty"`
 	ParentId      string                 `protobuf:"bytes,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
 	ParentType    CommentParentType      `protobuf:"varint,6,opt,name=parent_type,json=parentType,proto3,enum=models.CommentParentType" json:"parent_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -267,18 +267,18 @@ func (x *Comment) GetContent() string {
 	return ""
 }
 
-func (x *Comment) GetUps() string {
+func (x *Comment) GetUps() int32 {
 	if x != nil {
 		return x.Ups
 	}
-	return ""
+	return 0
 }
 
-func (x *Comment) GetDowns() string {
+func (x *Comment) GetDowns() int32 {
 	if x != nil {
 		return x.Downs
 	}
-	return ""
+	return 0
 }
 
 func (x *Comment) GetParentId() string {
@@ -309,13 +309,13 @@ const file_models_proto_rawDesc = "" +
 	"\fcommunity_id\x18\x02 \x01(\tR\vcommunityId\x12\x14\n" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12\x18\n" +
 	"\acontent\x18\x04 \x01(\tR\acontent\x12\x10\n" +
-	"\x03ups\x18\x05 \x01(\tR\x03ups\x12\x14\n" +
-	"\x05downs\x18\x06 \x01(\tR\x05downs\"\xb4\x01\n" +
+	"\x03ups\x18\x05 \x01(\x05R\x03ups\x12\x14\n" +
+	"\x05downs\x18\x06 \x01(\x05R\x05downs\"\xb4\x01\n" +
 	"\aComment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\x12\x10\n" +
-	"\x03ups\x18\x03 \x01(\tR\x03ups\x12\x14\n" +
-	"\x05downs\x18\x04 \x01(\tR\x05downs\x12\x1b\n" +
+	"\x03ups\x18\x03 \x01(\x05R\x03ups\x12\x14\n" +
+	"\x05downs\x18\x04 \x01(\x05R\x05downs\x12\x1b\n" +
 	"\tparent_id\x18\x05 \x01(\tR\bparentId\x12:\n" +
 	"\vparent_type\x18\x06 \x01(\x0e2\x19.models.CommentParentTypeR\n" +
 	"parentType*,\n" +

@@ -10,46 +10,31 @@ import "google/api/annotations.proto";
 service VoteService {
   rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/thread/{thread_id}/upvote"
+      post: "/vote/thread/{thread_id}/up"
       body: "*"
     };
   }
 
   rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/thread/{thread_id}/downvote"
-      body: "*"
-    };
-  }
-
-  rpc RemoveThreadVote (VoteThreadRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/vote/thread/{thread_id}/remove"
+      post: "/vote/thread/{thread_id}/down"
       body: "*"
     };
   }
 
   rpc UpvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/comment/{comment_id}/upvote"
+      post: "/vote/comment/{comment_id}/up"
       body: "*"
     };
   }
 
   rpc DownvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/vote/comment/{comment_id}/downvote"
+      post: "/vote/comment/{comment_id}/down"
       body: "*"
     };
   }
-
-  rpc RemoveCommentVote (VoteCommentRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/vote/comment/{comment_id}/remove"
-      body: "*"
-    };
-  }
-
 }
 
 message VoteThreadRequest {

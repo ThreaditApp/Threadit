@@ -20,12 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VoteService_UpvoteThread_FullMethodName      = "/vote.VoteService/UpvoteThread"
-	VoteService_DownvoteThread_FullMethodName    = "/vote.VoteService/DownvoteThread"
-	VoteService_RemoveThreadVote_FullMethodName  = "/vote.VoteService/RemoveThreadVote"
-	VoteService_UpvoteComment_FullMethodName     = "/vote.VoteService/UpvoteComment"
-	VoteService_DownvoteComment_FullMethodName   = "/vote.VoteService/DownvoteComment"
-	VoteService_RemoveCommentVote_FullMethodName = "/vote.VoteService/RemoveCommentVote"
+	VoteService_UpvoteThread_FullMethodName    = "/vote.VoteService/UpvoteThread"
+	VoteService_DownvoteThread_FullMethodName  = "/vote.VoteService/DownvoteThread"
+	VoteService_UpvoteComment_FullMethodName   = "/vote.VoteService/UpvoteComment"
+	VoteService_DownvoteComment_FullMethodName = "/vote.VoteService/DownvoteComment"
 )
 
 // VoteServiceClient is the client API for VoteService service.
@@ -34,10 +32,8 @@ const (
 type VoteServiceClient interface {
 	UpvoteThread(ctx context.Context, in *VoteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DownvoteThread(ctx context.Context, in *VoteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	RemoveThreadVote(ctx context.Context, in *VoteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpvoteComment(ctx context.Context, in *VoteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DownvoteComment(ctx context.Context, in *VoteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	RemoveCommentVote(ctx context.Context, in *VoteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type voteServiceClient struct {
@@ -68,16 +64,6 @@ func (c *voteServiceClient) DownvoteThread(ctx context.Context, in *VoteThreadRe
 	return out, nil
 }
 
-func (c *voteServiceClient) RemoveThreadVote(ctx context.Context, in *VoteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, VoteService_RemoveThreadVote_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *voteServiceClient) UpvoteComment(ctx context.Context, in *VoteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -98,26 +84,14 @@ func (c *voteServiceClient) DownvoteComment(ctx context.Context, in *VoteComment
 	return out, nil
 }
 
-func (c *voteServiceClient) RemoveCommentVote(ctx context.Context, in *VoteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, VoteService_RemoveCommentVote_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // VoteServiceServer is the server API for VoteService service.
 // All implementations must embed UnimplementedVoteServiceServer
 // for forward compatibility.
 type VoteServiceServer interface {
 	UpvoteThread(context.Context, *VoteThreadRequest) (*emptypb.Empty, error)
 	DownvoteThread(context.Context, *VoteThreadRequest) (*emptypb.Empty, error)
-	RemoveThreadVote(context.Context, *VoteThreadRequest) (*emptypb.Empty, error)
 	UpvoteComment(context.Context, *VoteCommentRequest) (*emptypb.Empty, error)
 	DownvoteComment(context.Context, *VoteCommentRequest) (*emptypb.Empty, error)
-	RemoveCommentVote(context.Context, *VoteCommentRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedVoteServiceServer()
 }
 
@@ -134,17 +108,11 @@ func (UnimplementedVoteServiceServer) UpvoteThread(context.Context, *VoteThreadR
 func (UnimplementedVoteServiceServer) DownvoteThread(context.Context, *VoteThreadRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownvoteThread not implemented")
 }
-func (UnimplementedVoteServiceServer) RemoveThreadVote(context.Context, *VoteThreadRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveThreadVote not implemented")
-}
 func (UnimplementedVoteServiceServer) UpvoteComment(context.Context, *VoteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpvoteComment not implemented")
 }
 func (UnimplementedVoteServiceServer) DownvoteComment(context.Context, *VoteCommentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownvoteComment not implemented")
-}
-func (UnimplementedVoteServiceServer) RemoveCommentVote(context.Context, *VoteCommentRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveCommentVote not implemented")
 }
 func (UnimplementedVoteServiceServer) mustEmbedUnimplementedVoteServiceServer() {}
 func (UnimplementedVoteServiceServer) testEmbeddedByValue()                     {}
@@ -203,24 +171,6 @@ func _VoteService_DownvoteThread_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VoteService_RemoveThreadVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VoteThreadRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VoteServiceServer).RemoveThreadVote(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: VoteService_RemoveThreadVote_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VoteServiceServer).RemoveThreadVote(ctx, req.(*VoteThreadRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _VoteService_UpvoteComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VoteCommentRequest)
 	if err := dec(in); err != nil {
@@ -257,24 +207,6 @@ func _VoteService_DownvoteComment_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VoteService_RemoveCommentVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VoteCommentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VoteServiceServer).RemoveCommentVote(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: VoteService_RemoveCommentVote_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VoteServiceServer).RemoveCommentVote(ctx, req.(*VoteCommentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // VoteService_ServiceDesc is the grpc.ServiceDesc for VoteService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -291,20 +223,12 @@ var VoteService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VoteService_DownvoteThread_Handler,
 		},
 		{
-			MethodName: "RemoveThreadVote",
-			Handler:    _VoteService_RemoveThreadVote_Handler,
-		},
-		{
 			MethodName: "UpvoteComment",
 			Handler:    _VoteService_UpvoteComment_Handler,
 		},
 		{
 			MethodName: "DownvoteComment",
 			Handler:    _VoteService_DownvoteComment_Handler,
-		},
-		{
-			MethodName: "RemoveCommentVote",
-			Handler:    _VoteService_RemoveCommentVote_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

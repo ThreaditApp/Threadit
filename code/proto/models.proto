@@ -15,15 +15,15 @@ message Thread {
   string community_id = 2;
   string title = 3;
   string content = 4;
-  string ups = 5;
-  string downs = 6;
+  int32 ups = 5;
+  int32 downs = 6;
 }
 
 message Comment {
   string id = 1;
   string content = 2;
-  string ups = 3;
-  string downs = 4;
+  int32 ups = 3;
+  int32 downs = 4;
   string parent_id = 5;
   CommentParentType parent_type = 6;
 }

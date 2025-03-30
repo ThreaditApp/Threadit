@@ -119,48 +119,6 @@ func local_request_VoteService_DownvoteThread_0(ctx context.Context, marshaler r
 	return msg, metadata, err
 }
 
-func request_VoteService_RemoveThreadVote_0(ctx context.Context, marshaler runtime.Marshaler, client VoteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq VoteThreadRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["thread_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "thread_id")
-	}
-	protoReq.ThreadId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "thread_id", err)
-	}
-	msg, err := client.RemoveThreadVote(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_VoteService_RemoveThreadVote_0(ctx context.Context, marshaler runtime.Marshaler, server VoteServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq VoteThreadRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["thread_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "thread_id")
-	}
-	protoReq.ThreadId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "thread_id", err)
-	}
-	msg, err := server.RemoveThreadVote(ctx, &protoReq)
-	return msg, metadata, err
-}
-
 func request_VoteService_UpvoteComment_0(ctx context.Context, marshaler runtime.Marshaler, client VoteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq VoteCommentRequest
@@ -245,48 +203,6 @@ func local_request_VoteService_DownvoteComment_0(ctx context.Context, marshaler 
 	return msg, metadata, err
 }
 
-func request_VoteService_RemoveCommentVote_0(ctx context.Context, marshaler runtime.Marshaler, client VoteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq VoteCommentRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["comment_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "comment_id")
-	}
-	protoReq.CommentId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "comment_id", err)
-	}
-	msg, err := client.RemoveCommentVote(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_VoteService_RemoveCommentVote_0(ctx context.Context, marshaler runtime.Marshaler, server VoteServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq VoteCommentRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["comment_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "comment_id")
-	}
-	protoReq.CommentId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "comment_id", err)
-	}
-	msg, err := server.RemoveCommentVote(ctx, &protoReq)
-	return msg, metadata, err
-}
-
 // RegisterVoteServiceHandlerServer registers the http handlers for service VoteService to "mux".
 // UnaryRPC     :call VoteServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -299,7 +215,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/upvote"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -319,7 +235,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/downvote"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -333,33 +249,13 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		}
 		forward_VoteService_DownvoteThread_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_VoteService_RemoveThreadVote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/RemoveThreadVote", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/remove"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_VoteService_RemoveThreadVote_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_VoteService_RemoveThreadVote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodPost, pattern_VoteService_UpvoteComment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/upvote"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -379,7 +275,7 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/downvote"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -392,26 +288,6 @@ func RegisterVoteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 		forward_VoteService_DownvoteComment_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPost, pattern_VoteService_RemoveCommentVote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/vote.VoteService/RemoveCommentVote", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/remove"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_VoteService_RemoveCommentVote_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_VoteService_RemoveCommentVote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -457,7 +333,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/upvote"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -474,7 +350,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/downvote"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteThread", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -487,28 +363,11 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		}
 		forward_VoteService_DownvoteThread_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_VoteService_RemoveThreadVote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/RemoveThreadVote", runtime.WithHTTPPathPattern("/vote/thread/{thread_id}/remove"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_VoteService_RemoveThreadVote_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_VoteService_RemoveThreadVote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodPost, pattern_VoteService_UpvoteComment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/upvote"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/UpvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/up"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -525,7 +384,7 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/downvote"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/DownvoteComment", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/down"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -538,40 +397,19 @@ func RegisterVoteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		}
 		forward_VoteService_DownvoteComment_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_VoteService_RemoveCommentVote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/vote.VoteService/RemoveCommentVote", runtime.WithHTTPPathPattern("/vote/comment/{comment_id}/remove"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_VoteService_RemoveCommentVote_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_VoteService_RemoveCommentVote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	return nil
 }
 
 var (
-	pattern_VoteService_UpvoteThread_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "upvote"}, ""))
-	pattern_VoteService_DownvoteThread_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "downvote"}, ""))
-	pattern_VoteService_RemoveThreadVote_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "remove"}, ""))
-	pattern_VoteService_UpvoteComment_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "upvote"}, ""))
-	pattern_VoteService_DownvoteComment_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "downvote"}, ""))
-	pattern_VoteService_RemoveCommentVote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "remove"}, ""))
+	pattern_VoteService_UpvoteThread_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "up"}, ""))
+	pattern_VoteService_DownvoteThread_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "thread", "thread_id", "down"}, ""))
+	pattern_VoteService_UpvoteComment_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "up"}, ""))
+	pattern_VoteService_DownvoteComment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"vote", "comment", "comment_id", "down"}, ""))
 )
 
 var (
-	forward_VoteService_UpvoteThread_0      = runtime.ForwardResponseMessage
-	forward_VoteService_DownvoteThread_0    = runtime.ForwardResponseMessage
-	forward_VoteService_RemoveThreadVote_0  = runtime.ForwardResponseMessage
-	forward_VoteService_UpvoteComment_0     = runtime.ForwardResponseMessage
-	forward_VoteService_DownvoteComment_0   = runtime.ForwardResponseMessage
-	forward_VoteService_RemoveCommentVote_0 = runtime.ForwardResponseMessage
+	forward_VoteService_UpvoteThread_0    = runtime.ForwardResponseMessage
+	forward_VoteService_DownvoteThread_0  = runtime.ForwardResponseMessage
+	forward_VoteService_UpvoteComment_0   = runtime.ForwardResponseMessage
+	forward_VoteService_DownvoteComment_0 = runtime.ForwardResponseMessage
 )
