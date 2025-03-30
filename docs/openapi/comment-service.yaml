@@ -26,21 +26,21 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: page
+        - name: offset
           in: query
-          description: Page number for pagination
+          description: Number of items to skip
           required: false
           schema:
             type: integer
-            format: int32
-            default: 1
-        - name: page_size
+            minimum: 0
+            default: 0
+        - name: limit
           in: query
-          description: Number of items per page
+          description: Maximum number of items to retrieve
           required: false
           schema:
             type: integer
-            format: int32
+            minimum: 1
             default: 10
       responses:
         "200":
@@ -48,14 +48,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Comment"
-                  pagination:
-                    $ref: "#/components/schemas/Pagination"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
         "400":
           description: Invalid request format
     post:
@@ -84,7 +79,7 @@ paths:
           description: Unauthorized access
   /comments/{id}:
     get:
-      summary: Get details of a specific comment
+      summary: Retrieve a specific comment
       operationId: getComment
       tags:
         - Comments
@@ -135,8 +130,6 @@ paths:
           description: Invalid request format
         "401":
           description: Unauthorized access
-        "403":
-          description: Forbidden action
         "404":
           description: Comment not found
     delete:
@@ -156,44 +149,12 @@ paths:
       responses:
         "204":
           description: Comment deleted
-        "401":
-          description: Unauthorized access
-        "403":
-          description: Forbidden action
-        "404":
-          description: Comment not found
-  /comment/{id}/replies:
-    post:
-      summary: Reply to a comment
-      operationId: replyToComment
-      tags:
-        - Comments
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CommentCreate"
-      responses:
-        "201":
-          description: Reply added
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Comment"
         "400":
           description: Invalid request format
         "401":
           description: Unauthorized access
+        "404":
+          description: Comment not found
 
 components:
   schemas:
@@ -204,9 +165,6 @@ components:
           type: string
           format: uuid
         post_id:
-          type: string
-          format: uuid
-        user_id:
           type: string
           format: uuid
         content:
@@ -229,6 +187,7 @@ components:
           format: uuid
         content:
           type: string
+          maxLength: 500
         parent_id:
           type: string
           format: uuid
@@ -240,17 +199,7 @@ components:
       properties:
         content:
           type: string
-    Pagination:
-      type: object
-      properties:
-        current_page:
-          type: integer
-        per_page:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
+          maxLength: 500
   securitySchemes:
     bearerAuth:
       type: http

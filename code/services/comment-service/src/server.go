@@ -6,6 +6,9 @@ import (
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	threadpb "gen/thread-service/pb"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -16,6 +19,18 @@ type CommentServer struct {
 }
 
 func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
+	// input validation
+	if req.ThreadId == nil || *req.ThreadId == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "thread_id is required")
+	}
+	if req.Offset != nil && *req.Offset < 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
+	}
+	if req.Limit == nil || *req.Limit <= 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
+	}
+
+	// call the database service to fetch comments
 	res, err := s.DBClient.ListComments(ctx, &dbpb.ListCommentsRequest{
 		ThreadId: req.ThreadId,
 		Offset:   req.Offset,
@@ -31,6 +46,17 @@ func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCom
 }
 
 func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.CreateCommentRequest) (*commentpb.CreateCommentResponse, error) {
+	// input validation
+	if req.ParentId == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "parent_id is required")
+	}
+	if req.Content == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "content is required")
+	}
+	if len(req.Content) > 500 {
+		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of 500 characters")
+	}
+
 	var err error
 	if req.ParentType == models.CommentParentType_THREAD {
 		// check if thread exists
@@ -48,7 +74,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 		return nil, err
 	}
 
-	// create comment
+	// call the database service to create a comment
 	res, err := s.DBClient.CreateComment(ctx, &dbpb.CreateCommentRequest{
 		Content:    req.Content,
 		ParentId:   req.ParentId,
@@ -63,28 +89,68 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 }
 
 func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*models.Comment, error) {
+	// Input validation
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
+
+	// call the database service to fetch a comment
 	res, err := s.DBClient.GetComment(ctx, &dbpb.GetCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return res, nil
 }
 
 func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
+	// input validation
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
+	if req.Content != nil && len(*req.Content) > 500 {
+		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of 500 characters")
+	}
+
+	// check if comment exists
+	_, err := s.GetComment(ctx, &commentpb.GetCommentRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// call the database service to check if comment exists
+	_, err = s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
 		Id:      req.Id,
 		Content: req.Content,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	return &emptypb.Empty{}, nil
 }
 
 func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.DeleteCommentRequest) (*emptypb.Empty, error) {
-	_, err := s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
+	// input validation
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
+
+	// check if comment exists
+	var err error
+	_, err = s.GetComment(ctx, &commentpb.GetCommentRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// call the database service to delete a comment
+	_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {

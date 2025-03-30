@@ -126,6 +126,10 @@ message GetCommentRequest {
   string id = 1;
 }
 
+message GetCommentResponse {
+  models.Comment comment = 1;
+}
+
 message UpdateCommentRequest {
   string id = 1;
   optional string content = 2;
