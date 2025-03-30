@@ -46,8 +46,9 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
+	mongoDatabase := client.Database("mongo-database")
 	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
-		Mongo: client,
+		Mongo: mongoDatabase,
 	})
 
 	log.Printf("gRPC server is listening on :%s", port)
