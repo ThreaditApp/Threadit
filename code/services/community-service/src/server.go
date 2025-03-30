@@ -6,6 +6,8 @@ import (
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -29,6 +31,12 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.CreateCommunityRequest) (*communitypb.CreateCommunityResponse, error) {
+	if req.Name == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "name is required")
+	}
+	if len(req.Name) < 3 || len(req.Name) > 50 {
+		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
+	}
 	res, err := s.DBClient.CreateCommunity(ctx, &dbpb.CreateCommunityRequest{
 		Name: req.Name,
 	})
@@ -41,6 +49,9 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error) {
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
 	res, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
@@ -51,6 +62,15 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.Get
 }
 
 func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest) (*emptypb.Empty, error) {
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
+	if req.Name == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "name is required")
+	}
+	if len(req.Name) < 3 || len(req.Name) > 50 {
+		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
+	}
 	_, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
 		Id:   req.Id,
 		Name: req.Name,
@@ -62,6 +82,9 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.DeleteCommunityRequest) (*emptypb.Empty, error) {
+	if req.Id == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+	}
 	_, err := s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
 		Id: req.Id,
 	})
