@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	server "db-service/src"
-	"db-service/src/pb"
 	"fmt"
+	dbpd "gen/db-service/pb"
 	"log"
 	"net"
 	"os"
@@ -21,6 +21,7 @@ func main() {
 	}
 	clientOptions := options.Client().ApplyURI(mongoURI)
 
+	// get env port
 	port := os.Getenv("SERVICE_PORT")
 	if port == "" {
 		log.Fatalf("missing SERVICE_PORT env var")
@@ -45,7 +46,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterDBServiceServer(grpcServer, &server.DBServer{
+	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
 		Mongo: client,
 	})
 

@@ -3,152 +3,87 @@ package server
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/metadata"
+	communitypb "gen/community-service/pb"
+	dbpb "gen/db-service/pb"
+	threadpb "gen/thread-service/pb"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"thread-service/src/pb"
 )
 
 type ThreadServer struct {
-	pb.UnimplementedThreadServiceServer
-	DBClient pb.DBServiceClient
+	threadpb.UnimplementedThreadServiceServer
+	CommunityClient communitypb.CommunityServiceClient
+	DBClient        dbpb.DBServiceClient
 }
 
-func (s *ThreadServer) ListThreads(ctx context.Context, req *pb.ListThreadsRequest) (*pb.ListThreadsResponse, error) {
-	res, err := s.DBClient.ListThreads(ctx, &pb.ListThreadsRequest{
-		Page:        req.Page,
-		PageSize:    req.PageSize,
+func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
+	res, err := s.DBClient.ListThreads(ctx, &dbpb.ListThreadsRequest{
 		CommunityId: req.CommunityId,
-		AuthorId:    req.AuthorId,
 		Title:       req.Title,
+		Offset:      req.Offset,
+		Limit:       req.Limit,
 		SortBy:      req.SortBy,
-		SortOrder:   req.SortOrder,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-
-	threads := make([]*pb.Thread, len(res.Threads))
-	for i, thread := range res.Threads {
-		threads[i] = &pb.Thread{
-			Id:          thread.Id,
-			CommunityId: thread.CommunityId,
-			AuthorId:    thread.AuthorId,
-			Title:       thread.Title,
-			Content:     thread.Content,
-			CreatedAt:   thread.CreatedAt,
-			UpdatedAt:   thread.UpdatedAt,
-		}
-	}
-
-	return &pb.ListThreadsResponse{
-		Threads: threads,
-		Pagination: &pb.Pagination{
-			CurrentPage: res.Pagination.CurrentPage,
-			PerPage:     res.Pagination.PerPage,
-			TotalItems:  res.Pagination.TotalItems,
-			TotalPages:  res.Pagination.TotalPages,
-		},
+	return &threadpb.ListThreadsResponse{
+		Threads: res.Threads,
 	}, nil
 }
 
-func (s *ThreadServer) CreateThread(ctx context.Context, req *pb.CreateThreadRequest) (*pb.Thread, error) {
-	userId, err := getCurrentUserId(ctx)
+func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThreadRequest) (*threadpb.CreateThreadResponse, error) {
+	// check if community exists
+	_, err := s.CommunityClient.GetCommunity(ctx, &communitypb.GetCommunityRequest{
+		Id: req.CommunityId,
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error calling community service: %w", err)
 	}
 
-	res, err := s.DBClient.CreateThread(ctx, &pb.CreateThreadRequest{
+	// create thread
+	res, err := s.DBClient.CreateThread(ctx, &dbpb.CreateThreadRequest{
 		CommunityId: req.CommunityId,
-		AuthorId:    userId,
 		Title:       req.Title,
 		Content:     req.Content,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-
-	return &pb.Thread{
-		Id:          res.Id,
-		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
-		Title:       res.Title,
-		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
+	return &threadpb.CreateThreadResponse{
+		Id: res.Id,
 	}, nil
 }
 
-func (s *ThreadServer) GetThread(ctx context.Context, req *pb.GetThreadRequest) (*pb.Thread, error) {
-	res, err := s.DBClient.GetThread(ctx, &pb.GetThreadRequest{
+func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadRequest) (*threadpb.GetThreadResponse, error) {
+	res, err := s.DBClient.GetThread(ctx, &dbpb.GetThreadRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-
-	return &pb.Thread{
-		Id:          res.Id,
-		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
-		Title:       res.Title,
-		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
+	return &threadpb.GetThreadResponse{
+		Thread: res.Thread,
 	}, nil
 }
 
-func (s *ThreadServer) UpdateThread(ctx context.Context, req *pb.UpdateThreadRequest) (*pb.Thread, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := s.DBClient.UpdateThread(ctx, &pb.UpdateThreadRequest{
-		Id:       req.Id,
-		AuthorId: userId,
-		Title:    req.Title,
-		Content:  req.Content,
+func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
+	_, err := s.DBClient.UpdateThread(ctx, &dbpb.UpdateThreadRequest{
+		Id:      req.Id,
+		Title:   req.Title,
+		Content: req.Content,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-
-	return &pb.Thread{
-		Id:          res.Id,
-		CommunityId: res.CommunityId,
-		AuthorId:    res.AuthorId,
-		Title:       res.Title,
-		Content:     res.Content,
-		CreatedAt:   res.CreatedAt,
-		UpdatedAt:   res.UpdatedAt,
-	}, nil
-}
-
-func (s *ThreadServer) DeleteThread(ctx context.Context, req *pb.DeleteThreadRequest) (*emptypb.Empty, error) {
-	userId, err := getCurrentUserId(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = s.DBClient.DeleteThread(ctx, &pb.DeleteThreadRequest{
-		Id:       req.Id,
-		AuthorId: userId,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
-	}
-
 	return &emptypb.Empty{}, nil
 }
 
-func getCurrentUserId(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("no metadata found in context")
+func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThreadRequest) (*emptypb.Empty, error) {
+	_, err := s.DBClient.DeleteThread(ctx, &dbpb.DeleteThreadRequest{
+		Id: req.Id,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	userIds := md.Get("x-user-id")
-	if len(userIds) == 0 {
-		return "", fmt.Errorf("user id not found in metadata")
-	}
-	return userIds[0], nil
+	return &emptypb.Empty{}, nil
 }

@@ -1,3 +1,0 @@
-user-service
-community-service
-thread-service

@@ -2,49 +2,56 @@ syntax = "proto3";
 
 package thread;
 
-option go_package = "thread-service/src/pb;pb";
+option go_package = "gen/thread-service/pb;pb";
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "models.proto";
 
 service ThreadService {
-  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
-  rpc CreateThread (CreateThreadRequest) returns (Thread);
-  rpc GetThread (GetThreadRequest) returns (Thread);
-  rpc UpdateThread (UpdateThreadRequest) returns (Thread);
-  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
-}
+  rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse) {
+    option (google.api.http) = {
+      get: "/threads"
+    };
+  }
 
-message Thread {
-  string id = 1;
-  string community_id = 2;
-  string author_id = 3;
-  string title = 4;
-  string content = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
+  rpc CreateThread (CreateThreadRequest) returns (CreateThreadResponse) {
+    option (google.api.http) = {
+      post: "/threads"
+      body: "*"
+    };
+  }
 
-message Pagination {
-  int32 current_page = 1;
-  int32 per_page = 2;
-  int32 total_items = 3;
-  int32 total_pages = 4;
+  rpc GetThread (GetThreadRequest) returns (GetThreadResponse) {
+    option (google.api.http) = {
+      get: "/threads/{id}"
+    };
+  }
+
+  rpc UpdateThread (UpdateThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/threads/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/threads/{id}"
+    };
+  }
 }
 
 message ListThreadsRequest {
-  optional int32 page = 1;
-  optional int32 page_size = 2;
-  optional string community_id = 3;
-  optional string author_id = 4;
-  optional string title = 5;
-  optional string sort_by = 6;
-  optional string sort_order = 7;
+  optional string community_id = 1;
+  optional string title = 2;
+  optional int32 offset = 3;
+  optional int32 limit = 4;
+  optional string sort_by = 5;
 }
 
 message ListThreadsResponse {
-  repeated Thread threads = 1;
-  Pagination pagination = 2;
+  repeated models.Thread threads = 1;
 }
 
 message CreateThreadRequest {
@@ -53,14 +60,23 @@ message CreateThreadRequest {
   string content = 3;
 }
 
+message CreateThreadResponse {
+  string id = 1;
+}
+
 message GetThreadRequest {
   string id = 1;
+}
+
+message GetThreadResponse {
+  models.Thread thread = 1;
 }
 
 message UpdateThreadRequest {
   string id = 1;
   optional string title = 2;
   optional string content = 3;
+  optional int32 vote_offset = 4;
 }
 
 message DeleteThreadRequest {

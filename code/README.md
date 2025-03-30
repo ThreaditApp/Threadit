@@ -20,7 +20,7 @@ cp .env.example .env
 Finally, still in the `/code` directory you need to run the `docker-compose.yml` file. This command should start the necessary containers:
 
 ```bash
-docker-compose -p threadit --build -d
+docker-compose -p threadit up --build -d
 ```
 
 To stop the application run:
@@ -36,6 +36,7 @@ docker-compose -p threadit stop
 ```bash
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 ```
 
 ### Generate Go Code for a Service with Protobufs

@@ -2,18 +2,54 @@ syntax = "proto3";
 
 package vote;
 
-option go_package = "vote-service/src/pb;pb";
+option go_package = "gen/vote-service/pb;pb";
 
 import "google/protobuf/empty.proto";
-
+import "google/api/annotations.proto";
 
 service VoteService {
-  rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
-  rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty);
-  rpc RemoveThreadVote (VoteThreadRequest) returns (google.protobuf.Empty);
-  rpc UpvoteComment (VoteCommentRequest) returns (google.protobuf.Empty);
-  rpc DownvoteComment (VoteCommentRequest) returns (google.protobuf.Empty);
-  rpc RemoveCommentVote (VoteCommentRequest) returns (google.protobuf.Empty);
+  rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/thread/{thread_id}/upvote"
+      body: "*"
+    };
+  }
+
+  rpc DownvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/thread/{thread_id}/downvote"
+      body: "*"
+    };
+  }
+
+  rpc RemoveThreadVote (VoteThreadRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/thread/{thread_id}/remove"
+      body: "*"
+    };
+  }
+
+  rpc UpvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/comment/{comment_id}/upvote"
+      body: "*"
+    };
+  }
+
+  rpc DownvoteComment (VoteCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/comment/{comment_id}/downvote"
+      body: "*"
+    };
+  }
+
+  rpc RemoveCommentVote (VoteCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/vote/comment/{comment_id}/remove"
+      body: "*"
+    };
+  }
+
 }
 
 message VoteThreadRequest {

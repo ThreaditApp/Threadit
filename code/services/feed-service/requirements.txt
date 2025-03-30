@@ -1,2 +1,0 @@
-thread-service
-social-service

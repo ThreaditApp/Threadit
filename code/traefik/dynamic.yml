@@ -1,0 +1,105 @@
+http:
+  middlewares:
+    cors:
+      headers:
+        accessControlAllowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        accessControlAllowOriginList: ["*"]
+        accessControlAllowHeaders: ["Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization"]
+        accessControlMaxAge: 100
+        addVaryHeader: true
+
+    api-strip-prefix:
+      stripPrefix:
+        prefixes: ["/api"]
+
+    auth: # TODO: Implement authentication middleware
+      headers:
+        customRequestHeaders:
+          X-User-Id: "640f2a1a080f645b9a1d54bc"
+
+  routers:
+    communities:
+      rule: "PathPrefix(`/api/communities`)"
+      service: "community-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+    threads:
+      rule: "PathPrefix(`/api/threads`)"
+      service: "thread-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+    comments:
+      rule: "PathPrefix(`/api/comments`)"
+      service: "comment-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+    votes:
+      rule: "PathPrefix(`/api/votes`)"
+      service: "vote-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+    search:
+      rule: "PathPrefix(`/api/search`)"
+      service: "search-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+    popular:
+      rule: "PathPrefix(`/api/popular`)"
+      service: "popular-service"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+        - "auth"
+
+  services: # TODO: Check if env variables can be used
+
+    community-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/communities"
+
+    thread-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/threads"
+
+    comment-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/comments"
+
+    vote-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/votes"
+
+    search-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/search"
+
+    popular-service:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080/popular"
