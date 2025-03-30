@@ -4,12 +4,12 @@ import (
 	"context"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+	"strings"
+
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"strings"
 )
 
 func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
@@ -18,11 +18,7 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
 	filter := bson.M{}
 	if req.GetThreadId() != "" {
-		threadId, err := primitive.ObjectIDFromHex(req.GetThreadId())
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid thread id: %v", err)
-		}
-		filter["thread_id"] = threadId
+		filter["thread_id"] = req.GetThreadId()
 	}
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
@@ -93,15 +89,11 @@ func (s *DBServer) CreateComment(ctx context.Context, req *dbpb.CreateCommentReq
 
 func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) (*models.Comment, error) {
 	collection := s.Mongo.Collection("comments")
-	id, err := primitive.ObjectIDFromHex(req.GetId())
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid comment id: %v", err)
-	}
 	filter := bson.M{
-		"_id": id,
+		"_id": req.GetId(),
 	}
 	var comment bson.M
-	err = collection.FindOne(ctx, filter).Decode(&comment)
+	err := collection.FindOne(ctx, filter).Decode(&comment)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "comment not found: %v", err)
 	}
@@ -110,7 +102,7 @@ func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) 
 		return nil, status.Errorf(codes.InvalidArgument, "invalid parent type: %v", comment["parent_type"])
 	}
 	return &models.Comment{
-		Id:         comment["_id"].(primitive.ObjectID).Hex(),
+		Id:         comment["_id"].(string),
 		Content:    comment["content"].(string),
 		Ups:        comment["ups"].(int32),
 		Downs:      comment["downs"].(int32),
