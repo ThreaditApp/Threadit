@@ -1011,18 +1011,63 @@ func (x *GetCommentRequest) GetId() string {
 	return ""
 }
 
-type UpdateCommentRequest struct {
+type GetCommentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Content       *string                `protobuf:"bytes,2,opt,name=content,proto3,oneof" json:"content,omitempty"`
-	VoteOffset    *int32                 `protobuf:"varint,3,opt,name=vote_offset,json=voteOffset,proto3,oneof" json:"vote_offset,omitempty"`
+	Comment       *pb.Comment            `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
+func (x *GetCommentResponse) Reset() {
+	*x = GetCommentResponse{}
+	mi := &file_db_service_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCommentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCommentResponse) ProtoMessage() {}
+
+func (x *GetCommentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_service_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCommentResponse.ProtoReflect.Descriptor instead.
+func (*GetCommentResponse) Descriptor() ([]byte, []int) {
+	return file_db_service_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetCommentResponse) GetComment() *pb.Comment {
+	if x != nil {
+		return x.Comment
+	}
+	return nil
+}
+
+type UpdateCommentRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Id                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Content           *string                `protobuf:"bytes,2,opt,name=content,proto3,oneof" json:"content,omitempty"`
+	VoteOffset        *int32                 `protobuf:"varint,3,opt,name=vote_offset,json=voteOffset,proto3,oneof" json:"vote_offset,omitempty"`
+	NumCommentsOffset *int32                 `protobuf:"varint,4,opt,name=num_comments_offset,json=numCommentsOffset,proto3,oneof" json:"num_comments_offset,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
 func (x *UpdateCommentRequest) Reset() {
 	*x = UpdateCommentRequest{}
-	mi := &file_db_service_proto_msgTypes[19]
+	mi := &file_db_service_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1034,7 +1079,7 @@ func (x *UpdateCommentRequest) String() string {
 func (*UpdateCommentRequest) ProtoMessage() {}
 
 func (x *UpdateCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[19]
+	mi := &file_db_service_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1047,7 +1092,7 @@ func (x *UpdateCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCommentRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCommentRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{19}
+	return file_db_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UpdateCommentRequest) GetId() string {
@@ -1071,6 +1116,13 @@ func (x *UpdateCommentRequest) GetVoteOffset() int32 {
 	return 0
 }
 
+func (x *UpdateCommentRequest) GetNumCommentsOffset() int32 {
+	if x != nil && x.NumCommentsOffset != nil {
+		return *x.NumCommentsOffset
+	}
+	return 0
+}
+
 type DeleteCommentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -1080,7 +1132,7 @@ type DeleteCommentRequest struct {
 
 func (x *DeleteCommentRequest) Reset() {
 	*x = DeleteCommentRequest{}
-	mi := &file_db_service_proto_msgTypes[20]
+	mi := &file_db_service_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1092,7 +1144,7 @@ func (x *DeleteCommentRequest) String() string {
 func (*DeleteCommentRequest) ProtoMessage() {}
 
 func (x *DeleteCommentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_db_service_proto_msgTypes[20]
+	mi := &file_db_service_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1105,7 +1157,7 @@ func (x *DeleteCommentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCommentRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCommentRequest) Descriptor() ([]byte, []int) {
-	return file_db_service_proto_rawDescGZIP(), []int{20}
+	return file_db_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DeleteCommentRequest) GetId() string {
@@ -1200,15 +1252,19 @@ const file_db_service_proto_rawDesc = "" +
 	"\x15CreateCommentResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"#\n" +
 	"\x11GetCommentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x87\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"?\n" +
+	"\x12GetCommentResponse\x12)\n" +
+	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"\xd4\x01\n" +
 	"\x14UpdateCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\acontent\x18\x02 \x01(\tH\x00R\acontent\x88\x01\x01\x12$\n" +
 	"\vvote_offset\x18\x03 \x01(\x05H\x01R\n" +
-	"voteOffset\x88\x01\x01B\n" +
+	"voteOffset\x88\x01\x01\x123\n" +
+	"\x13num_comments_offset\x18\x04 \x01(\x05H\x02R\x11numCommentsOffset\x88\x01\x01B\n" +
 	"\n" +
 	"\b_contentB\x0e\n" +
-	"\f_vote_offset\"&\n" +
+	"\f_vote_offsetB\x16\n" +
+	"\x14_num_comments_offset\"&\n" +
 	"\x14DeleteCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id2\xea\a\n" +
 	"\tDBService\x12J\n" +
@@ -1241,7 +1297,7 @@ func file_db_service_proto_rawDescGZIP() []byte {
 	return file_db_service_proto_rawDescData
 }
 
-var file_db_service_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_db_service_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_db_service_proto_goTypes = []any{
 	(*ListCommunitiesRequest)(nil),  // 0: db.ListCommunitiesRequest
 	(*ListCommunitiesResponse)(nil), // 1: db.ListCommunitiesResponse
@@ -1262,54 +1318,56 @@ var file_db_service_proto_goTypes = []any{
 	(*CreateCommentRequest)(nil),    // 16: db.CreateCommentRequest
 	(*CreateCommentResponse)(nil),   // 17: db.CreateCommentResponse
 	(*GetCommentRequest)(nil),       // 18: db.GetCommentRequest
-	(*UpdateCommentRequest)(nil),    // 19: db.UpdateCommentRequest
-	(*DeleteCommentRequest)(nil),    // 20: db.DeleteCommentRequest
-	(*pb.Community)(nil),            // 21: models.Community
-	(*pb.Thread)(nil),               // 22: models.Thread
-	(*pb.Comment)(nil),              // 23: models.Comment
-	(pb.CommentParentType)(0),       // 24: models.CommentParentType
-	(*emptypb.Empty)(nil),           // 25: google.protobuf.Empty
+	(*GetCommentResponse)(nil),      // 19: db.GetCommentResponse
+	(*UpdateCommentRequest)(nil),    // 20: db.UpdateCommentRequest
+	(*DeleteCommentRequest)(nil),    // 21: db.DeleteCommentRequest
+	(*pb.Community)(nil),            // 22: models.Community
+	(*pb.Thread)(nil),               // 23: models.Thread
+	(*pb.Comment)(nil),              // 24: models.Comment
+	(pb.CommentParentType)(0),       // 25: models.CommentParentType
+	(*emptypb.Empty)(nil),           // 26: google.protobuf.Empty
 }
 var file_db_service_proto_depIdxs = []int32{
-	21, // 0: db.ListCommunitiesResponse.communities:type_name -> models.Community
-	22, // 1: db.ListThreadsResponse.threads:type_name -> models.Thread
-	23, // 2: db.ListCommentsResponse.comments:type_name -> models.Comment
-	24, // 3: db.CreateCommentRequest.parent_type:type_name -> models.CommentParentType
-	0,  // 4: db.DBService.ListCommunities:input_type -> db.ListCommunitiesRequest
-	2,  // 5: db.DBService.CreateCommunity:input_type -> db.CreateCommunityRequest
-	4,  // 6: db.DBService.GetCommunity:input_type -> db.GetCommunityRequest
-	5,  // 7: db.DBService.UpdateCommunity:input_type -> db.UpdateCommunityRequest
-	6,  // 8: db.DBService.DeleteCommunity:input_type -> db.DeleteCommunityRequest
-	7,  // 9: db.DBService.ListThreads:input_type -> db.ListThreadsRequest
-	9,  // 10: db.DBService.CreateThread:input_type -> db.CreateThreadRequest
-	11, // 11: db.DBService.GetThread:input_type -> db.GetThreadRequest
-	12, // 12: db.DBService.UpdateThread:input_type -> db.UpdateThreadRequest
-	13, // 13: db.DBService.DeleteThread:input_type -> db.DeleteThreadRequest
-	14, // 14: db.DBService.ListComments:input_type -> db.ListCommentsRequest
-	16, // 15: db.DBService.CreateComment:input_type -> db.CreateCommentRequest
-	18, // 16: db.DBService.GetComment:input_type -> db.GetCommentRequest
-	19, // 17: db.DBService.UpdateComment:input_type -> db.UpdateCommentRequest
-	20, // 18: db.DBService.DeleteComment:input_type -> db.DeleteCommentRequest
-	1,  // 19: db.DBService.ListCommunities:output_type -> db.ListCommunitiesResponse
-	3,  // 20: db.DBService.CreateCommunity:output_type -> db.CreateCommunityResponse
-	21, // 21: db.DBService.GetCommunity:output_type -> models.Community
-	25, // 22: db.DBService.UpdateCommunity:output_type -> google.protobuf.Empty
-	25, // 23: db.DBService.DeleteCommunity:output_type -> google.protobuf.Empty
-	8,  // 24: db.DBService.ListThreads:output_type -> db.ListThreadsResponse
-	10, // 25: db.DBService.CreateThread:output_type -> db.CreateThreadResponse
-	22, // 26: db.DBService.GetThread:output_type -> models.Thread
-	25, // 27: db.DBService.UpdateThread:output_type -> google.protobuf.Empty
-	25, // 28: db.DBService.DeleteThread:output_type -> google.protobuf.Empty
-	15, // 29: db.DBService.ListComments:output_type -> db.ListCommentsResponse
-	17, // 30: db.DBService.CreateComment:output_type -> db.CreateCommentResponse
-	23, // 31: db.DBService.GetComment:output_type -> models.Comment
-	25, // 32: db.DBService.UpdateComment:output_type -> google.protobuf.Empty
-	25, // 33: db.DBService.DeleteComment:output_type -> google.protobuf.Empty
-	19, // [19:34] is the sub-list for method output_type
-	4,  // [4:19] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	22, // 0: db.ListCommunitiesResponse.communities:type_name -> models.Community
+	23, // 1: db.ListThreadsResponse.threads:type_name -> models.Thread
+	24, // 2: db.ListCommentsResponse.comments:type_name -> models.Comment
+	25, // 3: db.CreateCommentRequest.parent_type:type_name -> models.CommentParentType
+	24, // 4: db.GetCommentResponse.comment:type_name -> models.Comment
+	0,  // 5: db.DBService.ListCommunities:input_type -> db.ListCommunitiesRequest
+	2,  // 6: db.DBService.CreateCommunity:input_type -> db.CreateCommunityRequest
+	4,  // 7: db.DBService.GetCommunity:input_type -> db.GetCommunityRequest
+	5,  // 8: db.DBService.UpdateCommunity:input_type -> db.UpdateCommunityRequest
+	6,  // 9: db.DBService.DeleteCommunity:input_type -> db.DeleteCommunityRequest
+	7,  // 10: db.DBService.ListThreads:input_type -> db.ListThreadsRequest
+	9,  // 11: db.DBService.CreateThread:input_type -> db.CreateThreadRequest
+	11, // 12: db.DBService.GetThread:input_type -> db.GetThreadRequest
+	12, // 13: db.DBService.UpdateThread:input_type -> db.UpdateThreadRequest
+	13, // 14: db.DBService.DeleteThread:input_type -> db.DeleteThreadRequest
+	14, // 15: db.DBService.ListComments:input_type -> db.ListCommentsRequest
+	16, // 16: db.DBService.CreateComment:input_type -> db.CreateCommentRequest
+	18, // 17: db.DBService.GetComment:input_type -> db.GetCommentRequest
+	20, // 18: db.DBService.UpdateComment:input_type -> db.UpdateCommentRequest
+	21, // 19: db.DBService.DeleteComment:input_type -> db.DeleteCommentRequest
+	1,  // 20: db.DBService.ListCommunities:output_type -> db.ListCommunitiesResponse
+	3,  // 21: db.DBService.CreateCommunity:output_type -> db.CreateCommunityResponse
+	22, // 22: db.DBService.GetCommunity:output_type -> models.Community
+	26, // 23: db.DBService.UpdateCommunity:output_type -> google.protobuf.Empty
+	26, // 24: db.DBService.DeleteCommunity:output_type -> google.protobuf.Empty
+	8,  // 25: db.DBService.ListThreads:output_type -> db.ListThreadsResponse
+	10, // 26: db.DBService.CreateThread:output_type -> db.CreateThreadResponse
+	23, // 27: db.DBService.GetThread:output_type -> models.Thread
+	26, // 28: db.DBService.UpdateThread:output_type -> google.protobuf.Empty
+	26, // 29: db.DBService.DeleteThread:output_type -> google.protobuf.Empty
+	15, // 30: db.DBService.ListComments:output_type -> db.ListCommentsResponse
+	17, // 31: db.DBService.CreateComment:output_type -> db.CreateCommentResponse
+	24, // 32: db.DBService.GetComment:output_type -> models.Comment
+	26, // 33: db.DBService.UpdateComment:output_type -> google.protobuf.Empty
+	26, // 34: db.DBService.DeleteComment:output_type -> google.protobuf.Empty
+	20, // [20:35] is the sub-list for method output_type
+	5,  // [5:20] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_db_service_proto_init() }
@@ -1322,14 +1380,14 @@ func file_db_service_proto_init() {
 	file_db_service_proto_msgTypes[7].OneofWrappers = []any{}
 	file_db_service_proto_msgTypes[12].OneofWrappers = []any{}
 	file_db_service_proto_msgTypes[14].OneofWrappers = []any{}
-	file_db_service_proto_msgTypes[19].OneofWrappers = []any{}
+	file_db_service_proto_msgTypes[20].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_db_service_proto_rawDesc), len(file_db_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

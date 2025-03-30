@@ -28,12 +28,13 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 	var results []*models.Comment
 	for cursor.Next(ctx) {
 		var comment struct {
-			ID         string `bson:"_id"`
-			Content    string `bson:"content"`
-			Ups        int32  `bson:"ups"`
-			Downs      int32  `bson:"downs"`
-			ParentId   string `bson:"parent_id"`
-			ParentType string `bson:"parent_type"`
+			ID          string `bson:"_id"`
+			Content     string `bson:"content"`
+			Ups         int32  `bson:"ups"`
+			Downs       int32  `bson:"downs"`
+			ParentId    string `bson:"parent_id"`
+			ParentType  string `bson:"parent_type"`
+			NumComments int32  `bson:"num_comments"`
 		}
 		if err := cursor.Decode(&comment); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to decode comment: %v", err)
@@ -43,12 +44,13 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 			return nil, status.Errorf(codes.InvalidArgument, "invalid parent type: %v", comment.ParentType)
 		}
 		results = append(results, &models.Comment{
-			Id:         comment.ID,
-			Content:    comment.Content,
-			Ups:        comment.Ups,
-			Downs:      comment.Downs,
-			ParentId:   comment.ParentId,
-			ParentType: models.CommentParentType(enumInt),
+			Id:          comment.ID,
+			Content:     comment.Content,
+			Ups:         comment.Ups,
+			Downs:       comment.Downs,
+			ParentId:    comment.ParentId,
+			ParentType:  models.CommentParentType(enumInt),
+			NumComments: comment.NumComments,
 		})
 	}
 	if err := cursor.Err(); err != nil {
@@ -63,20 +65,22 @@ func (s *DBServer) CreateComment(ctx context.Context, req *dbpb.CreateCommentReq
 	collection := s.Mongo.Collection("comments")
 	commentID := generateUniqueId()
 	comment := &models.Comment{
-		Id:         commentID,
-		Content:    req.GetContent(),
-		Ups:        0,
-		Downs:      0,
-		ParentId:   req.GetParentId(),
-		ParentType: req.GetParentType(),
+		Id:          commentID,
+		Content:     req.GetContent(),
+		Ups:         0,
+		Downs:       0,
+		ParentId:    req.GetParentId(),
+		ParentType:  req.GetParentType(),
+		NumComments: 0,
 	}
 	doc := bson.M{
-		"_id":         comment.Id,
-		"content":     comment.Content,
-		"ups":         comment.Ups,
-		"downs":       comment.Downs,
-		"parent_id":   comment.ParentId,
-		"parent_type": comment.ParentType.String(),
+		"_id":          comment.Id,
+		"content":      comment.Content,
+		"ups":          comment.Ups,
+		"downs":        comment.Downs,
+		"parent_id":    comment.ParentId,
+		"parent_type":  comment.ParentType.String(),
+		"num_comments": comment.NumComments,
 	}
 
 	if _, err := collection.InsertOne(ctx, doc); err != nil {
@@ -102,12 +106,13 @@ func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) 
 		return nil, status.Errorf(codes.InvalidArgument, "invalid parent type: %v", comment["parent_type"])
 	}
 	return &models.Comment{
-		Id:         comment["_id"].(string),
-		Content:    comment["content"].(string),
-		Ups:        comment["ups"].(int32),
-		Downs:      comment["downs"].(int32),
-		ParentId:   comment["parent_id"].(string),
-		ParentType: models.CommentParentType(enumInt),
+		Id:          comment["_id"].(string),
+		Content:     comment["content"].(string),
+		Ups:         comment["ups"].(int32),
+		Downs:       comment["downs"].(int32),
+		ParentId:    comment["parent_id"].(string),
+		ParentType:  models.CommentParentType(enumInt),
+		NumComments: comment["num_comments"].(int32),
 	}, nil
 }
 
@@ -119,6 +124,16 @@ func (s *DBServer) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentReq
 
 	if req.Content != nil {
 		setFields["content"] = req.GetContent()
+	}
+	if req.NumCommentsOffset != nil {
+		offset := req.GetNumCommentsOffset()
+		if offset == 1 {
+			incFields["num_comments"] = 1
+		} else if offset == -1 {
+			incFields["num_comments"] = -1
+		} else {
+			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+		}
 	}
 	if req.VoteOffset != nil {
 		offset := req.GetVoteOffset()
@@ -152,14 +167,6 @@ func (s *DBServer) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentReq
 
 func (s *DBServer) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Collection("comments")
-
-	// get comment
-	commentRes, err := s.GetComment(ctx, &dbpb.GetCommentRequest{Id: req.GetId()})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get comment: %v", err)
-	}
-
-	// attempt deletion
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete comment: %v", err)
@@ -167,28 +174,5 @@ func (s *DBServer) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentReq
 	if result.DeletedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "comment not found")
 	}
-
-	// remove comment id from the parent
-	var parentUpdate bson.M
-	if commentRes.GetParentType() == models.CommentParentType_THREAD {
-		parentUpdate = bson.M{
-			"$pull": bson.M{
-				"comments": req.GetId(),
-			},
-		}
-	} else if commentRes.GetParentType() == models.CommentParentType_COMMENT {
-		parentUpdate = bson.M{
-			"$pull": bson.M{
-				"comments": req.GetId(),
-			},
-		}
-	} else {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid parent type")
-	}
-	_, err = collection.UpdateOne(ctx, bson.M{"_id": commentRes.GetParentId()}, parentUpdate)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update parent with comment: %v", err)
-	}
-
 	return &emptypb.Empty{}, nil
 }

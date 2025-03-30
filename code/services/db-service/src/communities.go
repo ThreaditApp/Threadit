@@ -4,8 +4,6 @@ import (
 	"context"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
-	"log"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,7 +17,6 @@ func (s *DBServer) ListCommunities(ctx context.Context, req *dbpb.ListCommunitie
 		filter["name"] = bson.M{"$regex": req.GetName(), "$options": "i"} // case-insensitive name match
 	}
 
-	log.Default().Printf("offset: %d, limit: %d", req.GetOffset(), req.GetLimit())
 	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), "")
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
@@ -133,8 +130,6 @@ func (s *DBServer) UpdateCommunity(ctx context.Context, req *dbpb.UpdateCommunit
 
 func (s *DBServer) DeleteCommunity(ctx context.Context, req *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Collection("communities")
-
-	// attempt deletion
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete community: %v", err)

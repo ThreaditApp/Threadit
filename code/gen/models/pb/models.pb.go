@@ -227,6 +227,7 @@ type Comment struct {
 	Downs         int32                  `protobuf:"varint,4,opt,name=downs,proto3" json:"downs,omitempty"`
 	ParentId      string                 `protobuf:"bytes,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
 	ParentType    CommentParentType      `protobuf:"varint,6,opt,name=parent_type,json=parentType,proto3,enum=models.CommentParentType" json:"parent_type,omitempty"`
+	NumComments   int32                  `protobuf:"varint,8,opt,name=num_comments,json=numComments,proto3" json:"num_comments,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -303,6 +304,13 @@ func (x *Comment) GetParentType() CommentParentType {
 	return CommentParentType_THREAD
 }
 
+func (x *Comment) GetNumComments() int32 {
+	if x != nil {
+		return x.NumComments
+	}
+	return 0
+}
+
 var File_models_proto protoreflect.FileDescriptor
 
 const file_models_proto_rawDesc = "" +
@@ -320,7 +328,7 @@ const file_models_proto_rawDesc = "" +
 	"\acontent\x18\x04 \x01(\tR\acontent\x12\x10\n" +
 	"\x03ups\x18\x05 \x01(\x05R\x03ups\x12\x14\n" +
 	"\x05downs\x18\x06 \x01(\x05R\x05downs\x12!\n" +
-	"\fnum_comments\x18\a \x01(\x05R\vnumComments\"\xb4\x01\n" +
+	"\fnum_comments\x18\a \x01(\x05R\vnumComments\"\xd7\x01\n" +
 	"\aComment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acontent\x18\x02 \x01(\tR\acontent\x12\x10\n" +
@@ -328,7 +336,8 @@ const file_models_proto_rawDesc = "" +
 	"\x05downs\x18\x04 \x01(\x05R\x05downs\x12\x1b\n" +
 	"\tparent_id\x18\x05 \x01(\tR\bparentId\x12:\n" +
 	"\vparent_type\x18\x06 \x01(\x0e2\x19.models.CommentParentTypeR\n" +
-	"parentType*,\n" +
+	"parentType\x12!\n" +
+	"\fnum_comments\x18\b \x01(\x05R\vnumComments*,\n" +
 	"\x11CommentParentType\x12\n" +
 	"\n" +
 	"\x06THREAD\x10\x00\x12\v\n" +

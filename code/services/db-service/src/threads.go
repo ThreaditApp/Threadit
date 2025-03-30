@@ -89,18 +89,6 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create thread: %v", err)
 	}
-
-	// update the community with the new thread ID
-	communityCollection := s.Mongo.Collection("communities")
-	update := bson.M{
-		"$addToSet": bson.M{
-			"threads": thread.Id,
-		},
-	}
-	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": thread.CommunityId}, update)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
-	}
 	return &dbpb.CreateThreadResponse{
 		Id: threadID,
 	}, nil
@@ -181,14 +169,6 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 
 func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Collection("threads")
-
-	// get thread
-	threadRes, err := s.GetThread(ctx, &dbpb.GetThreadRequest{Id: req.GetId()})
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "thread not found: %v", err)
-	}
-
-	// attempt deletion
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete thread: %v", err)
@@ -196,18 +176,5 @@ func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadReque
 	if result.DeletedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "thread not found")
 	}
-
-	// remove thread id from the community
-	communityCollection := s.Mongo.Collection("communities")
-	update := bson.M{
-		"$pull": bson.M{
-			"threads": req.GetId(),
-		},
-	}
-	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": threadRes.GetCommunityId()}, update)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
-	}
-
 	return &emptypb.Empty{}, nil
 }

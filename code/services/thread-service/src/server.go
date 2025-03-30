@@ -51,13 +51,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 		return nil, status.Errorf(codes.InvalidArgument, "content must be between 3 and 500 characters long")
 	}
 
-	// check if community exists
-	_, err := s.CommunityClient.GetCommunity(ctx, &communitypb.GetCommunityRequest{
-		Id: req.CommunityId,
-	})
-	if err != nil {
-		return nil, err
-	}
+	// TODO: update community num_threads
 
 	// create thread
 	res, err := s.DBClient.CreateThread(ctx, &dbpb.CreateThreadRequest{
@@ -120,5 +114,8 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO: update community num_threads
+
 	return &emptypb.Empty{}, nil
 }

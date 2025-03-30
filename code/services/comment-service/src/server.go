@@ -57,24 +57,9 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of 500 characters")
 	}
 
-	var err error
-	if req.ParentType == models.CommentParentType_THREAD {
-		// check if thread exists
-		_, err = s.ThreadClient.GetThread(ctx, &threadpb.GetThreadRequest{
-			Id: req.ParentId,
-		})
+	// TODO: update parent num_comments
 
-	} else {
-		// check if comment exists
-		_, err = s.GetComment(ctx, &commentpb.GetCommentRequest{
-			Id: req.ParentId,
-		})
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	// call the database service to create a comment
+	// create comment
 	res, err := s.DBClient.CreateComment(ctx, &dbpb.CreateCommentRequest{
 		Content:    req.Content,
 		ParentId:   req.ParentId,
@@ -94,7 +79,7 @@ func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommen
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
 
-	// call the database service to fetch a comment
+	// fetch comment
 	res, err := s.DBClient.GetComment(ctx, &dbpb.GetCommentRequest{
 		Id: req.Id,
 	})
@@ -114,16 +99,8 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.Update
 		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of 500 characters")
 	}
 
-	// check if comment exists
-	_, err := s.GetComment(ctx, &commentpb.GetCommentRequest{
-		Id: req.Id,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// call the database service to check if comment exists
-	_, err = s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
+	// update comment
+	_, err := s.DBClient.UpdateComment(ctx, &dbpb.UpdateCommentRequest{
 		Id:      req.Id,
 		Content: req.Content,
 	})
@@ -140,21 +117,15 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.Delete
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
 
-	// check if comment exists
-	var err error
-	_, err = s.GetComment(ctx, &commentpb.GetCommentRequest{
+	// call the database service to delete a comment
+	_, err := s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	// call the database service to delete a comment
-	_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
-		Id: req.Id,
-	})
-	if err != nil {
-		return nil, err
-	}
+	// TODO: update parent num_comments
+
 	return &emptypb.Empty{}, nil
 }

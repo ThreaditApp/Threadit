@@ -27,6 +27,7 @@ message Comment {
   int32 downs = 4;
   string parent_id = 5;
   CommentParentType parent_type = 6;
+  int32 num_comments = 8;
 }
 
 enum CommentParentType {

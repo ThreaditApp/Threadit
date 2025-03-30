@@ -91,5 +91,8 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO: find and delete all threads from community
+
 	return &emptypb.Empty{}, nil
 }
