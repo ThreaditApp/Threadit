@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
@@ -21,7 +20,7 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.
 		Limit:  req.Limit,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &communitypb.ListCommunitiesResponse{
 		Communities: res.Communities,
@@ -33,7 +32,7 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.
 		Name: req.Name,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &communitypb.CreateCommunityResponse{
 		Id: res.Id,
@@ -45,7 +44,7 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.Get
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return res, nil
 }
@@ -56,7 +55,7 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 		Name: req.Name,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
@@ -66,7 +65,7 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }

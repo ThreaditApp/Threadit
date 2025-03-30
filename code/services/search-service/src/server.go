@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	communitypb "gen/community-service/pb"
 	models "gen/models/pb"
 	searchpb "gen/search-service/pb"
@@ -55,7 +54,7 @@ func (s *SearchServer) searchCommunities(ctx context.Context, query *string) ([]
 		Name: query,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling community service: %w", err)
+		return nil, err
 	}
 	return res.Communities, nil
 }
@@ -65,7 +64,7 @@ func (s *SearchServer) searchThreads(ctx context.Context, query *string) ([]*mod
 		Title: query,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling thread service: %w", err)
+		return nil, err
 	}
 	return res.Threads, nil
 }

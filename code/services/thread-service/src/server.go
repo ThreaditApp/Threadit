@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
@@ -25,7 +24,7 @@ func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThread
 		SortBy:      req.SortBy,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &threadpb.ListThreadsResponse{
 		Threads: res.Threads,
@@ -38,7 +37,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 		Id: req.CommunityId,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling community service: %w", err)
+		return nil, err
 	}
 
 	// create thread
@@ -48,7 +47,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 		Content:     req.Content,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &threadpb.CreateThreadResponse{
 		Id: res.Id,
@@ -60,7 +59,7 @@ func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadReq
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return res, nil
 }
@@ -72,7 +71,7 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 		Content: req.Content,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
@@ -82,7 +81,7 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 		Id: req.Id,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }

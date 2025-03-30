@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	commentpb "gen/comment-service/pb"
 	threadpb "gen/thread-service/pb"
 	votepb "gen/vote-service/pb"
@@ -45,7 +44,7 @@ func (s *VoteServer) updateThreadVote(ctx context.Context, req *votepb.VoteThrea
 		VoteOffset: &value,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
@@ -56,7 +55,7 @@ func (s *VoteServer) updateCommentVote(ctx context.Context, req *votepb.VoteComm
 		VoteOffset: &value,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error calling database service: %w", err)
+		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }

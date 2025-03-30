@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,7 +21,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 	if req.GetCommunityId() != "" {
 		communityId, err := primitive.ObjectIDFromHex(req.GetCommunityId())
 		if err != nil {
-			return nil, fmt.Errorf("invalid community ID: %v", err)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
 		}
 		filter["community_id"] = communityId
 	}
@@ -91,7 +90,7 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 	communityCollection := s.Mongo.Collection("communities")
 	communityID, err := primitive.ObjectIDFromHex(thread.CommunityId)
 	if err != nil {
-		return nil, fmt.Errorf("invalid community ID: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
 	}
 	update := bson.M{
 		"$addToSet": bson.M{
@@ -111,7 +110,7 @@ func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*
 	collection := s.Mongo.Collection("threads")
 	id, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
-		return nil, fmt.Errorf("invalid thread ID: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid thread id: %v", err)
 	}
 	filter := bson.M{
 		"_id": id,
@@ -119,7 +118,7 @@ func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*
 	var thread bson.M
 	err = collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "thread not found: %v", err)
 	}
 	return &models.Thread{
 		Id:          thread["_id"].(primitive.ObjectID).Hex(),
@@ -192,7 +191,7 @@ func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadReque
 	communityCollection := s.Mongo.Collection("communities")
 	communityID, err := primitive.ObjectIDFromHex(threadRes.GetCommunityId())
 	if err != nil {
-		return nil, fmt.Errorf("invalid community ID: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
 	}
 	update := bson.M{
 		"$pull": bson.M{

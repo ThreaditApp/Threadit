@@ -9,15 +9,12 @@ import (
 	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
 	votepb "gen/vote-service/pb"
-	"log"
-	"net/http"
-	"os"
-	"strings"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
+	"log"
+	"net/http"
+	"os"
 )
 
 func getGrpcServerAddress(hostEnvVar string, portEnvVar string) string {
@@ -39,20 +36,9 @@ func matchHeader(key string) (string, bool) {
 	return key, false
 }
 
-func handleError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) { // TODO: Improve error conversion
-	if st, ok := status.FromError(err); ok {
-		if strings.Contains(st.Message(), "no documents in result") {
-			http.Error(w, "", http.StatusNotFound)
-			return
-		}
-	}
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-}
-
 func main() {
 	gwmux := runtime.NewServeMux(
 		runtime.WithIncomingHeaderMatcher(matchHeader),
-		runtime.WithErrorHandler(handleError),
 	)
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
@@ -67,35 +53,25 @@ func main() {
 		log.Fatalf("Failed to register gRPC gateway: %v", err)
 	}
 
-	// err = userpb.RegisterUserServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("USER_SERVICE_HOST", "USER_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
+	err = commentpb.RegisterCommentServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT"), opts)
+	if err != nil {
+		log.Fatalf("Failed to register gRPC gateway: %v", err)
+	}
 
-	// err = commentpb.RegisterCommentServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
+	err = votepb.RegisterVoteServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("VOTE_SERVICE_HOST", "VOTE_SERVICE_PORT"), opts)
+	if err != nil {
+		log.Fatalf("Failed to register gRPC gateway: %v", err)
+	}
 
-	// err = votepb.RegisterVoteServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("VOTE_SERVICE_HOST", "VOTE_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
+	err = searchpb.RegisterSearchServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("SEARCH_SERVICE_HOST", "SEARCH_SERVICE_PORT"), opts)
+	if err != nil {
+		log.Fatalf("Failed to register gRPC gateway: %v", err)
+	}
 
-	// err = socialpb.RegisterSocialServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("SOCIAL_SERVICE_HOST", "SOCIAL_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
-
-	// err = searchpb.RegisterSearchServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("SEARCH_SERVICE_HOST", "SEARCH_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
-
-	// err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("FEED_SERVICE_HOST", "FEED_SERVICE_PORT"), opts)
-	// if err != nil {
-	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
-	// }
+	err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("FEED_SERVICE_HOST", "FEED_SERVICE_PORT"), opts)
+	if err != nil {
+		log.Fatalf("Failed to register gRPC gateway: %v", err)
+	}
 
 	http.Handle("/", gwmux)
 
