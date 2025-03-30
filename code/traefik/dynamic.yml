@@ -2,7 +2,7 @@ http:
   middlewares:
     cors:
       headers:
-        accessControlAllowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        accessControlAllowMethods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"]
         accessControlAllowOriginList: ["*"]
         accessControlAllowHeaders: ["Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization"]
         accessControlMaxAge: 100

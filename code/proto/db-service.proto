@@ -55,7 +55,8 @@ message GetCommunityRequest {
 
 message UpdateCommunityRequest {
   string id = 1;
-  string name = 2;
+  optional string name = 2;
+  optional int32 num_threads_offset = 3;
 }
 
 message DeleteCommunityRequest {
@@ -93,6 +94,7 @@ message UpdateThreadRequest {
   optional string title = 2;
   optional string content = 3;
   optional int32 vote_offset = 4;
+  optional int32 num_comments_offset = 5;
 }
 
 message DeleteThreadRequest {
@@ -124,10 +126,15 @@ message GetCommentRequest {
   string id = 1;
 }
 
+message GetCommentResponse {
+  models.Comment comment = 1;
+}
+
 message UpdateCommentRequest {
   string id = 1;
   optional string content = 2;
   optional int32 vote_offset = 3;
+  optional int32 num_comments_offset = 4;
 }
 
 message DeleteCommentRequest {

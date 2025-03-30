@@ -8,7 +8,7 @@ import (
 
 func getFindOptions(offset int32, limit int32, sortBy string) *options.FindOptions {
 	findOptions := options.Find()
-	if offset > 0 {
+	if offset >= 0 {
 		findOptions.SetSkip(int64(offset))
 	}
 	if limit > 0 {

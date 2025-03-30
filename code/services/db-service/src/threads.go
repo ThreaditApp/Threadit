@@ -4,26 +4,22 @@ import (
 	"context"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+	"strings"
+
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"strings"
 )
 
 func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
 	collection := s.Mongo.Collection("threads")
 
 	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
-	findOptions := getFindOptions(req.GetLimit(), req.GetOffset(), sortBy)
+	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), sortBy)
 	filter := bson.M{}
 	if req.GetCommunityId() != "" {
-		communityId, err := primitive.ObjectIDFromHex(req.GetCommunityId())
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
-		}
-		filter["community_id"] = communityId
+		filter["community_id"] = req.GetCommunityId()
 	}
 	if req.GetTitle() != "" {
 		filter["title"] = bson.M{"$regex": req.GetTitle(), "$options": "i"} // case-insensitive title match
@@ -43,6 +39,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 			Content     string `bson:"content"`
 			Ups         int32  `bson:"ups"`
 			Downs       int32  `bson:"downs"`
+			NumComments int32  `bson:"num_comments"`
 		}
 		if err := cursor.Decode(&thread); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to decode thread: %v", err)
@@ -54,6 +51,7 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 			Content:     thread.Content,
 			Ups:         thread.Ups,
 			Downs:       thread.Downs,
+			NumComments: thread.NumComments,
 		})
 	}
 	if err := cursor.Err(); err != nil {
@@ -74,32 +72,22 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 		CommunityId: req.GetCommunityId(),
 		Title:       req.GetTitle(),
 		Content:     req.GetContent(),
+		Ups:         0,
+		Downs:       0,
+		NumComments: 0,
 	}
 	doc := bson.M{
 		"_id":          thread.Id,
 		"community_id": thread.CommunityId,
 		"title":        thread.Title,
 		"content":      thread.Content,
+		"ups":          thread.Ups,
+		"downs":        thread.Downs,
+		"num_comments": thread.NumComments,
 	}
 	_, err := collection.InsertOne(ctx, doc)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create thread: %v", err)
-	}
-
-	// update the community with the new thread ID
-	communityCollection := s.Mongo.Collection("communities")
-	communityID, err := primitive.ObjectIDFromHex(thread.CommunityId)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
-	}
-	update := bson.M{
-		"$addToSet": bson.M{
-			"threads": thread.Id,
-		},
-	}
-	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": communityID}, update)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
 	}
 	return &dbpb.CreateThreadResponse{
 		Id: threadID,
@@ -108,25 +96,22 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 
 func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*models.Thread, error) {
 	collection := s.Mongo.Collection("threads")
-	id, err := primitive.ObjectIDFromHex(req.GetId())
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid thread id: %v", err)
-	}
 	filter := bson.M{
-		"_id": id,
+		"_id": req.Id,
 	}
 	var thread bson.M
-	err = collection.FindOne(ctx, filter).Decode(&thread)
+	err := collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "thread not found: %v", err)
 	}
 	return &models.Thread{
-		Id:          thread["_id"].(primitive.ObjectID).Hex(),
-		CommunityId: thread["community_id"].(primitive.ObjectID).Hex(),
+		Id:          thread["_id"].(string),
+		CommunityId: thread["community_id"].(string),
 		Title:       thread["title"].(string),
 		Content:     thread["content"].(string),
 		Ups:         thread["ups"].(int32),
 		Downs:       thread["downs"].(int32),
+		NumComments: thread["num_comments"].(int32),
 	}, nil
 }
 
@@ -142,14 +127,24 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 	if req.Content != nil {
 		setFields["content"] = req.GetContent()
 	}
+	if req.NumCommentsOffset != nil {
+		offset := req.GetNumCommentsOffset()
+		if offset == 1 {
+			incFields["num_comments"] = 1
+		} else if offset == -1 {
+			incFields["num_comments"] = -1
+		} else {
+			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+		}
+	}
 	if req.VoteOffset != nil {
 		offset := req.GetVoteOffset()
-		if offset > 0 {
-			incFields["ups"] = offset
-		} else if offset < 0 {
-			incFields["downs"] = -offset // ensure it's positive
+		if offset == 1 {
+			incFields["ups"] = 1
+		} else if offset == -1 {
+			incFields["downs"] = 1
 		} else {
-			return nil, status.Errorf(codes.InvalidArgument, "vote offset cannot be zero")
+			return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset %d", req.VoteOffset)
 		}
 	}
 	if len(setFields) > 0 {
@@ -174,11 +169,6 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 
 func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
 	collection := s.Mongo.Collection("threads")
-
-	// get thread
-	threadRes, err := s.GetThread(ctx, &dbpb.GetThreadRequest{Id: req.GetId()})
-
-	// attempt deletion
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete thread: %v", err)
@@ -186,22 +176,5 @@ func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadReque
 	if result.DeletedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "thread not found")
 	}
-
-	// remove thread id from the community
-	communityCollection := s.Mongo.Collection("communities")
-	communityID, err := primitive.ObjectIDFromHex(threadRes.GetCommunityId())
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
-	}
-	update := bson.M{
-		"$pull": bson.M{
-			"threads": req.GetId(),
-		},
-	}
-	_, err = communityCollection.UpdateOne(ctx, bson.M{"_id": communityID}, update)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update community with thread: %v", err)
-	}
-
 	return &emptypb.Empty{}, nil
 }

@@ -7,7 +7,7 @@ option go_package = "gen/models/pb;models";
 message Community {
   string id = 1;
   string name = 2;
-  repeated string threads = 3;
+  int32 num_threads = 3;
 }
 
 message Thread {
@@ -17,6 +17,7 @@ message Thread {
   string content = 4;
   int32 ups = 5;
   int32 downs = 6;
+  int32 num_comments = 7;
 }
 
 message Comment {
@@ -26,6 +27,7 @@ message Comment {
   int32 downs = 4;
   string parent_id = 5;
   CommentParentType parent_type = 6;
+  int32 num_comments = 8;
 }
 
 enum CommentParentType {
