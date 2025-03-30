@@ -193,6 +193,10 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "numThreadsOffset": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -233,11 +237,9 @@
         "name": {
           "type": "string"
         },
-        "threads": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "numThreads": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

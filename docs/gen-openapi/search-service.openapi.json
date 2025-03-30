@@ -159,11 +159,9 @@
         "name": {
           "type": "string"
         },
-        "threads": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "numThreads": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -187,6 +185,10 @@
           "format": "int32"
         },
         "downs": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "numComments": {
           "type": "integer",
           "format": "int32"
         }

@@ -203,6 +203,10 @@
         "voteOffset": {
           "type": "integer",
           "format": "int32"
+        },
+        "numCommentsOffset": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -262,6 +266,10 @@
         },
         "parentType": {
           "$ref": "#/definitions/modelsCommentParentType"
+        },
+        "numComments": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

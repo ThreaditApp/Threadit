@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/vote/comment/{commentId}/down": {
+    "/votes/comment/{commentId}/down": {
       "post": {
         "operationId": "VoteService_DownvoteComment",
         "responses": {
@@ -55,7 +55,7 @@
         ]
       }
     },
-    "/vote/comment/{commentId}/up": {
+    "/votes/comment/{commentId}/up": {
       "post": {
         "operationId": "VoteService_UpvoteComment",
         "responses": {
@@ -94,7 +94,7 @@
         ]
       }
     },
-    "/vote/thread/{threadId}/down": {
+    "/votes/thread/{threadId}/down": {
       "post": {
         "operationId": "VoteService_DownvoteThread",
         "responses": {
@@ -133,7 +133,7 @@
         ]
       }
     },
-    "/vote/thread/{threadId}/up": {
+    "/votes/thread/{threadId}/up": {
       "post": {
         "operationId": "VoteService_UpvoteThread",
         "responses": {
