@@ -73,6 +73,7 @@ message UpdateThreadRequest {
   optional string title = 2;
   optional string content = 3;
   optional int32 vote_offset = 4;
+  optional int32 num_comments_offset = 5;
 }
 
 message DeleteThreadRequest {
