@@ -1,14 +1,14 @@
 package main
 
 import (
-	server "feed-service/src"
 	"fmt"
-	feedpb "gen/feed-service/pb"
-	socialpb "gen/social-service/pb"
+	commentpb "gen/comment-service/pb"
+	popularpb "gen/popular-service/pb"
 	threadpb "gen/thread-service/pb"
 	"log"
 	"net"
 	"os"
+	server "popular-service/src"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,13 +36,13 @@ func main() {
 	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
 	defer threadConn.Close()
 
-	socialConn := connectGrpcClient("SOCIAL_SERVICE_HOST", "SOCIAL_SERVICE_PORT")
-	defer socialConn.Close()
+	commentConn := connectGrpcClient("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT")
+	defer commentConn.Close()
 
-	// Create feed service with database client
-	feedService := &server.FeedServer{
-		ThreadClient: threadpb.NewThreadServiceClient(threadConn),
-		SocialClient: socialpb.NewSocialServiceClient(socialConn),
+	// Create popular service
+	popularService := &server.PopularServer{
+		ThreadClient:  threadpb.NewThreadServiceClient(threadConn),
+		CommentClient: commentpb.NewCommentServiceClient(commentConn),
 	}
 
 	// get env port
@@ -58,7 +58,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	feedpb.RegisterFeedServiceServer(grpcServer, feedService)
+	popularpb.RegisterPopularServiceServer(grpcServer, popularService)
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {

@@ -28,9 +28,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SearchServiceClient interface {
-	GlobalSearch(ctx context.Context, in *GlobalSearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error)
-	CommunitySearch(ctx context.Context, in *CommunitySearchRequest, opts ...grpc.CallOption) (*CommunitySearchResponse, error)
-	ThreadSearch(ctx context.Context, in *ThreadSearchRequest, opts ...grpc.CallOption) (*ThreadSearchResponse, error)
+	GlobalSearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error)
+	CommunitySearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*CommunitySearchResponse, error)
+	ThreadSearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*ThreadSearchResponse, error)
 }
 
 type searchServiceClient struct {
@@ -41,7 +41,7 @@ func NewSearchServiceClient(cc grpc.ClientConnInterface) SearchServiceClient {
 	return &searchServiceClient{cc}
 }
 
-func (c *searchServiceClient) GlobalSearch(ctx context.Context, in *GlobalSearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error) {
+func (c *searchServiceClient) GlobalSearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*GlobalSearchResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GlobalSearchResponse)
 	err := c.cc.Invoke(ctx, SearchService_GlobalSearch_FullMethodName, in, out, cOpts...)
@@ -51,7 +51,7 @@ func (c *searchServiceClient) GlobalSearch(ctx context.Context, in *GlobalSearch
 	return out, nil
 }
 
-func (c *searchServiceClient) CommunitySearch(ctx context.Context, in *CommunitySearchRequest, opts ...grpc.CallOption) (*CommunitySearchResponse, error) {
+func (c *searchServiceClient) CommunitySearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*CommunitySearchResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CommunitySearchResponse)
 	err := c.cc.Invoke(ctx, SearchService_CommunitySearch_FullMethodName, in, out, cOpts...)
@@ -61,7 +61,7 @@ func (c *searchServiceClient) CommunitySearch(ctx context.Context, in *Community
 	return out, nil
 }
 
-func (c *searchServiceClient) ThreadSearch(ctx context.Context, in *ThreadSearchRequest, opts ...grpc.CallOption) (*ThreadSearchResponse, error) {
+func (c *searchServiceClient) ThreadSearch(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*ThreadSearchResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ThreadSearchResponse)
 	err := c.cc.Invoke(ctx, SearchService_ThreadSearch_FullMethodName, in, out, cOpts...)
@@ -75,9 +75,9 @@ func (c *searchServiceClient) ThreadSearch(ctx context.Context, in *ThreadSearch
 // All implementations must embed UnimplementedSearchServiceServer
 // for forward compatibility.
 type SearchServiceServer interface {
-	GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error)
-	CommunitySearch(context.Context, *CommunitySearchRequest) (*CommunitySearchResponse, error)
-	ThreadSearch(context.Context, *ThreadSearchRequest) (*ThreadSearchResponse, error)
+	GlobalSearch(context.Context, *SearchRequest) (*GlobalSearchResponse, error)
+	CommunitySearch(context.Context, *SearchRequest) (*CommunitySearchResponse, error)
+	ThreadSearch(context.Context, *SearchRequest) (*ThreadSearchResponse, error)
 	mustEmbedUnimplementedSearchServiceServer()
 }
 
@@ -88,13 +88,13 @@ type SearchServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedSearchServiceServer struct{}
 
-func (UnimplementedSearchServiceServer) GlobalSearch(context.Context, *GlobalSearchRequest) (*GlobalSearchResponse, error) {
+func (UnimplementedSearchServiceServer) GlobalSearch(context.Context, *SearchRequest) (*GlobalSearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GlobalSearch not implemented")
 }
-func (UnimplementedSearchServiceServer) CommunitySearch(context.Context, *CommunitySearchRequest) (*CommunitySearchResponse, error) {
+func (UnimplementedSearchServiceServer) CommunitySearch(context.Context, *SearchRequest) (*CommunitySearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommunitySearch not implemented")
 }
-func (UnimplementedSearchServiceServer) ThreadSearch(context.Context, *ThreadSearchRequest) (*ThreadSearchResponse, error) {
+func (UnimplementedSearchServiceServer) ThreadSearch(context.Context, *SearchRequest) (*ThreadSearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ThreadSearch not implemented")
 }
 func (UnimplementedSearchServiceServer) mustEmbedUnimplementedSearchServiceServer() {}
@@ -119,7 +119,7 @@ func RegisterSearchServiceServer(s grpc.ServiceRegistrar, srv SearchServiceServe
 }
 
 func _SearchService_GlobalSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GlobalSearchRequest)
+	in := new(SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -131,13 +131,13 @@ func _SearchService_GlobalSearch_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: SearchService_GlobalSearch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SearchServiceServer).GlobalSearch(ctx, req.(*GlobalSearchRequest))
+		return srv.(SearchServiceServer).GlobalSearch(ctx, req.(*SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _SearchService_CommunitySearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommunitySearchRequest)
+	in := new(SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -149,13 +149,13 @@ func _SearchService_CommunitySearch_Handler(srv interface{}, ctx context.Context
 		FullMethod: SearchService_CommunitySearch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SearchServiceServer).CommunitySearch(ctx, req.(*CommunitySearchRequest))
+		return srv.(SearchServiceServer).CommunitySearch(ctx, req.(*SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _SearchService_ThreadSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ThreadSearchRequest)
+	in := new(SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func _SearchService_ThreadSearch_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: SearchService_ThreadSearch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SearchServiceServer).ThreadSearch(ctx, req.(*ThreadSearchRequest))
+		return srv.(SearchServiceServer).ThreadSearch(ctx, req.(*SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

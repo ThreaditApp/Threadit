@@ -8,26 +8,26 @@ import "google/api/annotations.proto";
 import "models.proto";
 
 service SearchService {
-	rpc GlobalSearch (GlobalSearchRequest) returns (GlobalSearchResponse) {
+	rpc GlobalSearch (SearchRequest) returns (GlobalSearchResponse) {
 		option (google.api.http) = {
 			get: "/search"
 		};
 	}
 
-	rpc CommunitySearch (CommunitySearchRequest) returns (CommunitySearchResponse) {
+	rpc CommunitySearch (SearchRequest) returns (CommunitySearchResponse) {
 		option (google.api.http) = {
 			get: "/search/community"
 		};
 	}
 
-	rpc ThreadSearch (ThreadSearchRequest) returns (ThreadSearchResponse) {
+	rpc ThreadSearch (SearchRequest) returns (ThreadSearchResponse) {
 		option (google.api.http) = {
 			get: "/search/thread"
 		};
 	}
 }
 
-message GlobalSearchRequest {
+message SearchRequest {
 	string query = 1;
 	optional int32 offset = 2;
 	optional int32 limit = 3;	
@@ -38,20 +38,8 @@ message GlobalSearchResponse {
 	repeated models.Community community_results = 2;
 }
 
-message CommunitySearchRequest {
-	string query = 1;
-	optional int32 offset = 2;
-	optional int32 limit = 3;	
-}
-
 message CommunitySearchResponse {
 	repeated models.Community results = 1;
-}
-
-message ThreadSearchRequest {
-	string query = 1;
-	optional int32 offset = 2;
-	optional int32 limit = 3;	
 }
 
 message ThreadSearchResponse {

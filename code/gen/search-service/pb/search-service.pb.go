@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GlobalSearchRequest struct {
+type SearchRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
 	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
@@ -32,20 +32,20 @@ type GlobalSearchRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GlobalSearchRequest) Reset() {
-	*x = GlobalSearchRequest{}
+func (x *SearchRequest) Reset() {
+	*x = SearchRequest{}
 	mi := &file_search_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GlobalSearchRequest) String() string {
+func (x *SearchRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GlobalSearchRequest) ProtoMessage() {}
+func (*SearchRequest) ProtoMessage() {}
 
-func (x *GlobalSearchRequest) ProtoReflect() protoreflect.Message {
+func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_search_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,26 +57,26 @@ func (x *GlobalSearchRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GlobalSearchRequest.ProtoReflect.Descriptor instead.
-func (*GlobalSearchRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
+func (*SearchRequest) Descriptor() ([]byte, []int) {
 	return file_search_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GlobalSearchRequest) GetQuery() string {
+func (x *SearchRequest) GetQuery() string {
 	if x != nil {
 		return x.Query
 	}
 	return ""
 }
 
-func (x *GlobalSearchRequest) GetOffset() int32 {
+func (x *SearchRequest) GetOffset() int32 {
 	if x != nil && x.Offset != nil {
 		return *x.Offset
 	}
 	return 0
 }
 
-func (x *GlobalSearchRequest) GetLimit() int32 {
+func (x *SearchRequest) GetLimit() int32 {
 	if x != nil && x.Limit != nil {
 		return *x.Limit
 	}
@@ -135,66 +135,6 @@ func (x *GlobalSearchResponse) GetCommunityResults() []*pb.Community {
 	return nil
 }
 
-type CommunitySearchRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
-	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
-	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CommunitySearchRequest) Reset() {
-	*x = CommunitySearchRequest{}
-	mi := &file_search_service_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CommunitySearchRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CommunitySearchRequest) ProtoMessage() {}
-
-func (x *CommunitySearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_search_service_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CommunitySearchRequest.ProtoReflect.Descriptor instead.
-func (*CommunitySearchRequest) Descriptor() ([]byte, []int) {
-	return file_search_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *CommunitySearchRequest) GetQuery() string {
-	if x != nil {
-		return x.Query
-	}
-	return ""
-}
-
-func (x *CommunitySearchRequest) GetOffset() int32 {
-	if x != nil && x.Offset != nil {
-		return *x.Offset
-	}
-	return 0
-}
-
-func (x *CommunitySearchRequest) GetLimit() int32 {
-	if x != nil && x.Limit != nil {
-		return *x.Limit
-	}
-	return 0
-}
-
 type CommunitySearchResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Results       []*pb.Community        `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
@@ -204,7 +144,7 @@ type CommunitySearchResponse struct {
 
 func (x *CommunitySearchResponse) Reset() {
 	*x = CommunitySearchResponse{}
-	mi := &file_search_service_proto_msgTypes[3]
+	mi := &file_search_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -216,7 +156,7 @@ func (x *CommunitySearchResponse) String() string {
 func (*CommunitySearchResponse) ProtoMessage() {}
 
 func (x *CommunitySearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_search_service_proto_msgTypes[3]
+	mi := &file_search_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -229,7 +169,7 @@ func (x *CommunitySearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommunitySearchResponse.ProtoReflect.Descriptor instead.
 func (*CommunitySearchResponse) Descriptor() ([]byte, []int) {
-	return file_search_service_proto_rawDescGZIP(), []int{3}
+	return file_search_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CommunitySearchResponse) GetResults() []*pb.Community {
@@ -237,66 +177,6 @@ func (x *CommunitySearchResponse) GetResults() []*pb.Community {
 		return x.Results
 	}
 	return nil
-}
-
-type ThreadSearchRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
-	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
-	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ThreadSearchRequest) Reset() {
-	*x = ThreadSearchRequest{}
-	mi := &file_search_service_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ThreadSearchRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ThreadSearchRequest) ProtoMessage() {}
-
-func (x *ThreadSearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_search_service_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ThreadSearchRequest.ProtoReflect.Descriptor instead.
-func (*ThreadSearchRequest) Descriptor() ([]byte, []int) {
-	return file_search_service_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ThreadSearchRequest) GetQuery() string {
-	if x != nil {
-		return x.Query
-	}
-	return ""
-}
-
-func (x *ThreadSearchRequest) GetOffset() int32 {
-	if x != nil && x.Offset != nil {
-		return *x.Offset
-	}
-	return 0
-}
-
-func (x *ThreadSearchRequest) GetLimit() int32 {
-	if x != nil && x.Limit != nil {
-		return *x.Limit
-	}
-	return 0
 }
 
 type ThreadSearchResponse struct {
@@ -308,7 +188,7 @@ type ThreadSearchResponse struct {
 
 func (x *ThreadSearchResponse) Reset() {
 	*x = ThreadSearchResponse{}
-	mi := &file_search_service_proto_msgTypes[5]
+	mi := &file_search_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -320,7 +200,7 @@ func (x *ThreadSearchResponse) String() string {
 func (*ThreadSearchResponse) ProtoMessage() {}
 
 func (x *ThreadSearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_search_service_proto_msgTypes[5]
+	mi := &file_search_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -333,7 +213,7 @@ func (x *ThreadSearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ThreadSearchResponse.ProtoReflect.Descriptor instead.
 func (*ThreadSearchResponse) Descriptor() ([]byte, []int) {
-	return file_search_service_proto_rawDescGZIP(), []int{5}
+	return file_search_service_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ThreadSearchResponse) GetResults() []*pb.Thread {
@@ -347,8 +227,8 @@ var File_search_service_proto protoreflect.FileDescriptor
 
 const file_search_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14search-service.proto\x12\x06search\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"x\n" +
-	"\x13GlobalSearchRequest\x12\x14\n" +
+	"\x14search-service.proto\x12\x06search\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"r\n" +
+	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1b\n" +
 	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
 	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
@@ -356,27 +236,15 @@ const file_search_service_proto_rawDesc = "" +
 	"\x06_limit\"\x8d\x01\n" +
 	"\x14GlobalSearchResponse\x125\n" +
 	"\x0ethread_results\x18\x01 \x03(\v2\x0e.models.ThreadR\rthreadResults\x12>\n" +
-	"\x11community_results\x18\x02 \x03(\v2\x11.models.CommunityR\x10communityResults\"{\n" +
-	"\x16CommunitySearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1b\n" +
-	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
-	"\a_offsetB\b\n" +
-	"\x06_limit\"F\n" +
+	"\x11community_results\x18\x02 \x03(\v2\x11.models.CommunityR\x10communityResults\"F\n" +
 	"\x17CommunitySearchResponse\x12+\n" +
-	"\aresults\x18\x01 \x03(\v2\x11.models.CommunityR\aresults\"x\n" +
-	"\x13ThreadSearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1b\n" +
-	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
-	"\a_offsetB\b\n" +
-	"\x06_limit\"@\n" +
+	"\aresults\x18\x01 \x03(\v2\x11.models.CommunityR\aresults\"@\n" +
 	"\x14ThreadSearchResponse\x12(\n" +
-	"\aresults\x18\x01 \x03(\v2\x0e.models.ThreadR\aresults2\xbd\x02\n" +
-	"\rSearchService\x12Z\n" +
-	"\fGlobalSearch\x12\x1b.search.GlobalSearchRequest\x1a\x1c.search.GlobalSearchResponse\"\x0f\x82\xd3\xe4\x93\x02\t\x12\a/search\x12m\n" +
-	"\x0fCommunitySearch\x12\x1e.search.CommunitySearchRequest\x1a\x1f.search.CommunitySearchResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/search/community\x12a\n" +
-	"\fThreadSearch\x12\x1b.search.ThreadSearchRequest\x1a\x1c.search.ThreadSearchResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/search/threadB\x1aZ\x18gen/search-service/pb;pbb\x06proto3"
+	"\aresults\x18\x01 \x03(\v2\x0e.models.ThreadR\aresults2\xa8\x02\n" +
+	"\rSearchService\x12T\n" +
+	"\fGlobalSearch\x12\x15.search.SearchRequest\x1a\x1c.search.GlobalSearchResponse\"\x0f\x82\xd3\xe4\x93\x02\t\x12\a/search\x12d\n" +
+	"\x0fCommunitySearch\x12\x15.search.SearchRequest\x1a\x1f.search.CommunitySearchResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/search/community\x12[\n" +
+	"\fThreadSearch\x12\x15.search.SearchRequest\x1a\x1c.search.ThreadSearchResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/search/threadB\x1aZ\x18gen/search-service/pb;pbb\x06proto3"
 
 var (
 	file_search_service_proto_rawDescOnce sync.Once
@@ -390,28 +258,26 @@ func file_search_service_proto_rawDescGZIP() []byte {
 	return file_search_service_proto_rawDescData
 }
 
-var file_search_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_search_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_search_service_proto_goTypes = []any{
-	(*GlobalSearchRequest)(nil),     // 0: search.GlobalSearchRequest
+	(*SearchRequest)(nil),           // 0: search.SearchRequest
 	(*GlobalSearchResponse)(nil),    // 1: search.GlobalSearchResponse
-	(*CommunitySearchRequest)(nil),  // 2: search.CommunitySearchRequest
-	(*CommunitySearchResponse)(nil), // 3: search.CommunitySearchResponse
-	(*ThreadSearchRequest)(nil),     // 4: search.ThreadSearchRequest
-	(*ThreadSearchResponse)(nil),    // 5: search.ThreadSearchResponse
-	(*pb.Thread)(nil),               // 6: models.Thread
-	(*pb.Community)(nil),            // 7: models.Community
+	(*CommunitySearchResponse)(nil), // 2: search.CommunitySearchResponse
+	(*ThreadSearchResponse)(nil),    // 3: search.ThreadSearchResponse
+	(*pb.Thread)(nil),               // 4: models.Thread
+	(*pb.Community)(nil),            // 5: models.Community
 }
 var file_search_service_proto_depIdxs = []int32{
-	6, // 0: search.GlobalSearchResponse.thread_results:type_name -> models.Thread
-	7, // 1: search.GlobalSearchResponse.community_results:type_name -> models.Community
-	7, // 2: search.CommunitySearchResponse.results:type_name -> models.Community
-	6, // 3: search.ThreadSearchResponse.results:type_name -> models.Thread
-	0, // 4: search.SearchService.GlobalSearch:input_type -> search.GlobalSearchRequest
-	2, // 5: search.SearchService.CommunitySearch:input_type -> search.CommunitySearchRequest
-	4, // 6: search.SearchService.ThreadSearch:input_type -> search.ThreadSearchRequest
+	4, // 0: search.GlobalSearchResponse.thread_results:type_name -> models.Thread
+	5, // 1: search.GlobalSearchResponse.community_results:type_name -> models.Community
+	5, // 2: search.CommunitySearchResponse.results:type_name -> models.Community
+	4, // 3: search.ThreadSearchResponse.results:type_name -> models.Thread
+	0, // 4: search.SearchService.GlobalSearch:input_type -> search.SearchRequest
+	0, // 5: search.SearchService.CommunitySearch:input_type -> search.SearchRequest
+	0, // 6: search.SearchService.ThreadSearch:input_type -> search.SearchRequest
 	1, // 7: search.SearchService.GlobalSearch:output_type -> search.GlobalSearchResponse
-	3, // 8: search.SearchService.CommunitySearch:output_type -> search.CommunitySearchResponse
-	5, // 9: search.SearchService.ThreadSearch:output_type -> search.ThreadSearchResponse
+	2, // 8: search.SearchService.CommunitySearch:output_type -> search.CommunitySearchResponse
+	3, // 9: search.SearchService.ThreadSearch:output_type -> search.ThreadSearchResponse
 	7, // [7:10] is the sub-list for method output_type
 	4, // [4:7] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -425,15 +291,13 @@ func file_search_service_proto_init() {
 		return
 	}
 	file_search_service_proto_msgTypes[0].OneofWrappers = []any{}
-	file_search_service_proto_msgTypes[2].OneofWrappers = []any{}
-	file_search_service_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_search_service_proto_rawDesc), len(file_search_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -5,7 +5,6 @@ import (
 	communitypb "gen/community-service/pb"
 	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
-	userpb "gen/user-service/pb"
 	"log"
 	"net"
 	"os"
@@ -34,8 +33,6 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 
 func main() {
 	// connect to other services
-	userConn := connectGrpcClient("USER_SERVICE_HOST", "USER_SERVICE_PORT")
-	defer userConn.Close()
 	communityConn := connectGrpcClient("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT")
 	defer communityConn.Close()
 	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
@@ -43,7 +40,6 @@ func main() {
 
 	// create search server with clients
 	searchServer := &server.SearchServer{
-		UserClient:      userpb.NewUserServiceClient(userConn),
 		CommunityClient: communitypb.NewCommunityServiceClient(communityConn),
 		ThreadClient:    threadpb.NewThreadServiceClient(threadConn),
 	}

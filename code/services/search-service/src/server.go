@@ -15,7 +15,7 @@ type SearchServer struct {
 	ThreadClient    threadpb.ThreadServiceClient
 }
 
-func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.GlobalSearchRequest) (*searchpb.GlobalSearchResponse, error) {
+func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.GlobalSearchResponse, error) {
 	communityResults, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.GlobalSea
 	}, nil
 }
 
-func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.CommunitySearchRequest) (*searchpb.CommunitySearchResponse, error) {
+func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.CommunitySearchResponse, error) {
 	results, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.Commun
 	}, nil
 }
 
-func (s *SearchServer) ThreadSearch(ctx context.Context, req *searchpb.ThreadSearchRequest) (*searchpb.ThreadSearchResponse, error) {
+func (s *SearchServer) ThreadSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.ThreadSearchResponse, error) {
 	results, err := s.searchThreads(ctx, &req.Query)
 	if err != nil {
 		return nil, err

@@ -3,19 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	commentpb "gen/comment-service/pb"
 	communitypb "gen/community-service/pb"
+	popularpb "gen/popular-service/pb"
+	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
-	"strings"
-
-	// userpb "gen/user-service/pb"
-	// commentpb "gen/comment-service/pb"
-	// votepb "gen/vote-service/pb"
-	// socialpb "gen/social-service/pb"
-	// searchpb "gen/search-service/pb"
-	// feedpb "gen/feed-service/pb"
+	votepb "gen/vote-service/pb"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -95,7 +92,7 @@ func main() {
 	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
 	// }
 
-	// err = feedpb.RegisterFeedServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("FEED_SERVICE_HOST", "FEED_SERVICE_PORT"), opts)
+	// err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("FEED_SERVICE_HOST", "FEED_SERVICE_PORT"), opts)
 	// if err != nil {
 	// 	log.Fatalf("Failed to register gRPC gateway: %v", err)
 	// }

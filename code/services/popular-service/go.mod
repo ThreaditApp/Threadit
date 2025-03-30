@@ -1,4 +1,4 @@
-module feed-service
+module popular-service
 
 go 1.23.0
 

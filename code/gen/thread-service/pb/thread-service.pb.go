@@ -28,8 +28,9 @@ type ListThreadsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CommunityId   *string                `protobuf:"bytes,1,opt,name=community_id,json=communityId,proto3,oneof" json:"community_id,omitempty"`
 	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
-	Offset        *string                `protobuf:"bytes,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
-	Limit         *string                `protobuf:"bytes,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	Offset        *int32                 `protobuf:"varint,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit         *int32                 `protobuf:"varint,4,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	SortBy        *string                `protobuf:"bytes,5,opt,name=sort_by,json=sortBy,proto3,oneof" json:"sort_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -78,16 +79,23 @@ func (x *ListThreadsRequest) GetTitle() string {
 	return ""
 }
 
-func (x *ListThreadsRequest) GetOffset() string {
+func (x *ListThreadsRequest) GetOffset() int32 {
 	if x != nil && x.Offset != nil {
 		return *x.Offset
 	}
-	return ""
+	return 0
 }
 
-func (x *ListThreadsRequest) GetLimit() string {
+func (x *ListThreadsRequest) GetLimit() int32 {
 	if x != nil && x.Limit != nil {
 		return *x.Limit
+	}
+	return 0
+}
+
+func (x *ListThreadsRequest) GetSortBy() string {
+	if x != nil && x.SortBy != nil {
+		return *x.SortBy
 	}
 	return ""
 }
@@ -284,6 +292,50 @@ func (x *GetThreadRequest) GetId() string {
 	return ""
 }
 
+type GetThreadResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Thread        *pb.Thread             `protobuf:"bytes,1,opt,name=thread,proto3" json:"thread,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetThreadResponse) Reset() {
+	*x = GetThreadResponse{}
+	mi := &file_thread_service_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetThreadResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetThreadResponse) ProtoMessage() {}
+
+func (x *GetThreadResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_thread_service_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetThreadResponse.ProtoReflect.Descriptor instead.
+func (*GetThreadResponse) Descriptor() ([]byte, []int) {
+	return file_thread_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetThreadResponse) GetThread() *pb.Thread {
+	if x != nil {
+		return x.Thread
+	}
+	return nil
+}
+
 type UpdateThreadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -296,7 +348,7 @@ type UpdateThreadRequest struct {
 
 func (x *UpdateThreadRequest) Reset() {
 	*x = UpdateThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[5]
+	mi := &file_thread_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -308,7 +360,7 @@ func (x *UpdateThreadRequest) String() string {
 func (*UpdateThreadRequest) ProtoMessage() {}
 
 func (x *UpdateThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[5]
+	mi := &file_thread_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -321,7 +373,7 @@ func (x *UpdateThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateThreadRequest.ProtoReflect.Descriptor instead.
 func (*UpdateThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{5}
+	return file_thread_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateThreadRequest) GetId() string {
@@ -361,7 +413,7 @@ type DeleteThreadRequest struct {
 
 func (x *DeleteThreadRequest) Reset() {
 	*x = DeleteThreadRequest{}
-	mi := &file_thread_service_proto_msgTypes[6]
+	mi := &file_thread_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +425,7 @@ func (x *DeleteThreadRequest) String() string {
 func (*DeleteThreadRequest) ProtoMessage() {}
 
 func (x *DeleteThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_thread_service_proto_msgTypes[6]
+	mi := &file_thread_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +438,7 @@ func (x *DeleteThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteThreadRequest.ProtoReflect.Descriptor instead.
 func (*DeleteThreadRequest) Descriptor() ([]byte, []int) {
-	return file_thread_service_proto_rawDescGZIP(), []int{6}
+	return file_thread_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteThreadRequest) GetId() string {
@@ -400,16 +452,19 @@ var File_thread_service_proto protoreflect.FileDescriptor
 
 const file_thread_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\xbf\x01\n" +
+	"\x14thread-service.proto\x12\x06thread\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\xe9\x01\n" +
 	"\x12ListThreadsRequest\x12&\n" +
 	"\fcommunity_id\x18\x01 \x01(\tH\x00R\vcommunityId\x88\x01\x01\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x01R\x05title\x88\x01\x01\x12\x1b\n" +
-	"\x06offset\x18\x03 \x01(\tH\x02R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x04 \x01(\tH\x03R\x05limit\x88\x01\x01B\x0f\n" +
+	"\x06offset\x18\x03 \x01(\x05H\x02R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x04 \x01(\x05H\x03R\x05limit\x88\x01\x01\x12\x1c\n" +
+	"\asort_by\x18\x05 \x01(\tH\x04R\x06sortBy\x88\x01\x01B\x0f\n" +
 	"\r_community_idB\b\n" +
 	"\x06_titleB\t\n" +
 	"\a_offsetB\b\n" +
-	"\x06_limit\"?\n" +
+	"\x06_limitB\n" +
+	"\n" +
+	"\b_sort_by\"?\n" +
 	"\x13ListThreadsResponse\x12(\n" +
 	"\athreads\x18\x01 \x03(\v2\x0e.models.ThreadR\athreads\"h\n" +
 	"\x13CreateThreadRequest\x12!\n" +
@@ -419,7 +474,9 @@ const file_thread_service_proto_rawDesc = "" +
 	"\x14CreateThreadResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\"\n" +
 	"\x10GetThreadRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xab\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\";\n" +
+	"\x11GetThreadResponse\x12&\n" +
+	"\x06thread\x18\x01 \x01(\v2\x0e.models.ThreadR\x06thread\"\xab\x01\n" +
 	"\x13UpdateThreadRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1d\n" +
@@ -431,12 +488,12 @@ const file_thread_service_proto_rawDesc = "" +
 	"\b_contentB\x0e\n" +
 	"\f_vote_offset\"%\n" +
 	"\x13DeleteThreadRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xd2\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xdd\x03\n" +
 	"\rThreadService\x12X\n" +
 	"\vListThreads\x12\x1a.thread.ListThreadsRequest\x1a\x1b.thread.ListThreadsResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
 	"\x12\b/threads\x12^\n" +
-	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x1c.thread.CreateThreadResponse\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/threads\x12L\n" +
-	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x0e.models.Thread\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/threads/{id}\x12]\n" +
+	"\fCreateThread\x12\x1b.thread.CreateThreadRequest\x1a\x1c.thread.CreateThreadResponse\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/threads\x12W\n" +
+	"\tGetThread\x12\x18.thread.GetThreadRequest\x1a\x19.thread.GetThreadResponse\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/threads/{id}\x12]\n" +
 	"\fUpdateThread\x12\x1b.thread.UpdateThreadRequest\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*2\r/threads/{id}\x12Z\n" +
 	"\fDeleteThread\x12\x1b.thread.DeleteThreadRequest\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f*\r/threads/{id}B\x1aZ\x18gen/thread-service/pb;pbb\x06proto3"
 
@@ -452,35 +509,37 @@ func file_thread_service_proto_rawDescGZIP() []byte {
 	return file_thread_service_proto_rawDescData
 }
 
-var file_thread_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_thread_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_thread_service_proto_goTypes = []any{
 	(*ListThreadsRequest)(nil),   // 0: thread.ListThreadsRequest
 	(*ListThreadsResponse)(nil),  // 1: thread.ListThreadsResponse
 	(*CreateThreadRequest)(nil),  // 2: thread.CreateThreadRequest
 	(*CreateThreadResponse)(nil), // 3: thread.CreateThreadResponse
 	(*GetThreadRequest)(nil),     // 4: thread.GetThreadRequest
-	(*UpdateThreadRequest)(nil),  // 5: thread.UpdateThreadRequest
-	(*DeleteThreadRequest)(nil),  // 6: thread.DeleteThreadRequest
-	(*pb.Thread)(nil),            // 7: models.Thread
-	(*emptypb.Empty)(nil),        // 8: google.protobuf.Empty
+	(*GetThreadResponse)(nil),    // 5: thread.GetThreadResponse
+	(*UpdateThreadRequest)(nil),  // 6: thread.UpdateThreadRequest
+	(*DeleteThreadRequest)(nil),  // 7: thread.DeleteThreadRequest
+	(*pb.Thread)(nil),            // 8: models.Thread
+	(*emptypb.Empty)(nil),        // 9: google.protobuf.Empty
 }
 var file_thread_service_proto_depIdxs = []int32{
-	7, // 0: thread.ListThreadsResponse.threads:type_name -> models.Thread
-	0, // 1: thread.ThreadService.ListThreads:input_type -> thread.ListThreadsRequest
-	2, // 2: thread.ThreadService.CreateThread:input_type -> thread.CreateThreadRequest
-	4, // 3: thread.ThreadService.GetThread:input_type -> thread.GetThreadRequest
-	5, // 4: thread.ThreadService.UpdateThread:input_type -> thread.UpdateThreadRequest
-	6, // 5: thread.ThreadService.DeleteThread:input_type -> thread.DeleteThreadRequest
-	1, // 6: thread.ThreadService.ListThreads:output_type -> thread.ListThreadsResponse
-	3, // 7: thread.ThreadService.CreateThread:output_type -> thread.CreateThreadResponse
-	7, // 8: thread.ThreadService.GetThread:output_type -> models.Thread
-	8, // 9: thread.ThreadService.UpdateThread:output_type -> google.protobuf.Empty
-	8, // 10: thread.ThreadService.DeleteThread:output_type -> google.protobuf.Empty
-	6, // [6:11] is the sub-list for method output_type
-	1, // [1:6] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	8, // 0: thread.ListThreadsResponse.threads:type_name -> models.Thread
+	8, // 1: thread.GetThreadResponse.thread:type_name -> models.Thread
+	0, // 2: thread.ThreadService.ListThreads:input_type -> thread.ListThreadsRequest
+	2, // 3: thread.ThreadService.CreateThread:input_type -> thread.CreateThreadRequest
+	4, // 4: thread.ThreadService.GetThread:input_type -> thread.GetThreadRequest
+	6, // 5: thread.ThreadService.UpdateThread:input_type -> thread.UpdateThreadRequest
+	7, // 6: thread.ThreadService.DeleteThread:input_type -> thread.DeleteThreadRequest
+	1, // 7: thread.ThreadService.ListThreads:output_type -> thread.ListThreadsResponse
+	3, // 8: thread.ThreadService.CreateThread:output_type -> thread.CreateThreadResponse
+	5, // 9: thread.ThreadService.GetThread:output_type -> thread.GetThreadResponse
+	9, // 10: thread.ThreadService.UpdateThread:output_type -> google.protobuf.Empty
+	9, // 11: thread.ThreadService.DeleteThread:output_type -> google.protobuf.Empty
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_thread_service_proto_init() }
@@ -489,14 +548,14 @@ func file_thread_service_proto_init() {
 		return
 	}
 	file_thread_service_proto_msgTypes[0].OneofWrappers = []any{}
-	file_thread_service_proto_msgTypes[5].OneofWrappers = []any{}
+	file_thread_service_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_thread_service_proto_rawDesc), len(file_thread_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

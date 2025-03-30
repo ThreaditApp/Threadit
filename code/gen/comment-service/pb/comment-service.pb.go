@@ -26,9 +26,10 @@ const (
 
 type ListCommentsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ThreadId      string                 `protobuf:"bytes,1,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	ThreadId      *string                `protobuf:"bytes,1,opt,name=thread_id,json=threadId,proto3,oneof" json:"thread_id,omitempty"`
 	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
 	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	SortBy        *string                `protobuf:"bytes,4,opt,name=sort_by,json=sortBy,proto3,oneof" json:"sort_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -64,8 +65,8 @@ func (*ListCommentsRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *ListCommentsRequest) GetThreadId() string {
-	if x != nil {
-		return x.ThreadId
+	if x != nil && x.ThreadId != nil {
+		return *x.ThreadId
 	}
 	return ""
 }
@@ -84,11 +85,16 @@ func (x *ListCommentsRequest) GetLimit() int32 {
 	return 0
 }
 
+func (x *ListCommentsRequest) GetSortBy() string {
+	if x != nil && x.SortBy != nil {
+		return *x.SortBy
+	}
+	return ""
+}
+
 type ListCommentsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Comments      []*pb.Comment          `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
-	Offset        *int32                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
-	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -130,25 +136,11 @@ func (x *ListCommentsResponse) GetComments() []*pb.Comment {
 	return nil
 }
 
-func (x *ListCommentsResponse) GetOffset() int32 {
-	if x != nil && x.Offset != nil {
-		return *x.Offset
-	}
-	return 0
-}
-
-func (x *ListCommentsResponse) GetLimit() int32 {
-	if x != nil && x.Limit != nil {
-		return *x.Limit
-	}
-	return 0
-}
-
 type CreateCommentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ParentId      *string                `protobuf:"bytes,3,opt,name=parent_id,json=parentId,proto3,oneof" json:"parent_id,omitempty"`
-	ThreadId      *string                `protobuf:"bytes,4,opt,name=thread_id,json=threadId,proto3,oneof" json:"thread_id,omitempty"`
+	Content       string                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	ParentId      string                 `protobuf:"bytes,2,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	ParentType    pb.CommentParentType   `protobuf:"varint,3,opt,name=parent_type,json=parentType,proto3,enum=models.CommentParentType" json:"parent_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -191,17 +183,17 @@ func (x *CreateCommentRequest) GetContent() string {
 }
 
 func (x *CreateCommentRequest) GetParentId() string {
-	if x != nil && x.ParentId != nil {
-		return *x.ParentId
+	if x != nil {
+		return x.ParentId
 	}
 	return ""
 }
 
-func (x *CreateCommentRequest) GetThreadId() string {
-	if x != nil && x.ThreadId != nil {
-		return *x.ThreadId
+func (x *CreateCommentRequest) GetParentType() pb.CommentParentType {
+	if x != nil {
+		return x.ParentType
 	}
-	return ""
+	return pb.CommentParentType(0)
 }
 
 type CreateCommentResponse struct {
@@ -339,7 +331,7 @@ func (x *GetCommentResponse) GetComment() *pb.Comment {
 type UpdateCommentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	Content       *string                `protobuf:"bytes,2,opt,name=content,proto3,oneof" json:"content,omitempty"`
 	VoteOffset    *int32                 `protobuf:"varint,3,opt,name=vote_offset,json=voteOffset,proto3,oneof" json:"vote_offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -383,8 +375,8 @@ func (x *UpdateCommentRequest) GetId() string {
 }
 
 func (x *UpdateCommentRequest) GetContent() string {
-	if x != nil {
-		return x.Content
+	if x != nil && x.Content != nil {
+		return *x.Content
 	}
 	return ""
 }
@@ -444,38 +436,38 @@ var File_comment_service_proto protoreflect.FileDescriptor
 
 const file_comment_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15comment-service.proto\x12\acomment\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\x7f\n" +
-	"\x13ListCommentsRequest\x12\x1b\n" +
-	"\tthread_id\x18\x01 \x01(\tR\bthreadId\x12\x1b\n" +
-	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\x15comment-service.proto\x12\acomment\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"\xbc\x01\n" +
+	"\x13ListCommentsRequest\x12 \n" +
+	"\tthread_id\x18\x01 \x01(\tH\x00R\bthreadId\x88\x01\x01\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x05H\x01R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x05H\x02R\x05limit\x88\x01\x01\x12\x1c\n" +
+	"\asort_by\x18\x04 \x01(\tH\x03R\x06sortBy\x88\x01\x01B\f\n" +
+	"\n" +
+	"_thread_idB\t\n" +
 	"\a_offsetB\b\n" +
-	"\x06_limit\"\x90\x01\n" +
+	"\x06_limitB\n" +
+	"\n" +
+	"\b_sort_by\"C\n" +
 	"\x14ListCommentsResponse\x12+\n" +
-	"\bcomments\x18\x01 \x03(\v2\x0f.models.CommentR\bcomments\x12\x1b\n" +
-	"\x06offset\x18\x02 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
-	"\x05limit\x18\x03 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
-	"\a_offsetB\b\n" +
-	"\x06_limit\"\x90\x01\n" +
+	"\bcomments\x18\x01 \x03(\v2\x0f.models.CommentR\bcomments\"\x89\x01\n" +
 	"\x14CreateCommentRequest\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12 \n" +
-	"\tparent_id\x18\x03 \x01(\tH\x00R\bparentId\x88\x01\x01\x12 \n" +
-	"\tthread_id\x18\x04 \x01(\tH\x01R\bthreadId\x88\x01\x01B\f\n" +
-	"\n" +
-	"_parent_idB\f\n" +
-	"\n" +
-	"_thread_id\"'\n" +
+	"\acontent\x18\x01 \x01(\tR\acontent\x12\x1b\n" +
+	"\tparent_id\x18\x02 \x01(\tR\bparentId\x12:\n" +
+	"\vparent_type\x18\x03 \x01(\x0e2\x19.models.CommentParentTypeR\n" +
+	"parentType\"'\n" +
 	"\x15CreateCommentResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"#\n" +
 	"\x11GetCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"?\n" +
 	"\x12GetCommentResponse\x12)\n" +
-	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"v\n" +
+	"\acomment\x18\x01 \x01(\v2\x0f.models.CommentR\acomment\"\x87\x01\n" +
 	"\x14UpdateCommentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12$\n" +
-	"\vvote_offset\x18\x03 \x01(\x05H\x00R\n" +
-	"voteOffset\x88\x01\x01B\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\acontent\x18\x02 \x01(\tH\x00R\acontent\x88\x01\x01\x12$\n" +
+	"\vvote_offset\x18\x03 \x01(\x05H\x01R\n" +
+	"voteOffset\x88\x01\x01B\n" +
+	"\n" +
+	"\b_contentB\x0e\n" +
 	"\f_vote_offset\"&\n" +
 	"\x14DeleteCommentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id2\xf8\x03\n" +
@@ -510,26 +502,28 @@ var file_comment_service_proto_goTypes = []any{
 	(*UpdateCommentRequest)(nil),  // 6: comment.UpdateCommentRequest
 	(*DeleteCommentRequest)(nil),  // 7: comment.DeleteCommentRequest
 	(*pb.Comment)(nil),            // 8: models.Comment
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(pb.CommentParentType)(0),     // 9: models.CommentParentType
+	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
 }
 var file_comment_service_proto_depIdxs = []int32{
-	8, // 0: comment.ListCommentsResponse.comments:type_name -> models.Comment
-	8, // 1: comment.GetCommentResponse.comment:type_name -> models.Comment
-	0, // 2: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
-	2, // 3: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
-	4, // 4: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
-	6, // 5: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
-	7, // 6: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
-	1, // 7: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
-	3, // 8: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
-	5, // 9: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
-	9, // 10: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
-	9, // 11: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	8,  // 0: comment.ListCommentsResponse.comments:type_name -> models.Comment
+	9,  // 1: comment.CreateCommentRequest.parent_type:type_name -> models.CommentParentType
+	8,  // 2: comment.GetCommentResponse.comment:type_name -> models.Comment
+	0,  // 3: comment.CommentService.ListComments:input_type -> comment.ListCommentsRequest
+	2,  // 4: comment.CommentService.CreateComment:input_type -> comment.CreateCommentRequest
+	4,  // 5: comment.CommentService.GetComment:input_type -> comment.GetCommentRequest
+	6,  // 6: comment.CommentService.UpdateComment:input_type -> comment.UpdateCommentRequest
+	7,  // 7: comment.CommentService.DeleteComment:input_type -> comment.DeleteCommentRequest
+	1,  // 8: comment.CommentService.ListComments:output_type -> comment.ListCommentsResponse
+	3,  // 9: comment.CommentService.CreateComment:output_type -> comment.CreateCommentResponse
+	5,  // 10: comment.CommentService.GetComment:output_type -> comment.GetCommentResponse
+	10, // 11: comment.CommentService.UpdateComment:output_type -> google.protobuf.Empty
+	10, // 12: comment.CommentService.DeleteComment:output_type -> google.protobuf.Empty
+	8,  // [8:13] is the sub-list for method output_type
+	3,  // [3:8] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_comment_service_proto_init() }
@@ -538,8 +532,6 @@ func file_comment_service_proto_init() {
 		return
 	}
 	file_comment_service_proto_msgTypes[0].OneofWrappers = []any{}
-	file_comment_service_proto_msgTypes[1].OneofWrappers = []any{}
-	file_comment_service_proto_msgTypes[2].OneofWrappers = []any{}
 	file_comment_service_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

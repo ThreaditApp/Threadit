@@ -25,30 +25,24 @@ services:
     depends_on:
       - community-service
       - thread-service
-      # - user-service
-      # - comment-service
-      # - vote-service
-      # - social-service
-      # - search-service
-      # - feed-service
+      - comment-service
+      - vote-service
+      - search-service
+      - popular-service
     environment:
       GRPC_GATEWAY_PORT: ${GRPC_GATEWAY_PORT}
       COMMUNITY_SERVICE_HOST: community-service
       COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
       THREAD_SERVICE_HOST: thread-service
       THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-      # USER_SERVICE_HOST: user-service
-      # USER_SERVICE_PORT: ${USER_SERVICE_PORT}
-      # COMMENT_SERVICE_HOST: comment-service
-      # COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-      # VOTE_SERVICE_HOST: vote-service
-      # VOTE_SERVICE_PORT: ${VOTE_SERVICE_PORT}
-      # SOCIAL_SERVICE_HOST: social-service
-      # SOCIAL_SERVICE_PORT: ${SOCIAL_SERVICE_PORT}
-      # SEARCH_SERVICE_HOST: search-service
-      # SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
-      # FEED_SERVICE_HOST: feed-service
-      # FEED_SERVICE_PORT: ${FEED_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+      VOTE_SERVICE_HOST: vote-service
+      VOTE_SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      SEARCH_SERVICE_HOST: search-service
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      POPULAR_SERVICE_HOST: popular-service
+      POPULAR_SERVICE_PORT: ${POPULAR_SERVICE_PORT}
     ports:
       - "${GRPC_GATEWAY_PORT}:${GRPC_GATEWAY_PORT}"
     labels:
@@ -89,24 +83,6 @@ services:
     networks:
       - threadit-network
 
-# THESE SERVICES ARE NOT READY TO RUN IN A CONTAINER, UNCOMMENT WHEN READY
-
-#  user-service:
-#    build:
-#      context: .
-#      dockerfile: services/user-service/Dockerfile
-#    container_name: user-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#    environment:
-#      SERVICE_PORT: ${USER_SERVICE_PORT}
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-
   community-service:
     build:
       context: .
@@ -144,99 +120,85 @@ services:
     networks:
       - threadit-network
 
-#  comment-service:
-#    build:
-#      context: .
-#      dockerfile: services/comment-service/Dockerfile
-#    container_name: comment-service
-#    restart: always
-#    depends_on:
-#      - db-service # TODO: Review dependencies
-#    environment:
-#      SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  comment-service:
+    build:
+      context: .
+      dockerfile: services/comment-service/Dockerfile
+    container_name: comment-service
+    restart: always
+    depends_on:
+      - db-service
+      - thread-service
+    environment:
+      SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+      DB_SERVICE_HOST: db-service
+      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+    ports:
+      - "${COMMENT_SERVICE_PORT}:${COMMENT_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
-#  vote-service:
-#    build:
-#      context: .
-#      dockerfile: services/vote-service/Dockerfile
-#    container_name: vote-service
-#    restart: always
-#    depends_on:
-#      - thread-service
-#      # - comment-service # TODO: Uncomment when comment-service is ready
-#    environment:
-#      SERVICE_PORT: ${VOTE_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#      COMMENT_SERVICE_HOST: comment-service
-#      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
-#    ports:
-#      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  vote-service:
+    build:
+      context: .
+      dockerfile: services/vote-service/Dockerfile
+    container_name: vote-service
+    restart: always
+    depends_on:
+      - thread-service
+      - comment-service
+    environment:
+      SERVICE_PORT: ${VOTE_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+    ports:
+      - "${VOTE_SERVICE_PORT}:${VOTE_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
-#  social-service:
-#    build:
-#      context: .
-#      dockerfile: services/social-service/Dockerfile
-#    container_name: social-service
-#    restart: always
-#    depends_on:
-#      - db-service
-#    environment:
-#      SERVICE_PORT: ${SOCIAL_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${SOCIAL_SERVICE_PORT}:${SOCIAL_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  search-service:
+    build:
+      context: .
+      dockerfile: services/search-service/Dockerfile
+    container_name: search-service
+    restart: always
+    depends_on:
+       - community-service
+       - thread-service
+    environment:
+      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      COMMUNITY_SERVICE_HOST: community-service
+      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+    ports:
+      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
-#  search-service:
-#    build:
-#      context: .
-#      dockerfile: services/search-service/Dockerfile
-#    container_name: search-service
-#    restart: always
-#    depends_on:
-#      # - user-service # TODO: Uncomment when user-service is ready
-#      # - community-service # TODO: Uncomment when community-service is ready
-#      - thread-service
-#    environment:
-#      SERVICE_PORT: ${SEARCH_SERVICE_PORT}
-#      USER_SERVICE_HOST: user-service
-#      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
-#      COMMUNITY_SERVICE_HOST: community-service
-#      COMMUNITY_SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
-#      THREAD_SERVICE_HOST: thread-service
-#      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
-#    ports:
-#      - "${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
-
-#  feed-service: # TODO: Uncomment when feed-service is ready
-#    build:
-#      context: .
-#      dockerfile: services/feed-service/Dockerfile
-#    container_name: feed-service
-#    restart: always
-#    depends_on:
-#      - db-service # TODO: Review dependencies
-#    environment:
-#      SERVICE_PORT: ${FEED_SERVICE_PORT}
-#      DB_SERVICE_HOST: db-service
-#      DB_SERVICE_PORT: ${DB_SERVICE_PORT}
-#    ports:
-#      - "${FEED_SERVICE_PORT}:${FEED_SERVICE_PORT}"
-#    networks:
-#      - threadit-network
+  popular-service:
+    build:
+      context: .
+      dockerfile: services/popular-service/Dockerfile
+    container_name: popular-service
+    restart: always
+    depends_on:
+      - comment-service
+      - thread-service
+    environment:
+      SERVICE_PORT: ${POPULAR_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      COMMENT_SERVICE_HOST: comment-service
+      COMMENT_SERVICE_PORT: ${COMMENT_SERVICE_PORT}
+    ports:
+      - "${POPULAR_SERVICE_PORT}:${POPULAR_SERVICE_PORT}"
+    networks:
+      - threadit-network
 
 volumes:
   db_data:

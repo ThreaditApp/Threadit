@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package feed;
+package popular;
 
-option go_package = "gen/feed-service/pb;pb";
+option go_package = "gen/popular-service/pb;pb";
 
 import "google/api/annotations.proto";
 import "models.proto";
@@ -24,9 +24,11 @@ message GetPopularThreadsRequest {
   optional int32 offset = 1;
   optional int32 limit = 2;
 }
+
 message GetPopularThreadsResponse {
   repeated models.Thread threads = 1;
 }
+
 message GetPopularCommentsRequest {
   optional int32 offset = 1;
   optional int32 limit = 2;
