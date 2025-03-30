@@ -116,6 +116,10 @@
         },
         "parentType": {
           "$ref": "#/definitions/modelsCommentParentType"
+        },
+        "numComments": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -147,6 +151,10 @@
           "format": "int32"
         },
         "downs": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "numComments": {
           "type": "integer",
           "format": "int32"
         }
