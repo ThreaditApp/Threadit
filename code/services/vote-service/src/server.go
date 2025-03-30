@@ -24,20 +24,12 @@ func (s *VoteServer) DownvoteThread(ctx context.Context, req *votepb.VoteThreadR
 	return s.updateThreadVote(ctx, req, -1)
 }
 
-func (s *VoteServer) RemoveThreadVote(ctx context.Context, req *votepb.VoteThreadRequest) (*emptypb.Empty, error) {
-	return s.updateThreadVote(ctx, req, 0)
-}
-
 func (s *VoteServer) UpvoteComment(ctx context.Context, req *votepb.VoteCommentRequest) (*emptypb.Empty, error) {
 	return s.updateCommentVote(ctx, req, 1)
 }
 
 func (s *VoteServer) DownvoteComment(ctx context.Context, req *votepb.VoteCommentRequest) (*emptypb.Empty, error) {
 	return s.updateCommentVote(ctx, req, -1)
-}
-
-func (s *VoteServer) RemoveCommentVote(ctx context.Context, req *votepb.VoteCommentRequest) (*emptypb.Empty, error) {
-	return s.updateCommentVote(ctx, req, 0)
 }
 
 func (s *VoteServer) updateThreadVote(ctx context.Context, req *votepb.VoteThreadRequest, value int32) (*emptypb.Empty, error) {
