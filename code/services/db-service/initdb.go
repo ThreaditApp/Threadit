@@ -12,19 +12,19 @@ import (
 )
 
 type Thread struct {
-	ID          string   `bson:"_id" json:"_id"`
-	Title       string   `bson:"title" json:"title"`
-	Ups         int      `bson:"ups" json:"ups"`
-	Downs       int      `bson:"downs" json:"downs"`
-	Content     string   `bson:"content" json:"content"`
-	CommunityID string   `bson:"community_id" json:"community_id"`
-	Comments    []string `bson:"comments" json:"comments"`
+	ID          string `bson:"_id" json:"_id"`
+	Title       string `bson:"title" json:"title"`
+	Ups         int    `bson:"ups" json:"ups"`
+	Downs       int    `bson:"downs" json:"downs"`
+	Content     string `bson:"content" json:"content"`
+	CommunityID string `bson:"community_id" json:"community_id"`
+	NumComments int32  `bson:"num_comments" json:"num_comments"`
 }
 
 type Community struct {
-	ID      string   `bson:"_id" json:"_id"`
-	Name    string   `bson:"name" json:"name"`
-	Threads []string `bson:"threads" json:"threads"`
+	ID         string `bson:"_id" json:"_id"`
+	Name       string `bson:"name" json:"name"`
+	NumThreads int32  `bson:"num_threads" json:"num_threads"`
 }
 
 // loadData is a helper function to load data from a JSON file into MongoDB.
