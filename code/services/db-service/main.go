@@ -58,7 +58,10 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.MaxRecvMsgSize(1024*1024*500), // 500MB
+		grpc.MaxSendMsgSize(1024*1024*500), // 500MB
+	)
 	mongoDatabase := client.Database(databaseName)
 	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
 		Mongo: mongoDatabase,
