@@ -24,7 +24,13 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 		log.Fatalf("missing %s env var", portEnvVar)
 	}
 	addr := fmt.Sprintf("%s:%s", host, port)
-	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(addr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(1024*1024*500), // 500MB
+			grpc.MaxCallSendMsgSize(1024*1024*500), // 500MB
+		),
+	)
 	if err != nil {
 		log.Fatalf("failed to connect to %s: %v", addr, err)
 	}
@@ -55,7 +61,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.MaxRecvMsgSize(1024*1024*500), // 500MB
+		grpc.MaxSendMsgSize(1024*1024*500), // 500MB
+	)
 	votepb.RegisterVoteServiceServer(grpcServer, voteService)
 
 	log.Printf("gRPC server is listening on :%s", port)

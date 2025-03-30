@@ -33,7 +33,13 @@ func getGrpcServerAddress(hostEnvVar string, portEnvVar string) string {
 func main() {
 	gwmux := runtime.NewServeMux()
 
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(1024*1024*500), // 500MB
+			grpc.MaxCallSendMsgSize(1024*1024*500), // 500MB
+		),
+	}
 
 	err := communitypb.RegisterCommunityServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT"), opts)
 	if err != nil {
