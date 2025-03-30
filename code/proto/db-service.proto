@@ -12,21 +12,21 @@ service DBService {
   // community crud operations
   rpc ListCommunities (ListCommunitiesRequest) returns (ListCommunitiesResponse);
   rpc CreateCommunity (CreateCommunityRequest) returns (CreateCommunityResponse);
-  rpc GetCommunity (GetCommunityRequest) returns (GetCommunityResponse);
+  rpc GetCommunity (GetCommunityRequest) returns (models.Community);
   rpc UpdateCommunity (UpdateCommunityRequest) returns (google.protobuf.Empty);
   rpc DeleteCommunity (DeleteCommunityRequest) returns (google.protobuf.Empty);
 
   // thread crud operations
   rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse);
   rpc CreateThread (CreateThreadRequest) returns (CreateThreadResponse);
-  rpc GetThread (GetThreadRequest) returns (GetThreadResponse);
+  rpc GetThread (GetThreadRequest) returns (models.Thread);
   rpc UpdateThread (UpdateThreadRequest) returns (google.protobuf.Empty);
   rpc DeleteThread (DeleteThreadRequest) returns (google.protobuf.Empty);
 
   // comment crud operations
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
-  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  rpc GetComment(GetCommentRequest) returns (models.Community);
   rpc UpdateComment(UpdateCommentRequest) returns (google.protobuf.Empty);
   rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
 }
@@ -51,10 +51,6 @@ message CreateCommunityResponse {
 
 message GetCommunityRequest {
   string id = 1;
-}
-
-message GetCommunityResponse {
-  models.Community community = 1;
 }
 
 message UpdateCommunityRequest {
@@ -92,10 +88,6 @@ message GetThreadRequest {
   string id = 1;
 }
 
-message GetThreadResponse {
-  models.Thread thread = 1;
-}
-
 message UpdateThreadRequest {
   string id = 1;
   optional string title = 2;
@@ -130,10 +122,6 @@ message CreateCommentResponse {
 
 message GetCommentRequest {
   string id = 1;
-}
-
-message GetCommentResponse {
-  models.Comment comment = 1;
 }
 
 message UpdateCommentRequest {

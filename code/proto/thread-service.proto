@@ -22,7 +22,7 @@ service ThreadService {
     };
   }
 
-  rpc GetThread (GetThreadRequest) returns (GetThreadResponse) {
+  rpc GetThread (GetThreadRequest) returns (models.Thread) {
     option (google.api.http) = {
       get: "/threads/{id}"
     };
@@ -66,10 +66,6 @@ message CreateThreadResponse {
 
 message GetThreadRequest {
   string id = 1;
-}
-
-message GetThreadResponse {
-  models.Thread thread = 1;
 }
 
 message UpdateThreadRequest {

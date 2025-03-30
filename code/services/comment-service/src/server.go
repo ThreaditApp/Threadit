@@ -63,16 +63,14 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 	}, nil
 }
 
-func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*commentpb.GetCommentResponse, error) {
+func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*models.Comment, error) {
 	res, err := s.DBClient.GetComment(ctx, &dbpb.GetCommentRequest{
 		Id: req.Id,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error calling database service: %w", err)
 	}
-	return &commentpb.GetCommentResponse{
-		Comment: res.Comment,
-	}, nil
+	return res, nil
 }
 
 func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
