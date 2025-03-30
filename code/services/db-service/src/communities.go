@@ -4,8 +4,8 @@ import (
 	"context"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -75,20 +75,16 @@ func (s *DBServer) CreateCommunity(ctx context.Context, req *dbpb.CreateCommunit
 
 func (s *DBServer) GetCommunity(ctx context.Context, req *dbpb.GetCommunityRequest) (*models.Community, error) {
 	collection := s.Mongo.Collection("communities")
-	id, err := primitive.ObjectIDFromHex(req.Id)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid community id: %v", err)
-	}
 	filter := bson.M{
-		"_id": id,
+		"_id": req.GetId(),
 	}
 	var community bson.M
-	err = collection.FindOne(ctx, filter).Decode(&community)
+	err := collection.FindOne(ctx, filter).Decode(&community)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "community not found: %v", err)
 	}
 	return &models.Community{
-		Id:   community["_id"].(primitive.ObjectID).Hex(),
+		Id:   community["_id"].(string),
 		Name: community["name"].(string),
 	}, nil
 }
