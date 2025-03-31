@@ -3,15 +3,9 @@ services:
     image: traefik:latest
     container_name: traefik
     restart: always
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker"
-      - "--providers.file.filename=/etc/traefik/dynamic.yml"
-      - "--entrypoints.web.address=:${TRAEFIK_HTTP_PORT}"
     ports:
       - "${TRAEFIK_HTTP_PORT}:80"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik:/etc/traefik:ro"
     networks:
       - threadit-network
@@ -45,10 +39,6 @@ services:
       POPULAR_SERVICE_PORT: ${POPULAR_SERVICE_PORT}
     ports:
       - "${GRPC_GATEWAY_PORT}:${GRPC_GATEWAY_PORT}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grpc-gateway.rule=Host(`localhost`)"
-      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=${GRPC_GATEWAY_PORT}"
     networks:
       - threadit-network
 
@@ -61,7 +51,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - "${MONGO_PORT}:${MONGO_PORT}"
+      - "${MONGO_PORT}:27017"
     volumes:
       - db_data:/data/db
     networks:
