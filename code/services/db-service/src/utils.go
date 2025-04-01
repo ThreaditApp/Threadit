@@ -6,8 +6,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func getFindOptions(offset int32, limit int32, sortBy string) *options.FindOptions {
+const (
+	DefaultOffset int32 = 0
+	DefaultLimit  int32 = 10
+	MaxLimit      int32 = 100
+)
+
+func getFindOptions(offsetPtr *int32, limitPtr *int32, sortBy string) *options.FindOptions {
 	findOptions := options.Find()
+	offset := DefaultOffset
+	if offsetPtr != nil {
+		offset = *offsetPtr
+	}
+	limit := DefaultLimit
+	if limitPtr != nil && *limitPtr < MaxLimit {
+		limit = *limitPtr
+	}
 	if offset >= 0 {
 		findOptions.SetSkip(int64(offset))
 	}
@@ -15,8 +29,9 @@ func getFindOptions(offset int32, limit int32, sortBy string) *options.FindOptio
 		findOptions.SetLimit(int64(limit))
 	}
 	if sortBy != "" {
-		findOptions.SetSort(bson.D{{Key: sortBy, Value: -1}}) // sort in descending order
+		findOptions.SetSort(bson.D{{Key: sortBy, Value: -1}})
 	}
+
 	return findOptions
 }
 

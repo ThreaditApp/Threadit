@@ -61,7 +61,7 @@ http:
         - "cors"
         - "api-strip-prefix"
 
-  services: # TODO: Check if env variables can be used
+  services:
     community-service:
       loadBalancer:
         servers:

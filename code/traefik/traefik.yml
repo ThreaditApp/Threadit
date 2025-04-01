@@ -2,12 +2,13 @@ global:
   checkNewVersion: false
   sendAnonymousUsage: false
 
+api:
+  insecure: true
+
 entryPoints:
   web:
     address: ":80"
 
 providers:
-  docker:
-    exposedByDefault: false
   file:
     filename: "/etc/traefik/dynamic.yml"
