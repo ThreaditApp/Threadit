@@ -1,7 +1,5 @@
 ## Run Threadit on Your Local Machine
 
----
-
 ### Setup
 
 Threadit requires Go and Docker. You can find installation instructions in the links below:
@@ -30,8 +28,6 @@ To stop the application execute `stop.sh`:
 ```bash
 ./stop.sh
 ```
-
----
 
 ## Using gRPC and Protobufs
 
