@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: popular-service.proto
+  version: version not set
+tags:
+  - name: PopularService
+paths:
+  /popular/comments:
+    get:
+      operationId: PopularService_GetPopularComments
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/popularGetPopularCommentsResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - PopularService
+  /popular/threads:
+    get:
+      operationId: PopularService_GetPopularThreads
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/popularGetPopularThreadsResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - PopularService
+components:
+  schemas:
+    modelsComment:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        ups:
+          type: integer
+          format: int32
+        downs:
+          type: integer
+          format: int32
+        parentId:
+          type: string
+        parentType:
+          $ref: "#/components/schemas/modelsCommentParentType"
+        numComments:
+          type: integer
+          format: int32
+    modelsCommentParentType:
+      type: string
+      enum:
+        - THREAD
+        - COMMENT
+      default: THREAD
+    modelsThread:
+      type: object
+      properties:
+        id:
+          type: string
+        communityId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        ups:
+          type: integer
+          format: int32
+        downs:
+          type: integer
+          format: int32
+        numComments:
+          type: integer
+          format: int32
+    popularGetPopularCommentsResponse:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsComment"
+    popularGetPopularThreadsResponse:
+      type: object
+      properties:
+        threads:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsThread"
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"

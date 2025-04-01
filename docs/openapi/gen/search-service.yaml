@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: search-service.proto
+  version: version not set
+tags:
+  - name: SearchService
+paths:
+  /search:
+    get:
+      operationId: SearchService_GlobalSearch
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/searchGlobalSearchResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - SearchService
+  /search/community:
+    get:
+      operationId: SearchService_CommunitySearch
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/searchCommunitySearchResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - SearchService
+  /search/thread:
+    get:
+      operationId: SearchService_ThreadSearch
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/searchThreadSearchResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - SearchService
+components:
+  schemas:
+    modelsCommunity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        numThreads:
+          type: integer
+          format: int32
+    modelsThread:
+      type: object
+      properties:
+        id:
+          type: string
+        communityId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        ups:
+          type: integer
+          format: int32
+        downs:
+          type: integer
+          format: int32
+        numComments:
+          type: integer
+          format: int32
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"
+    searchCommunitySearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsCommunity"
+    searchGlobalSearchResponse:
+      type: object
+      properties:
+        threadResults:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsThread"
+        communityResults:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsCommunity"
+    searchThreadSearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsThread"
