@@ -17,15 +17,16 @@ type PopularServer struct {
 }
 
 func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.GetPopularThreadsRequest) (*popularpb.GetPopularThreadsResponse, error) {
-	// input validation
-	if req.Offset != nil && *req.Offset < 0 {
+	// validate inputs
+	if req.Offset != nil && req.GetOffset() < 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
 	}
-	if req.Limit != nil && *req.Limit <= 0 {
+	if req.Limit != nil && req.GetLimit() <= 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
 	}
 
-	sortBy := "votes"
+	// fetch threads
+	sortBy := "ups" // upvotes
 	res, err := s.ThreadClient.ListThreads(ctx, &threadpb.ListThreadsRequest{
 		Offset: req.Offset,
 		Limit:  req.Limit,
@@ -40,15 +41,16 @@ func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.Ge
 }
 
 func (s *PopularServer) GetPopularComments(ctx context.Context, req *popularpb.GetPopularCommentsRequest) (*popularpb.GetPopularCommentsResponse, error) {
-	// input validation
-	if req.Offset != nil && *req.Offset < 0 {
+	// validate inputs
+	if req.Offset != nil && req.GetOffset() < 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
 	}
-	if req.Limit != nil && *req.Limit <= 0 {
+	if req.Limit != nil && req.GetLimit() <= 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
 	}
 
-	sortBy := "votes"
+	// fetch comments
+	sortBy := "ups" // upvotes
 	res, err := s.CommentClient.ListComments(ctx, &commentpb.ListCommentsRequest{
 		Offset: req.Offset,
 		Limit:  req.Limit,

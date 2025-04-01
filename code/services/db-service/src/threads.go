@@ -2,21 +2,20 @@ package server
 
 import (
 	"context"
+	"errors"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
-	"strings"
-
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 )
 
 func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
 	collection := s.Mongo.Collection("threads")
-
-	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
-	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), sortBy)
+	findOptions := getFindOptions(req.Offset, req.Limit, *req.SortBy)
 	filter := bson.M{}
 	if req.GetCommunityId() != "" {
 		filter["community_id"] = req.GetCommunityId()
@@ -27,7 +26,8 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to find threads: %v", err)
+		log.Printf("list threads: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to find threads")
 	}
 	defer cursor.Close(ctx)
 	var results []*models.Thread
@@ -42,7 +42,8 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 			NumComments int32  `bson:"num_comments"`
 		}
 		if err := cursor.Decode(&thread); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to decode thread: %v", err)
+			log.Printf("list threads: %v", err)
+			return nil, status.Errorf(codes.Internal, "failed to list threads")
 		}
 		results = append(results, &models.Thread{
 			Id:          thread.ID,
@@ -55,7 +56,8 @@ func (s *DBServer) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest
 		})
 	}
 	if err := cursor.Err(); err != nil {
-		return nil, status.Errorf(codes.Internal, "cursor error: %v", err)
+		log.Printf("list threads: %v", err)
+		return nil, status.Errorf(codes.Internal, "internal error")
 	}
 	return &dbpb.ListThreadsResponse{
 		Threads: results,
@@ -87,7 +89,8 @@ func (s *DBServer) CreateThread(ctx context.Context, req *dbpb.CreateThreadReque
 	}
 	_, err := collection.InsertOne(ctx, doc)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create thread: %v", err)
+		log.Printf("create thread: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to create thread")
 	}
 	return &dbpb.CreateThreadResponse{
 		Id: threadID,
@@ -102,7 +105,11 @@ func (s *DBServer) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*
 	var thread bson.M
 	err := collection.FindOne(ctx, filter).Decode(&thread)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "thread not found: %v", err)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, status.Errorf(codes.NotFound, "thread not found")
+		}
+		log.Printf("get thread: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to get thread")
 	}
 	return &models.Thread{
 		Id:          thread["_id"].(string),
@@ -134,7 +141,7 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 		} else if offset == -1 {
 			incFields["num_comments"] = -1
 		} else {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset")
 		}
 	}
 	if req.VoteOffset != nil {
@@ -144,7 +151,7 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 		} else if offset == -1 {
 			incFields["downs"] = 1
 		} else {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset %d", req.VoteOffset)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset")
 		}
 	}
 	if len(setFields) > 0 {
@@ -159,7 +166,8 @@ func (s *DBServer) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadReque
 
 	result, err := collection.UpdateOne(ctx, bson.M{"_id": req.GetId()}, update)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update thread: %v", err)
+		log.Printf("update thread: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to update thread")
 	}
 	if result.MatchedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "thread not found")
@@ -171,7 +179,8 @@ func (s *DBServer) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadReque
 	collection := s.Mongo.Collection("threads")
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete thread: %v", err)
+		log.Printf("delete thread: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete thread")
 	}
 	if result.DeletedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "thread not found")

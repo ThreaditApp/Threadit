@@ -2,27 +2,28 @@ package server
 
 import (
 	"context"
+	"errors"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
-	"strings"
-
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 )
 
 func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
 	collection := s.Mongo.Collection("comments")
-	sortBy := strings.Replace(req.GetSortBy(), "votes", "ups", 1)
-	findOptions := getFindOptions(req.GetOffset(), req.GetLimit(), sortBy)
+	findOptions := getFindOptions(req.Offset, req.Limit, *req.SortBy)
 	filter := bson.M{}
 	if req.GetThreadId() != "" {
 		filter["thread_id"] = req.GetThreadId()
 	}
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to find comments: %v", err)
+		log.Printf("list comments: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to find comments")
 	}
 	defer cursor.Close(ctx)
 	var results []*models.Comment
@@ -37,7 +38,8 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 			NumComments int32  `bson:"num_comments"`
 		}
 		if err := cursor.Decode(&comment); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to decode comment: %v", err)
+			log.Printf("list comments: %v", err)
+			return nil, status.Errorf(codes.Internal, "failed to decode comment")
 		}
 		enumInt, ok := models.CommentParentType_value[comment.ParentType]
 		if !ok {
@@ -54,7 +56,8 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 		})
 	}
 	if err := cursor.Err(); err != nil {
-		return nil, status.Errorf(codes.Internal, "cursor error: %v", err)
+		log.Printf("list comments: %v", err)
+		return nil, status.Errorf(codes.Internal, "internal error")
 	}
 	return &dbpb.ListCommentsResponse{
 		Comments: results,
@@ -84,7 +87,8 @@ func (s *DBServer) CreateComment(ctx context.Context, req *dbpb.CreateCommentReq
 	}
 
 	if _, err := collection.InsertOne(ctx, doc); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create comment: %v", err)
+		log.Printf("create comment: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to create comment")
 	}
 	return &dbpb.CreateCommentResponse{
 		Id: commentID,
@@ -99,7 +103,11 @@ func (s *DBServer) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) 
 	var comment bson.M
 	err := collection.FindOne(ctx, filter).Decode(&comment)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "comment not found: %v", err)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, status.Errorf(codes.NotFound, "comment not found")
+		}
+		log.Printf("get comment: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to get comment")
 	}
 	enumInt, ok := models.CommentParentType_value[comment["parent_type"].(string)]
 	if !ok {
@@ -132,7 +140,7 @@ func (s *DBServer) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentReq
 		} else if offset == -1 {
 			incFields["num_comments"] = -1
 		} else {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset %d", req.NumCommentsOffset)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset")
 		}
 	}
 	if req.VoteOffset != nil {
@@ -157,7 +165,8 @@ func (s *DBServer) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentReq
 
 	result, err := collection.UpdateOne(ctx, bson.M{"_id": req.GetId()}, update)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update comment: %v", err)
+		log.Printf("update comment: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to update comment")
 	}
 	if result.MatchedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "comment not found")
@@ -169,7 +178,8 @@ func (s *DBServer) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentReq
 	collection := s.Mongo.Collection("comments")
 	result, err := collection.DeleteOne(ctx, bson.M{"_id": req.GetId()})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete comment: %v", err)
+		log.Printf("delete comment: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete comment")
 	}
 	if result.DeletedCount == 0 {
 		return nil, status.Errorf(codes.NotFound, "comment not found")
