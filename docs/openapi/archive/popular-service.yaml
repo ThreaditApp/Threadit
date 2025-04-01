@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: PopularService API
+  description: API for retrieving popular threads and comments in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+tags:
+  - name: Popular
+    description: Operations related to popular threads and comments
+paths:
+  /popular/threads:
+    get:
+      summary: Retrieve popular threads
+      operationId: getPopularThreads
+      tags:
+        - Popular
+      parameters:
+        - name: offset
+          in: query
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of items to retrieve
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+      responses:
+        "200":
+          description: List of popular threads
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Thread"
+        "400":
+          description: Invalid request format
+  /popular/comments:
+    get:
+      summary: Retrieve popular comments
+      operationId: getPopularComments
+      tags:
+        - Popular
+      parameters:
+        - name: offset
+          in: query
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of items to retrieve
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+      responses:
+        "200":
+          description: List of popular comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid request format
+
+components:
+  schemas:
+    Thread:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        votes:
+          type: integer
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        votes:
+          type: integer

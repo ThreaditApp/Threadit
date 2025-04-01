@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+  title: community-service.proto
+  version: version not set
+tags:
+  - name: CommunityService
+paths:
+  /communities:
+    get:
+      operationId: CommunityService_ListCommunities
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/communityListCommunitiesResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      tags:
+        - CommunityService
+    post:
+      operationId: CommunityService_CreateCommunity
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/communityCreateCommunityResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/communityCreateCommunityRequest"
+        required: true
+      tags:
+        - CommunityService
+  "/communities/{id}":
+    get:
+      operationId: CommunityService_GetCommunity
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/modelsCommunity"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CommunityService
+    delete:
+      operationId: CommunityService_DeleteCommunity
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CommunityService
+    patch:
+      operationId: CommunityService_UpdateCommunity
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityServiceUpdateCommunityBody"
+        required: true
+      tags:
+        - CommunityService
+components:
+  schemas:
+    CommunityServiceUpdateCommunityBody:
+      type: object
+      properties:
+        name:
+          type: string
+        numThreadsOffset:
+          type: integer
+          format: int32
+    communityCreateCommunityRequest:
+      type: object
+      properties:
+        name:
+          type: string
+    communityCreateCommunityResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    communityListCommunitiesResponse:
+      type: object
+      properties:
+        communities:
+          type: array
+          items:
+            $ref: "#/components/schemas/modelsCommunity"
+    modelsCommunity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        numThreads:
+          type: integer
+          format: int32
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"

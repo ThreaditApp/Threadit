@@ -26,21 +26,23 @@ cp .env.example .env
 
 ### Run Docker
 
-Finally, still in the `/code` directory you need to run the `docker-compose.yml` file. This command should start the necessary containers:
+Finally, still in the `/code` directory you need to run the `docker-compose.yml` file. To do that, you should execute the `run.sh` and it will start the necessary containers:
 
 ```bash
-docker-compose -p threadit up --build -d
+./run.sh
 ```
 
-To stop the application run:
+To stop the application execute `stop.sh`:
 
 ```bash
-docker-compose -p threadit stop
+./stop.sh
 ```
 
 ## Using gRPC and Protobufs
 
 ### Install gRPC and Protobufs for Go
+
+These commands will install all the necessary plugins for Go to utilize protobufs and gRPC, required for Threadit to run correctly 
 
 ```bash
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
@@ -49,15 +51,34 @@ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@lat
 go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 ```
 
-### Generate Go Code for a Service with Protobufs
+### Generate Go Code with Protobufs
+
+Although the generated code is already in this repository, you might want to re-generate it yourself. Verify that you are in the `/code` directory and execute the `generate-proto.sh`, it will generate code for all the required microservices:
 
 ```bash
-cd code
-./generate-proto.sh service-name
+./generate-proto.sh
 ```
 
-### Generate Go Code for All Services with Protobufs
+If you wish to generate code for a specific service, you can execute the script with the `-s` flag and give a service name:
+
 ```bash
-cd code
-./generate-proto-all.sh
+./generate-proto.sh -s <servive-name>
+```
+
+### Generate OpenAPI specifications
+
+First use `npm` to install this package:
+
+```bash
+npm install -g swagger2openapi 
+```
+
+Then just like the generated Go code, follow the same logic and use the script `generate-openapi.sh`:
+
+```bash
+./generate-openapi.sh
+```
+
+```bash
+./generate-openapi.sh -s <servive-name>
 ```

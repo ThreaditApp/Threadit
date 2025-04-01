@@ -1,0 +1,413 @@
+openapi: 3.1.0
+info:
+  title: CommunityService API
+  description: API for managing communities in the Threadit application.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:8000
+    description: Local server
+tags:
+  - name: Communities
+    description: Operations related to communities
+paths:
+  /communities:
+    get:
+      summary: Get a paginated list of communities
+      operationId: listCommunities
+      tags:
+        - Communities
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: owner_id
+          in: query
+          description: Filter by owner ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: search
+          in: query
+          description: Search by name or description
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by field
+          required: false
+          schema:
+            type: string
+            enum: [created_at, updated_at]
+            default: created_at
+        - name: order
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: List of communities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Community"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      summary: Create a new community
+      operationId: createCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityCreate"
+      responses:
+        "201":
+          description: Community created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "409":
+          description: Community name already exists
+        "422":
+          description: Data validation failed
+  /communities/{id}:
+    get:
+      summary: Get details of a specific community
+      operationId: getCommunity
+      tags:
+        - Communities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Community details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "404":
+          description: Community not found
+    put:
+      summary: Update an existing community
+      operationId: updateCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityUpdate"
+      responses:
+        "200":
+          description: Community updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+        "422":
+          description: Data validation failed
+    delete:
+      summary: Delete a community
+      operationId: deleteCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Community deleted
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+  /communities/{id}/icon:
+    post:
+      summary: Upload an icon for a community
+      operationId: uploadCommunityIcon
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                icon:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Community icon uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "400":
+          description: Request syntax is invalid
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+        "422":
+          description: Data validation failed
+  /communities/{id}/join:
+    post:
+      summary: Join a community
+      operationId: joinCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User joined community
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+        "409":
+          description: User already in community
+  /communities/{id}/leave:
+    post:
+      summary: Leave a community
+      operationId: leaveCommunity
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User left community
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Community"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found or user not in community
+        "409":
+          description: User is the owner of the community
+  /communities/{id}/members:
+    get:
+      summary: Get a paginated list of community members
+      operationId: listCommunityMembers
+      tags:
+        - Communities
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: List of community members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Member"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: Action forbidden for user
+        "404":
+          description: Community not found
+components:
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
+    Community:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        owner_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        icon_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CommunityCreate:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    CommunityUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
+        joined_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
