@@ -5,6 +5,7 @@ import (
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
+	threadpb "gen/thread-service/pb"
 	"math"
 
 	"google.golang.org/grpc/codes"
@@ -14,10 +15,28 @@ import (
 
 type CommunityServer struct {
 	communitypb.UnimplementedCommunityServiceServer
-	DBClient dbpb.DBServiceClient
+	DBClient     dbpb.DBServiceClient
+	ThreadClient threadpb.ThreadServiceClient
 }
 
+const (
+	MinCommunityNameLength = 3
+	MaxCommunityNameLength = 50
+)
+
 func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
+	// validate inputs
+	if req.Name != nil && len(req.GetName()) < MinCommunityNameLength {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid community name %s", req.Name)
+	}
+	if req.Offset != nil && req.GetOffset() < 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
+	}
+	if req.Limit != nil && req.GetLimit() <= 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
+	}
+
+	// fetch communities
 	res, err := s.DBClient.ListCommunities(ctx, &dbpb.ListCommunitiesRequest{
 		Name:   req.Name,
 		Offset: req.Offset,
@@ -32,12 +51,15 @@ func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.CreateCommunityRequest) (*communitypb.CreateCommunityResponse, error) {
-	if req.Name == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "name is required")
+	// validate inputs
+	if len(req.GetName()) < MinCommunityNameLength {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid community name")
 	}
-	if len(req.Name) < 3 || len(req.Name) > 50 {
-		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
+	if len(req.Name) < MinCommunityNameLength || len(req.Name) > MaxCommunityNameLength {
+		return nil, status.Errorf(codes.InvalidArgument, "name must be between %d and %d characters long", MinCommunityNameLength, MaxCommunityNameLength)
 	}
+
+	// create community
 	res, err := s.DBClient.CreateCommunity(ctx, &dbpb.CreateCommunityRequest{
 		Name: req.Name,
 	})
@@ -50,9 +72,12 @@ func (s *CommunityServer) CreateCommunity(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error) {
-	if req.Id == "" {
+	// validate input
+	if req.GetId() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
+
+	// fetch community
 	res, err := s.DBClient.GetCommunity(ctx, &dbpb.GetCommunityRequest{
 		Id: req.Id,
 	})
@@ -63,18 +88,21 @@ func (s *CommunityServer) GetCommunity(ctx context.Context, req *communitypb.Get
 }
 
 func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest) (*emptypb.Empty, error) {
-	if req.Id == "" {
+	// validate inputs
+	if req.GetId() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
 	if req.GetName() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "name is required")
 	}
-	if len(req.GetName()) < 3 || len(req.GetName()) > 50 {
-		return nil, status.Errorf(codes.InvalidArgument, "name must be between 3 and 50 characters long")
+	if len(req.GetName()) < MinCommunityNameLength || len(req.GetName()) > MaxCommunityNameLength {
+		return nil, status.Errorf(codes.InvalidArgument, "name must be between %d and %d characters long", MinCommunityNameLength, MaxCommunityNameLength)
 	}
 	if math.Abs(float64(req.GetNumThreadsOffset())) != 1 {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid num threads offset %d", req.GetNumThreadsOffset())
+		return nil, status.Errorf(codes.InvalidArgument, "invalid num threads offset")
 	}
+
+	// update community
 	_, err := s.DBClient.UpdateCommunity(ctx, &dbpb.UpdateCommunityRequest{
 		Id:               req.Id,
 		Name:             req.Name,
@@ -87,9 +115,12 @@ func (s *CommunityServer) UpdateCommunity(ctx context.Context, req *communitypb.
 }
 
 func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.DeleteCommunityRequest) (*emptypb.Empty, error) {
-	if req.Id == "" {
+	// validate input
+	if req.GetId() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
+
+	// delete community
 	_, err := s.DBClient.DeleteCommunity(ctx, &dbpb.DeleteCommunityRequest{
 		Id: req.Id,
 	})
@@ -97,7 +128,22 @@ func (s *CommunityServer) DeleteCommunity(ctx context.Context, req *communitypb.
 		return nil, err
 	}
 
-	// TODO: find and delete all threads from community
+	// find all threads from community
+	res, err := s.ThreadClient.ListThreads(ctx, &threadpb.ListThreadsRequest{
+		CommunityId: &req.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
 
+	// delete threads
+	for _, thread := range res.Threads {
+		_, err = s.ThreadClient.DeleteThread(ctx, &threadpb.DeleteThreadRequest{
+			Id: thread.Id,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &emptypb.Empty{}, nil
 }

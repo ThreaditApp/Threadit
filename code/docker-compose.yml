@@ -87,6 +87,8 @@ services:
       SERVICE_PORT: ${COMMUNITY_SERVICE_PORT}
       DB_SERVICE_HOST: db-service
       DB_SERVICE_PORT: ${DB_SERVICE_PORT}
+      THREAD_SERVICE_PORT: ${THREAD_SERVICE_PORT}
+      THREAD_SERVICE_HOST: thread-service
     ports:
       - "${COMMUNITY_SERVICE_PORT}:${COMMUNITY_SERVICE_PORT}"
     networks:

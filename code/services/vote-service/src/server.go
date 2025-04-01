@@ -34,7 +34,7 @@ func (s *VoteServer) DownvoteComment(ctx context.Context, req *votepb.VoteCommen
 
 func (s *VoteServer) updateThreadVote(ctx context.Context, req *votepb.VoteThreadRequest, value int32) (*emptypb.Empty, error) {
 	if req.GetThreadId() == "" {
-		return nil, status.Error(codes.InvalidArgument, "invalid thread id")
+		return nil, status.Error(codes.InvalidArgument, "id is required")
 	}
 	_, err := s.ThreadClient.UpdateThread(ctx, &threadpb.UpdateThreadRequest{
 		Id:         req.ThreadId,
@@ -48,7 +48,7 @@ func (s *VoteServer) updateThreadVote(ctx context.Context, req *votepb.VoteThrea
 
 func (s *VoteServer) updateCommentVote(ctx context.Context, req *votepb.VoteCommentRequest, value int32) (*emptypb.Empty, error) {
 	if req.GetCommentId() == "" {
-		return nil, status.Error(codes.InvalidArgument, "invalid comment id")
+		return nil, status.Error(codes.InvalidArgument, "id is required")
 	}
 	_, err := s.CommentClient.UpdateComment(ctx, &commentpb.UpdateCommentRequest{
 		Id:         req.CommentId,

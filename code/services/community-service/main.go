@@ -5,6 +5,7 @@ import (
 	"fmt"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
+	threadpb "gen/thread-service/pb"
 	"log"
 	"net"
 	"os"
@@ -37,13 +38,17 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
-	// connect to database service
+	// connect to services
 	dbConn := connectGrpcClient("DB_SERVICE_HOST", "DB_SERVICE_PORT")
 	defer dbConn.Close()
 
+	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
+	defer threadConn.Close()
+
 	// create community service with database service
 	communityService := &server.CommunityServer{
-		DBClient: dbpb.NewDBServiceClient(dbConn),
+		DBClient:     dbpb.NewDBServiceClient(dbConn),
+		ThreadClient: threadpb.NewThreadServiceClient(threadConn),
 	}
 
 	// get env port

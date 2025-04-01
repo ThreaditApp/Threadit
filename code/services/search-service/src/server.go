@@ -17,10 +17,13 @@ type SearchServer struct {
 }
 
 func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.GlobalSearchResponse, error) {
+	// validate inputs
 	reqErr := validateSearchRequest(req)
 	if reqErr != nil {
 		return nil, reqErr
 	}
+
+	// search communities and threads
 	communityResults, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -36,10 +39,13 @@ func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchReq
 }
 
 func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.CommunitySearchResponse, error) {
+	// validate inputs
 	reqErr := validateSearchRequest(req)
 	if reqErr != nil {
 		return nil, reqErr
 	}
+
+	// search communities
 	results, err := s.searchCommunities(ctx, &req.Query)
 	if err != nil {
 		return nil, err
@@ -50,10 +56,12 @@ func (s *SearchServer) CommunitySearch(ctx context.Context, req *searchpb.Search
 }
 
 func (s *SearchServer) ThreadSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.ThreadSearchResponse, error) {
+	// validate inputs
 	reqErr := validateSearchRequest(req)
 	if reqErr != nil {
 		return nil, reqErr
 	}
+	// search threads
 	results, err := s.searchThreads(ctx, &req.Query)
 	if err != nil {
 		return nil, err
