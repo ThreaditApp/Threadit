@@ -7,6 +7,15 @@ Threadit requires Go and Docker. You can find installation instructions in the l
 - [Install Go](https://go.dev/doc/install)
 - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+### Pulling Datasets
+
+The datasets in this repository are tracked using Git LFS (Large File Storage). To download them, you need to run:
+
+```bash
+git lfs install
+git lfs pull
+```
+
 ### Environment Variables
 
 To configure the application, change directory to `/code`, then simply copy the example environment file and rename it:
