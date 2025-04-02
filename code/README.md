@@ -62,7 +62,7 @@ Although the generated code is already in this repository, you might want to re-
 If you wish to generate code for a specific service, you can execute the script with the `-s` flag and give a service name:
 
 ```bash
-./generate-proto.sh -s <servive-name>
+./generate-proto.sh -s service-name
 ```
 
 ### Generate OpenAPI specifications
@@ -80,5 +80,5 @@ Then just like the generated Go code, follow the same logic and use the script `
 ```
 
 ```bash
-./generate-openapi.sh -s <servive-name>
+./generate-openapi.sh -s service-name
 ```
