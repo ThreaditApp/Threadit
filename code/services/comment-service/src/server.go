@@ -61,8 +61,8 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 	if req.GetContent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "Content is required")
 	}
-	if len(req.Content) > MaxCommentLength {
-		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of %d characters", MaxCommentLength)
+	if len(req.GetContent()) > MaxCommentLength {
+		return nil, status.Errorf(codes.InvalidArgument, "Content exceeds maximum length of %d characters", MaxCommentLength)
 	}
 
 	// create comment

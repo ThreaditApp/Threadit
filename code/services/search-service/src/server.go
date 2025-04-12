@@ -93,13 +93,13 @@ func (s *SearchServer) searchThreads(ctx context.Context, query *string) ([]*mod
 
 func validateSearchRequest(req *searchpb.SearchRequest) error {
 	if req.GetQuery() == "" {
-		return status.Error(codes.InvalidArgument, "query is empty")
+		return status.Error(codes.InvalidArgument, "Query is empty")
 	}
 	if req.GetOffset() < 0 {
-		return status.Error(codes.InvalidArgument, "offset cannot be negative")
+		return status.Error(codes.InvalidArgument, "Offset cannot be negative")
 	}
 	if req.GetLimit() < 0 {
-		return status.Error(codes.InvalidArgument, "limit cannot be negative")
+		return status.Error(codes.InvalidArgument, "Limit cannot be negative")
 	}
 	return nil
 }
