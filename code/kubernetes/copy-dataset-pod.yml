@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: copy-dataset-pod
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - mountPath: /dataset
+          name: dataset-volume
+  volumes:
+    - name: dataset-volume
+      persistentVolumeClaim:
+        claimName: dataset-pvc

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-service
+  template:
+    metadata:
+      labels:
+        app: db-service
+    spec:
+      containers:
+      - name: db-service
+        image: gcr.io/fcul2025/db-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 50051
+        env:
+        - name: SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: DB_SERVICE_PORT
+        - name: MONGO_URI
+          value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb:27017/$(MONGO_INITDB_DATABASE)?authSource=admin"
+        envFrom:
+        - secretRef:
+            name: mongodb-credentials
+        - configMapRef:
+            name: threadit-config
+        volumeMounts:
+        - name: dataset
+          mountPath: /dataset
+          readOnly: true
+      volumes:
+      - name: dataset
+        persistentVolumeClaim:
+          claimName: dataset-pvc
+          readOnly: true
