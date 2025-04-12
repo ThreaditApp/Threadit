@@ -26,16 +26,16 @@ const (
 func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
 	// validate inputs
 	if req.ThreadId != nil && req.GetThreadId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "thread id cannot be empty")
+		return nil, status.Error(codes.InvalidArgument, "Thread id cannot be empty")
 	}
 	if req.Offset != nil && req.GetOffset() < 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
+		return nil, status.Error(codes.InvalidArgument, "Offset must be a positive integer")
 	}
 	if req.Limit != nil && req.GetLimit() <= 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
+		return nil, status.Error(codes.InvalidArgument, "Limit must be a positive integer")
 	}
 	if req.SortBy != nil && req.GetSortBy() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "sort cannot be empty")
+		return nil, status.Error(codes.InvalidArgument, "Sort cannot be empty")
 	}
 
 	// fetch comments
@@ -56,13 +56,13 @@ func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCom
 func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.CreateCommentRequest) (*commentpb.CreateCommentResponse, error) {
 	// validate inputs
 	if req.GetParentId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "parent id is required")
+		return nil, status.Error(codes.InvalidArgument, "Parent id is required")
 	}
 	if req.GetContent() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "content is required")
+		return nil, status.Error(codes.InvalidArgument, "Content is required")
 	}
-	if len(req.Content) > MaxCommentLength {
-		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of %d characters", MaxCommentLength)
+	if len(req.GetContent()) > MaxCommentLength {
+		return nil, status.Errorf(codes.InvalidArgument, "Content exceeds maximum length of %d characters", MaxCommentLength)
 	}
 
 	// create comment
@@ -79,6 +79,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 	numCommentsOffset := int32(1)
 	if req.ParentType == models.CommentParentType_THREAD {
 		_, err = s.ThreadClient.UpdateThread(ctx, &threadpb.UpdateThreadRequest{
+			Id:                req.ParentId,
 			NumCommentsOffset: &numCommentsOffset,
 		})
 		if err != nil {
@@ -86,6 +87,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 		}
 	} else {
 		_, err = s.UpdateComment(ctx, &commentpb.UpdateCommentRequest{
+			Id:                req.ParentId,
 			NumCommentsOffset: &numCommentsOffset,
 		})
 	}
@@ -98,7 +100,7 @@ func (s *CommentServer) CreateComment(ctx context.Context, req *commentpb.Create
 func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommentRequest) (*models.Comment, error) {
 	// validate input
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "Comment id is required")
 	}
 
 	// fetch comment
@@ -114,16 +116,16 @@ func (s *CommentServer) GetComment(ctx context.Context, req *commentpb.GetCommen
 func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
 	// validate inputs
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "Comment id is required")
 	}
-	if req.Content != nil && len(*req.Content) > MaxCommentLength {
-		return nil, status.Errorf(codes.InvalidArgument, "content exceeds maximum length of %d characters", MaxCommentLength)
+	if req.Content != nil && len(req.GetContent()) > MaxCommentLength {
+		return nil, status.Errorf(codes.InvalidArgument, "Content exceeds maximum length of %d characters", MaxCommentLength)
 	}
-	if req.VoteOffset != nil && math.Abs(float64(*req.VoteOffset)) != 1 {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset")
+	if req.VoteOffset != nil && math.Abs(float64(req.GetVoteOffset())) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "Vote offset must be either -1 or 1")
 	}
-	if req.NumCommentsOffset != nil && math.Abs(float64(*req.NumCommentsOffset)) != 1 {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset")
+	if req.NumCommentsOffset != nil && math.Abs(float64(req.GetNumCommentsOffset())) != 1 {
+		return nil, status.Errorf(codes.InvalidArgument, "Number comments offset must be either -1 or 1")
 	}
 
 	// update comment
@@ -143,7 +145,7 @@ func (s *CommentServer) UpdateComment(ctx context.Context, req *commentpb.Update
 func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.DeleteCommentRequest) (*emptypb.Empty, error) {
 	// validate input
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "Comment id is required")
 	}
 
 	// fetch comment
@@ -166,6 +168,7 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.Delete
 	numCommentsOffset := int32(-1)
 	if res.ParentType == models.CommentParentType_THREAD {
 		_, err = s.ThreadClient.UpdateThread(ctx, &threadpb.UpdateThreadRequest{
+			Id:                res.ParentId,
 			NumCommentsOffset: &numCommentsOffset,
 		})
 		if err != nil {
@@ -173,6 +176,7 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.Delete
 		}
 	} else {
 		_, err = s.UpdateComment(ctx, &commentpb.UpdateCommentRequest{
+			Id:                res.ParentId,
 			NumCommentsOffset: &numCommentsOffset,
 		})
 	}
