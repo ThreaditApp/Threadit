@@ -30,28 +30,18 @@ type Community struct {
 	NumThreads int32  `bson:"num_threads" json:"num_threads"`
 }
 
-func loadThreadsFromLocal(client *mongo.Client, database, basePath string) error {
+func loadThreadsDataset(client *mongo.Client, database, basePath string) error {
 	var threads []Thread
-	return loadDataFromLocal(client, database, "threads", basePath+"/threads.json", &threads)
+	return loadDataset(client, database, "threads", basePath+"/threads.json", &threads)
 }
 
-func loadCommunitiesFromLocal(client *mongo.Client, database, basePath string) error {
+func loadCommunitiesDataset(client *mongo.Client, database, basePath string) error {
 	var communities []Community
-	return loadDataFromLocal(client, database, "communities", basePath+"/communities.json", &communities)
-}
-
-func loadThreadsFromBucket(client *mongo.Client, database, basePath string) error {
-	var threads []Thread
-	return loadDataFromBucket(client, database, "threads", basePath+"/threads.json", &threads)
-}
-
-func loadCommuninitiesFromBucket(client *mongo.Client, database, basePath string) error {
-	var communities []Community
-	return loadDataFromBucket(client, database, "communities", basePath+"/communities.json", &communities)
+	return loadDataset(client, database, "communities", basePath+"/communities.json", &communities)
 }
 
 // loads data from GCS bucket into MongoDB
-func loadDataFromBucket[T any](client *mongo.Client, database, collectionName, jsonPath string, result *[]T) error {
+func loadDataset[T any](client *mongo.Client, database, collectionName, jsonPath string, result *[]T) error {
 	db := client.Database(database)
 	collection := db.Collection(collectionName)
 
@@ -111,52 +101,6 @@ func loadDataFromBucket[T any](client *mongo.Client, database, collectionName, j
 		documents = append(documents, item)
 	}
 
-	if len(documents) > 0 {
-		_, err = collection.InsertMany(context.TODO(), documents)
-		if err != nil {
-			return fmt.Errorf("failed to insert %s into MongoDB: %w", collectionName, err)
-		}
-		log.Printf("%s collection initialized with JSON data.\n", collectionName)
-	} else {
-		log.Printf("No data found in %s JSON file.\n", collectionName)
-	}
-
-	return nil
-}
-
-// loads data from a JSON file in the filesystem into MongoDB
-func loadDataFromLocal[T any](client *mongo.Client, database, collectionName, jsonPath string, result *[]T) error {
-	db := client.Database(database)
-	collection := db.Collection(collectionName)
-
-	// Check if the collection already contains documents
-	count, err := collection.CountDocuments(context.TODO(), bson.D{})
-	if err != nil {
-		return fmt.Errorf("failed to count documents in %s collection: %w", collectionName, err)
-	}
-	if count > 0 {
-		log.Printf("%s collection already initialized, skipping JSON import.\n", collectionName)
-		return nil
-	}
-
-	// Read JSON file
-	file, err := os.ReadFile(jsonPath)
-	if err != nil {
-		return fmt.Errorf("failed to read %s JSON file: %w", collectionName, err)
-	}
-
-	// Unmarshal JSON into the provided slice
-	if err := json.Unmarshal(file, result); err != nil {
-		return fmt.Errorf("failed to unmarshal %s JSON: %w", collectionName, err)
-	}
-
-	// Convert to a slice of interface{} for MongoDB insertion
-	var documents []interface{}
-	for _, item := range *result {
-		documents = append(documents, item)
-	}
-
-	// Insert data into MongoDB if it's not empty
 	if len(documents) > 0 {
 		_, err = collection.InsertMany(context.TODO(), documents)
 		if err != nil {

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -28,24 +29,36 @@ func main() {
 
 	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		log.Fatalf("Failed to connect to MongoDB: %v", err)
+
+	// retry connecting to mongo every 5 seconds
+	for err != nil {
+		time.Sleep(5 * time.Second)
+		log.Println("Attempting to connect to MongoDB...")
+		client, err = mongo.Connect(context.Background(), clientOptions)
 	}
+
 	defer func() {
 		if err := client.Disconnect(context.Background()); err != nil {
 			log.Fatalf("Failed to disconnect from MongoDB: %v", err)
 		}
 	}()
 
-	// Database name in mongodb
+	// Load data into MongoDB
 	mongoDatabaseName := "threadit"
 	serviceAccountJsonPath := "/var/secret/gcp/gcs-key.json"
+	var basePath string
 	if _, err := os.Stat(serviceAccountJsonPath); err == nil {
-		loadDataSetsFromBucket(client, mongoDatabaseName)
+		basePath = "gs://threadit-dataset"
 	} else if os.IsNotExist(err) {
-		loadDatasetsFromLocal(client, mongoDatabaseName)
+		basePath = "/dataset"
 	} else {
 		log.Fatalf("error checking for gcs-key.json: %v", err)
+	}
+	if err := loadThreadsDataset(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading threads: %v", err)
+	}
+	if err := loadCommunitiesDataset(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading communities: %v", err)
 	}
 
 	// start gRPC server
@@ -66,30 +79,5 @@ func main() {
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
-	}
-}
-
-// GCS Bucket Paths to JSON files inside the container
-func loadDataSetsFromBucket(client *mongo.Client, mongoDatabaseName string) {
-	basePath := "gs://threadit-dataset"
-
-	// Load data into MongoDB
-	if err := loadThreadsFromBucket(client, mongoDatabaseName, basePath); err != nil {
-		log.Fatalf("Error loading threads: %v", err)
-	}
-	if err := loadCommuninitiesFromBucket(client, mongoDatabaseName, basePath); err != nil {
-		log.Fatalf("Error loading communities: %v", err)
-	}
-}
-
-func loadDatasetsFromLocal(client *mongo.Client, mongoDatabaseName string) {
-	basePath := "/dataset"
-
-	// Load data into MongoDB
-	if err := loadThreadsFromLocal(client, mongoDatabaseName, basePath); err != nil {
-		log.Fatalf("Error loading threads: %v", err)
-	}
-	if err := loadCommunitiesFromLocal(client, mongoDatabaseName, basePath); err != nil {
-		log.Fatalf("Error loading communities: %v", err)
 	}
 }
