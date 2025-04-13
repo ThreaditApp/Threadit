@@ -30,11 +30,22 @@ func main() {
 	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
 
-	// retry connecting to mongo every 5 seconds
+	// Retry connecting to Mongo every 5 seconds until client is created.
 	for err != nil {
 		time.Sleep(5 * time.Second)
-		log.Println("Attempting to connect to MongoDB...")
+		log.Println("Attempting to create MongoDB client connection...")
 		client, err = mongo.Connect(context.Background(), clientOptions)
+	}
+
+	// Explicit ping check to ensure MongoDB is ready.
+	for {
+		err = client.Ping(context.Background(), nil)
+		if err == nil {
+			log.Println("Successfully connected to MongoDB!")
+			break
+		}
+		log.Println("MongoDB is not available yet, ping failed with error:", err)
+		time.Sleep(5 * time.Second)
 	}
 
 	defer func() {
