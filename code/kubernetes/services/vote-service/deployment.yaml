@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vote-service
+  template:
+    metadata:
+      labels:
+        app: vote-service
+    spec:
+      containers:
+        - name: vote-service
+          image: gcr.io/threadit-api/vote-service:latest
+          ports:
+            - containerPort: 50055
+          env:
+            - name: SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: VOTE_SERVICE_PORT
+            - name: THREAD_SERVICE_HOST
+              value: "thread-service"
+            - name: THREAD_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: THREAD_SERVICE_PORT
+            - name: COMMENT_SERVICE_HOST
+              value: "comment-service"
+            - name: COMMENT_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMENT_SERVICE_PORT

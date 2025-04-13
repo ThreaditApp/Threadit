@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+        - name: comment-service
+          image: gcr.io/threadit-api/comment-service:latest
+          ports:
+            - containerPort: 50054
+          env:
+            - name: SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMENT_SERVICE_PORT
+            - name: DB_SERVICE_HOST
+              value: "db-service"
+            - name: DB_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: DB_SERVICE_PORT
+            - name: THREAD_SERVICE_HOST
+              value: "thread-service"
+            - name: THREAD_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: THREAD_SERVICE_PORT

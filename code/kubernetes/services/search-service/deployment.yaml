@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search-service
+  template:
+    metadata:
+      labels:
+        app: search-service
+    spec:
+      containers:
+        - name: search-service
+          image: gcr.io/threadit-api/search-service:latest
+          ports:
+            - containerPort: 50056
+          env:
+            - name: SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: SEARCH_SERVICE_PORT
+            - name: COMMUNITY_SERVICE_HOST
+              value: "community-service"
+            - name: COMMUNITY_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMUNITY_SERVICE_PORT
+            - name: THREAD_SERVICE_HOST
+              value: "thread-service"
+            - name: THREAD_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: THREAD_SERVICE_PORT
