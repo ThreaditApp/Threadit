@@ -64,9 +64,3 @@ kubectl apply -n $CLUSTER_NAME -f grpc-gateway/deployment.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/traefik-config.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/service.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/deployment.yaml
-
-# Show all resources in the namespace
-kubectl get pods -n $CLUSTER_NAME
-
-# Grab external ip and test request (e.g. http://34.78.232.130/api/communities)
-kubectl get service traefik -n $CLUSTER_NAME
