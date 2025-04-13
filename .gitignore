@@ -28,3 +28,6 @@ go.work.sum
 
 # VS Code
 .vscode
+
+# Keys
+code/gcs-key.json

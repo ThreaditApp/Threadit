@@ -38,18 +38,14 @@ func main() {
 	}()
 
 	// Database name in mongodb
-	databaseName := "threadit"
-
-	// Paths to JSON files inside the container
-	threadsPath := "/dataset/threads.json"
-	communitiesPath := "/dataset/communities.json"
-
-	// Load data into MongoDB
-	if err := loadThreads(client, databaseName, threadsPath); err != nil {
-		log.Fatalf("Error loading threads: %v", err)
-	}
-	if err := loadCommunities(client, databaseName, communitiesPath); err != nil {
-		log.Fatalf("Error loading communities: %v", err)
+	mongoDatabaseName := "threadit"
+	serviceAccountJsonPath := "/var/secret/gcp/gcs-key.json"
+	if _, err := os.Stat(serviceAccountJsonPath); err == nil {
+		loadDataSetsFromBucket(client, mongoDatabaseName)
+	} else if os.IsNotExist(err) {
+		loadDatasetsFromLocal(client, mongoDatabaseName)
+	} else {
+		log.Fatalf("error checking for gcs-key.json: %v", err)
 	}
 
 	// start gRPC server
@@ -62,7 +58,7 @@ func main() {
 		grpc.MaxRecvMsgSize(1024*1024*500), // 500MB
 		grpc.MaxSendMsgSize(1024*1024*500), // 500MB
 	)
-	mongoDatabase := client.Database(databaseName)
+	mongoDatabase := client.Database(mongoDatabaseName)
 	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
 		Mongo: mongoDatabase,
 	})
@@ -70,5 +66,30 @@ func main() {
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+// GCS Bucket Paths to JSON files inside the container
+func loadDataSetsFromBucket(client *mongo.Client, mongoDatabaseName string) {
+	basePath := "gs://threadit-dataset"
+
+	// Load data into MongoDB
+	if err := loadThreadsFromBucket(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading threads: %v", err)
+	}
+	if err := loadCommuninitiesFromBucket(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading communities: %v", err)
+	}
+}
+
+func loadDatasetsFromLocal(client *mongo.Client, mongoDatabaseName string) {
+	basePath := "/dataset"
+
+	// Load data into MongoDB
+	if err := loadThreadsFromLocal(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading threads: %v", err)
+	}
+	if err := loadCommunitiesFromLocal(client, mongoDatabaseName, basePath); err != nil {
+		log.Fatalf("Error loading communities: %v", err)
 	}
 }

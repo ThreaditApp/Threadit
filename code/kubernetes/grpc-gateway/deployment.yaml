@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
       - name: grpc-gateway
-        image: gcr.io/fcul2025/grpc-gateway:latest
-        imagePullPolicy: IfNotPresent
+        image: gcr.io/threadit-api/grpc-gateway:latest
         ports:
         - containerPort: 8080
         env:
