@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: popular-service
+spec:
+  selector:
+    app: popular-service
+  ports:
+    - port: 50057
+      targetPort: 50057
+  type: ClusterIP
