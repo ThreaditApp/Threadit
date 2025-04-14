@@ -20,28 +20,28 @@ type ThreadServer struct {
 }
 
 const (
-	MinThreadTitleLength   = 3
-	MaxThreadTitleLength   = 50
-	MaxThreadContentLength = 500
-	MinThreadContentLength = 3
+	MinTitleLength   = 3
+	MaxTitleLength   = 50
+	MaxContentLength = 500
+	MinContentLength = 3
 )
 
 func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
 	// validate inputs
 	if req.CommunityId != nil && req.GetCommunityId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "community id cannot be empty")
+		return nil, status.Error(codes.InvalidArgument, "Community id cannot be empty")
 	}
 	if req.Title != nil && req.GetTitle() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "title cannot be empty")
+		return nil, status.Error(codes.InvalidArgument, "Title cannot be empty")
 	}
 	if req.Offset != nil && req.GetOffset() < 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "offset must be a non-negative integer")
+		return nil, status.Error(codes.InvalidArgument, "Offset must be a positive integer")
 	}
 	if req.Limit != nil && req.GetLimit() <= 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "limit must be a positive integer")
+		return nil, status.Error(codes.InvalidArgument, "Limit must be a positive integer")
 	}
 	if req.SortBy != nil && req.GetSortBy() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "sort cannot be empty")
+		return nil, status.Error(codes.InvalidArgument, "Sort cannot be empty")
 	}
 
 	// fetch threads
@@ -63,19 +63,19 @@ func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThread
 func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThreadRequest) (*threadpb.CreateThreadResponse, error) {
 	// validate inputs
 	if req.GetCommunityId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "community id is required")
+		return nil, status.Error(codes.InvalidArgument, "Community id is required")
 	}
 	if req.GetTitle() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "title is required")
+		return nil, status.Error(codes.InvalidArgument, "Title is required")
 	}
 	if req.GetContent() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "content is required")
+		return nil, status.Error(codes.InvalidArgument, "Content is required")
 	}
-	if len(req.GetTitle()) < MinThreadTitleLength || len(req.GetTitle()) > MaxThreadTitleLength {
-		return nil, status.Errorf(codes.InvalidArgument, "title must be between %d and %d characters long", MinThreadTitleLength, MaxThreadTitleLength)
+	if len(req.GetTitle()) < MinTitleLength || len(req.GetTitle()) > MaxTitleLength {
+		return nil, status.Errorf(codes.InvalidArgument, "Title must be between %d and %d characters long", MinTitleLength, MaxTitleLength)
 	}
-	if len(req.GetContent()) < MinThreadContentLength || len(req.GetContent()) > MaxThreadContentLength {
-		return nil, status.Errorf(codes.InvalidArgument, "content must be between %d and %d characters long", MinThreadContentLength, MaxThreadContentLength)
+	if len(req.GetContent()) < MinContentLength || len(req.GetContent()) > MaxContentLength {
+		return nil, status.Errorf(codes.InvalidArgument, "Content must be between %d and %d characters long", MinContentLength, MaxContentLength)
 	}
 
 	// create thread
@@ -106,7 +106,7 @@ func (s *ThreadServer) CreateThread(ctx context.Context, req *threadpb.CreateThr
 func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadRequest) (*models.Thread, error) {
 	// validate inputs
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "Thread id is required")
 	}
 
 	// fetch thread
@@ -122,19 +122,21 @@ func (s *ThreadServer) GetThread(ctx context.Context, req *threadpb.GetThreadReq
 func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
 	// validate inputs
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Error(codes.InvalidArgument, "Thread id is required")
 	}
-	if req.Title != nil && req.GetTitle() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "title cannot be empty")
+	titleLen := len(req.GetTitle())
+	if req.Title != nil && (titleLen < MinTitleLength || titleLen > MaxTitleLength) {
+		return nil, status.Errorf(codes.InvalidArgument, "Title must be between %d and %d characters long", MinTitleLength, MaxTitleLength)
 	}
-	if req.Content != nil && (len(req.GetContent()) < MinThreadContentLength || len(req.GetContent()) > MaxThreadContentLength) {
-		return nil, status.Errorf(codes.InvalidArgument, "content must be between %d and %d characters long", MinThreadContentLength, MaxThreadContentLength)
+	contentLen := len(req.GetContent())
+	if req.Content != nil && (contentLen < MinContentLength || contentLen > MaxContentLength) {
+		return nil, status.Errorf(codes.InvalidArgument, "Content must be between %d and %d characters long", MinContentLength, MaxContentLength)
 	}
 	if req.VoteOffset != nil && math.Abs(float64(req.GetVoteOffset())) != 1 {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid vote offset")
+		return nil, status.Error(codes.InvalidArgument, "Vote offset must be either -1 or 1")
 	}
 	if req.NumCommentsOffset != nil && math.Abs(float64(req.GetNumCommentsOffset())) != 1 {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid num comments offset")
+		return nil, status.Error(codes.InvalidArgument, "Number comments offset must be either -1 or 1")
 	}
 
 	// update thread
@@ -154,7 +156,7 @@ func (s *ThreadServer) UpdateThread(ctx context.Context, req *threadpb.UpdateThr
 func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThreadRequest) (*emptypb.Empty, error) {
 	// validate input
 	if req.GetId() == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "id is required")
+		return nil, status.Errorf(codes.InvalidArgument, "Thread id is required")
 	}
 
 	// get thread
