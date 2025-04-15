@@ -15,6 +15,7 @@ spec:
       containers:
         - name: comment-service
           image: gcr.io/threadit-api/comment-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50054
           env:

@@ -15,6 +15,7 @@ spec:
       containers:
         - name: db-service
           image: gcr.io/threadit-api/db-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50051
           env:

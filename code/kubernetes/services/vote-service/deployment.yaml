@@ -15,6 +15,7 @@ spec:
       containers:
         - name: vote-service
           image: gcr.io/threadit-api/vote-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50055
           env:

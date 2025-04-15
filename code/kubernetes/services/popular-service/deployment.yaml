@@ -15,6 +15,7 @@ spec:
       containers:
         - name: popular-service
           image: gcr.io/threadit-api/popular-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50057
           env:
