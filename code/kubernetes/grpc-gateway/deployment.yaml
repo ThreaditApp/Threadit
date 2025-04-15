@@ -15,6 +15,7 @@ spec:
       containers:
       - name: grpc-gateway
         image: gcr.io/threadit-api/grpc-gateway:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
