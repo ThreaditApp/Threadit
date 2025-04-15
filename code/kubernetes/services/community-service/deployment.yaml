@@ -7,6 +7,12 @@ spec:
   selector:
     matchLabels:
       app: community-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 3
   template:
     metadata:
       labels:
