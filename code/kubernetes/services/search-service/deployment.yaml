@@ -15,6 +15,7 @@ spec:
       containers:
         - name: search-service
           image: gcr.io/threadit-api/search-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50056
           env:
