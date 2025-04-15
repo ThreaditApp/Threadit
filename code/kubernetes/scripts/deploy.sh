@@ -45,6 +45,11 @@ gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE
 # Apply general config
 kubectl apply -n $CLUSTER_NAME -f config.yaml
 
+# Traefik
+helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+
 # MongoDB
 kubectl apply -n $CLUSTER_NAME -f mongo/
 
@@ -55,6 +60,3 @@ done
 
 # gRPC Gateway
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/
-
-# Traefik
-kubectl apply -n $CLUSTER_NAME -f traefik/
