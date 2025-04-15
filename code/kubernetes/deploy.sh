@@ -51,6 +51,11 @@ cd kubernetes
 # Config
 kubectl apply -n $CLUSTER_NAME -f config.yaml
 
+# Traefik
+helm install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+
 # MongoDB
 kubectl apply -n $CLUSTER_NAME -f mongo/mongo-pv.yaml
 kubectl apply -n $CLUSTER_NAME -f mongo/mongo-secret.yaml
@@ -89,8 +94,4 @@ kubectl apply -n $CLUSTER_NAME -f services/popular-service/deployment.yaml
 # gRPC gateway
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/service.yaml
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/deployment.yaml
-
-# Traefik
-kubectl apply -n $CLUSTER_NAME -f traefik/traefik-config.yaml
-kubectl apply -n $CLUSTER_NAME -f traefik/service.yaml
-kubectl apply -n $CLUSTER_NAME -f traefik/deployment.yaml
+kubectl apply -n $CLUSTER_NAME -f grpc-gateway/ingress.yaml

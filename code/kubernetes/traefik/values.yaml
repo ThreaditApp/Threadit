@@ -1,0 +1,29 @@
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/VALUES.md
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints:
+      - web
+      - websecure
+    matchRule: "PathPrefix(`/dashboard`)"
+
+ports:
+  websecure:
+    expose:
+      default: false
+
+logs:
+  access:
+    enabled: true
+
+# autoscaling: # TODO: If needed, uncomment and configure HPA settings
+#   enabled: true
+#   maxReplicas: 2
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       target:
+#         type: Utilization
+#         averageUtilization: 60
