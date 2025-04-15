@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-gateway
+  template:
+    metadata:
+      labels:
+        app: grpc-gateway
+    spec:
+      containers:
+      - name: grpc-gateway
+        image: gcr.io/threadit-api/grpc-gateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GRPC_GATEWAY_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: GRPC_GATEWAY_PORT
+        - name: COMMUNITY_SERVICE_HOST
+          value: "community-service"
+        - name: COMMUNITY_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: COMMUNITY_SERVICE_PORT
+        - name: THREAD_SERVICE_HOST
+          value: "thread-service"
+        - name: THREAD_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: THREAD_SERVICE_PORT
+        - name: COMMENT_SERVICE_HOST
+          value: "comment-service"
+        - name: COMMENT_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: COMMENT_SERVICE_PORT
+        - name: VOTE_SERVICE_HOST
+          value: "vote-service"
+        - name: VOTE_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: VOTE_SERVICE_PORT
+        - name: SEARCH_SERVICE_HOST
+          value: "search-service"
+        - name: SEARCH_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: SEARCH_SERVICE_PORT
+        - name: POPULAR_SERVICE_HOST
+          value: "popular-service"
+        - name: POPULAR_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: threadit-config
+              key: POPULAR_SERVICE_PORT

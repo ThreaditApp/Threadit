@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -28,27 +29,46 @@ func main() {
 
 	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		log.Fatalf("Failed to connect to MongoDB: %v", err)
+
+	// Retry connecting to Mongo every 5 seconds until client is created.
+	for err != nil {
+		time.Sleep(5 * time.Second)
+		log.Println("Attempting to create MongoDB client connection...")
+		client, err = mongo.Connect(context.Background(), clientOptions)
 	}
+
+	// Explicit ping check to ensure MongoDB is ready.
+	for {
+		err = client.Ping(context.Background(), nil)
+		if err == nil {
+			log.Println("Successfully connected to MongoDB!")
+			break
+		}
+		log.Println("MongoDB is not available yet, ping failed with error:", err)
+		time.Sleep(5 * time.Second)
+	}
+
 	defer func() {
 		if err := client.Disconnect(context.Background()); err != nil {
 			log.Fatalf("Failed to disconnect from MongoDB: %v", err)
 		}
 	}()
 
-	// Database name in mongodb
-	databaseName := "threadit"
-
-	// Paths to JSON files inside the container
-	threadsPath := "/dataset/threads.json"
-	communitiesPath := "/dataset/communities.json"
-
 	// Load data into MongoDB
-	if err := loadThreads(client, databaseName, threadsPath); err != nil {
+	mongoDatabaseName := "threadit"
+	serviceAccountJsonPath := "/var/secret/gcp/gcs-key.json"
+	var basePath string
+	if _, err := os.Stat(serviceAccountJsonPath); err == nil {
+		basePath = "gs://threadit-dataset"
+	} else if os.IsNotExist(err) {
+		basePath = "/dataset"
+	} else {
+		log.Fatalf("error checking for gcs-key.json: %v", err)
+	}
+	if err := loadThreadsDataset(client, mongoDatabaseName, basePath); err != nil {
 		log.Fatalf("Error loading threads: %v", err)
 	}
-	if err := loadCommunities(client, databaseName, communitiesPath); err != nil {
+	if err := loadCommunitiesDataset(client, mongoDatabaseName, basePath); err != nil {
 		log.Fatalf("Error loading communities: %v", err)
 	}
 
@@ -62,7 +82,7 @@ func main() {
 		grpc.MaxRecvMsgSize(1024*1024*500), // 500MB
 		grpc.MaxSendMsgSize(1024*1024*500), // 500MB
 	)
-	mongoDatabase := client.Database(databaseName)
+	mongoDatabase := client.Database(mongoDatabaseName)
 	dbpd.RegisterDBServiceServer(grpcServer, &server.DBServer{
 		Mongo: mongoDatabase,
 	})

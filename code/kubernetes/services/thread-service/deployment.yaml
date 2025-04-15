@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thread-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thread-service
+  template:
+    metadata:
+      labels:
+        app: thread-service
+    spec:
+      containers:
+        - name: thread-service
+          image: gcr.io/threadit-api/thread-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50053
+          env:
+            - name: SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: THREAD_SERVICE_PORT
+            - name: DB_SERVICE_HOST
+              value: "db-service"
+            - name: DB_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: DB_SERVICE_PORT
+            - name: COMMUNITY_SERVICE_HOST
+              value: "community-service"
+            - name: COMMUNITY_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMUNITY_SERVICE_PORT

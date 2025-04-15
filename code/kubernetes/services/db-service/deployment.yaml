@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-service
+  template:
+    metadata:
+      labels:
+        app: db-service
+    spec:
+      containers:
+        - name: db-service
+          image: gcr.io/threadit-api/db-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50051
+          env:
+            - name: SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: DB_SERVICE_PORT
+            - name: MONGO_URI
+              value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb:27017/$(MONGO_INITDB_DATABASE)?authSource=admin"
+          envFrom:
+            - secretRef:
+                name: mongodb-credentials
+            - configMapRef:
+                name: threadit-config
+          volumeMounts:
+            - mountPath: /var/secret/gcp/
+              name: gcs-credentials
+              readOnly: true
+      volumes:
+        - name: gcs-credentials
+          secret:
+            secretName: db-secret
+            items:
+              - key: gcs-key.json
+                path: gcs-key.json
