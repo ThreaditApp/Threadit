@@ -15,6 +15,7 @@ spec:
       containers:
         - name: thread-service
           image: gcr.io/threadit-api/thread-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 50053
           env:
