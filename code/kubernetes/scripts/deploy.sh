@@ -46,6 +46,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE
 kubectl apply -n $CLUSTER_NAME -f config.yaml
 
 # Traefik
+helm repo add traefik https://traefik.github.io/charts
 helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
