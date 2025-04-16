@@ -60,3 +60,6 @@ done
 
 # gRPC Gateway
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/
+
+# Apply Horizontal Pod Autoscalers (HPA)
+kubectl apply -n $CLUSTER_NAME -f hpa/
