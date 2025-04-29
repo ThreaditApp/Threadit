@@ -2,8 +2,11 @@
 
 # Threadit 💬
 
-Cloud Computing Project - Reddit Clone API
+#### Cloud Computing Project
 
+Reddit Clone REST API with Microservices Architecture Using gRPC
+
+[![Go](https://img.shields.io/badge/Built_with-Go-blue?logo=go)](https://go.dev/)
 ![Contributors](https://img.shields.io/github/contributors/ThreaditApp/Threadit)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ThreaditApp/Threadit)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
