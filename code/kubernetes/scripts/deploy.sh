@@ -49,9 +49,17 @@ kubectl apply -n $CLUSTER_NAME -f config.yaml
 helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/ingress-routes.yaml
 
 # MongoDB
 kubectl apply -n $CLUSTER_NAME -f mongo/
+
+# Keycloak
+echo "Deploying Keycloak..."
+kubectl apply -n $CLUSTER_NAME -f keycloak/configmap.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/secrets.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/realm-configmap.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/deployment.yaml
 
 # Services
 for SERVICE in "${SERVICES[@]}"; do
@@ -60,3 +68,8 @@ done
 
 # gRPC Gateway
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/
+
+echo "Waiting for Keycloak to be ready..."
+kubectl wait --for=condition=ready pod -l app=keycloak -n $CLUSTER_NAME --timeout=300s
+
+echo "Deployment complete!"

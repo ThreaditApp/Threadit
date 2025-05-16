@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  namespace: threadit
+data:
+  realm.json: |
+    {
+      "id": "threadit",
+      "realm": "threadit",
+      "enabled": true,
+      "roles": {
+        "realm": [
+          {
+            "name": "user",
+            "description": "User role"
+          },
+          {
+            "name": "moderator",
+            "description": "Community moderator role"
+          },
+          {
+            "name": "admin",
+            "description": "Admin role"
+          }
+        ]
+      },
+      "defaultRoles": ["user"],
+      "clients": [
+        {
+          "clientId": "threadit-api",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${CLIENT_SECRET}",
+          "redirectUris": ["*"],
+          "webOrigins": ["*"],
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": true,
+          "authorizationServicesEnabled": true
+        }
+      ]
+    } 
