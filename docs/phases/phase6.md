@@ -2,7 +2,7 @@
 
 ## 1. Planned Improvements
 
-### 1.1 Ingress/API gateway configuration
+### 1.1 Ingress/API Gateway Configuration
 
 Currently, we are using Traefik with a basic IngressRoute and minimal configuration. To improve flexibility and take advantage of Kubernetes-native features, we will explore two alternatives:
 
@@ -13,21 +13,21 @@ Currently, we are using Traefik with a basic IngressRoute and minimal configurat
 ### 1.2 Liveness and Readiness Probes
 To improve fault tolerance and enable better self-healing behavior in Kubernetes, we will define:
 
-* **Liveness probes** to detect and restart failed containers.
-* **Readiness probes** to ensure that traffic is only sent to containers that are ready to handle requests.
+* **Liveness probes** to detect and restart failed pods.
+* **Readiness probes** to ensure that traffic is only sent to pods that are ready to handle requests.
 
 ### 1.3 Resource Limits and HPA
 We will benchmark services to determine ideal values for:
 
 * **CPU and memory resource requests/limits**.
-* **Horizontal Pod Autoscaling (HPA)** thresholds to ensure scalability based on real traffic patterns.
+* **Horizontal Pod Autoscaling (HPA)** thresholds based on real traffic patterns to ensure scalability.
 
-### 1.4 Authentication with Keycloak
-We will introduce authentication and authorization by integrating [Keycloak](https://www.keycloak.org/) as the Identity Provider. Keycloak will manage user sessions, tokens (OIDC), and role-based access control (RBAC) across the services.
+### 1.4 Authentication & Authorization with Keycloak
+We will introduce authentication and authorization by integrating [Keycloak](https://www.keycloak.org/) as the Identity Provider. Keycloak will manage user sessions, tokens (OIDC) and Role-Based Access Control (RBAC) across the services.
 
 ### 1.5 Secret management
 
-To further improve security we will explore Google Secret Manager for managing sensitive configuration data such as API keys, credentials, and tokens. This approach provides:
+To further improve security we will explore Google Secret Manager for managing sensitive configuration data such as API keys, credentials and tokens. This approach provides:
 
 - Centralized and secure secret storage.
 
@@ -38,9 +38,9 @@ To further improve security we will explore Google Secret Manager for managing s
 - Versioning and audit logging for secret access.
 
 ### 1.6 CI/CD Pipeline
-A continuous integration and deployment (CI/CD) pipeline will be implemented using GitHub Actions and GKE. It will:
+A continuous integration and deployment (CI/CD) pipeline will be implemented using GitHub Actions and GKE in order to automatically:
 
-* Update OpenAPI specification files.
+* Update OpenAPI specifications.
 * Build images.
 * Deploy services to the cluster.
 
