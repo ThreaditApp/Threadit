@@ -51,7 +51,7 @@ func (h *AuthHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/auth/logout", h.handleLogout)
 }
 
-func (h *AuthHandler) validateRegistration(req *RegisterRequest) error {
+func (h *AuthHandler) validateRegister(req *RegisterRequest) error {
 	// Username validation
 	if len(req.Username) < 3 || len(req.Username) > 30 {
 		return fmt.Errorf("username must be between 3 and 30 characters")
@@ -96,7 +96,7 @@ func (h *AuthHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate registration data
-	if err := h.validateRegistration(&req); err != nil {
+	if err := h.validateRegister(&req); err != nil {
 		h.sendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
