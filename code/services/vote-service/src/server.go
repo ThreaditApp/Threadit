@@ -5,6 +5,7 @@ import (
 	commentpb "gen/comment-service/pb"
 	threadpb "gen/thread-service/pb"
 	votepb "gen/vote-service/pb"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -14,6 +15,10 @@ type VoteServer struct {
 	votepb.UnimplementedVoteServiceServer
 	ThreadClient  threadpb.ThreadServiceClient
 	CommentClient commentpb.CommentServiceClient
+}
+
+func (s *VoteServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func (s *VoteServer) UpvoteThread(ctx context.Context, req *votepb.VoteThreadRequest) (*emptypb.Empty, error) {

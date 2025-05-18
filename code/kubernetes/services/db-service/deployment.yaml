@@ -35,6 +35,14 @@ spec:
             - mountPath: /var/secret/gcp/
               name: gcs-credentials
               readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 5
       volumes:
         - name: gcs-credentials
           secret:

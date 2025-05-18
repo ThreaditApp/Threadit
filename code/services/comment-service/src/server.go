@@ -23,6 +23,10 @@ const (
 	MaxCommentLength = 500
 )
 
+func (s *CommentServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
 func (s *CommentServer) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
 	// validate inputs
 	if req.ThreadId != nil && req.GetThreadId() == "" {

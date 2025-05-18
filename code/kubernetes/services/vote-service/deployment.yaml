@@ -38,3 +38,11 @@ spec:
                 configMapKeyRef:
                   name: threadit-config
                   key: COMMENT_SERVICE_PORT
+          readinessProbe:
+            tcpSocket:
+              port: 50055
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 50055
+            initialDelaySeconds: 5

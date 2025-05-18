@@ -66,3 +66,13 @@ spec:
             configMapKeyRef:
               name: threadit-config
               key: POPULAR_SERVICE_PORT
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
