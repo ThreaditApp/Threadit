@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// Register gRPC-Gateway routes with auth middleware
-	httpMux.Handle("/api/v1/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	httpMux.Handle("/api", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Auth middleware for API routes
 		authMiddleware := middleware.NewAuthMiddleware(middleware.KeycloakConfig{
 			Realm:        os.Getenv("KEYCLOAK_REALM"),
