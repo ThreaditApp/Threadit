@@ -13,18 +13,20 @@ $ ./create-cluster.sh
 ```
 ### 2. Deployment 
 
-Builds and pushes Docker images to **Google Container Registry (GCR)**, and deploys all services to the cluster using `kubectl`
+Deploys all services and components to the cluster using `kubectl`.
 
 ```bash
 $ ./deploy.sh
 ```
 
-#### Optional: Skip Image Build & Push
+This will deploy using the latest available Docker images in **Google Container Registry (GCR)**.
 
-If you've already built and pushed your Docker images, you can skip that step to speed up re-deployments:
+#### Optional: Build & Push
+
+If you want to build and push the Docker images before deploying, use the --build flag:
 
 ```bash
-$ ./deploy.sh --skip-build
+$ ./deploy.sh --build
 ```
 
 ### 3. View Cluster Info
