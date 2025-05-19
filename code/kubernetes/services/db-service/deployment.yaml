@@ -28,17 +28,17 @@ spec:
               value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb:27017/$(MONGO_INITDB_DATABASE)?authSource=admin"
           envFrom:
             - secretRef:
-                name: mongodb-credentials
+                name: mongo-secret
             - configMapRef:
                 name: threadit-config
           volumeMounts:
             - mountPath: /var/secret/gcp/
-              name: gcs-credentials
+              name: bucket-credentials
               readOnly: true
       volumes:
-        - name: gcs-credentials
+        - name: bucket-credentials
           secret:
-            secretName: db-secret
+            secretName: bucket-secret
             items:
               - key: gcs-key.json
                 path: gcs-key.json
