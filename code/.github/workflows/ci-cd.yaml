@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: threadit-api
+  CLUSTER_NAME: threadit-cluster
+  ZONE: europe-west1-b
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Authenticate Docker to Google Cloud
+      run: gcloud auth configure-docker
+
+    - name: Deploy all services to GKE
+      run: |
+        chmod +x code/kubernetes/scripts/deploy.sh
+        code/kubernetes/scripts/deploy.sh
