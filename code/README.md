@@ -7,6 +7,15 @@ Threadit requires Go and Docker. You can find installation instructions in the l
 - [Install Go](https://go.dev/doc/install)
 - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+### Pulling Datasets
+
+The datasets in this repository are tracked using Git LFS (Large File Storage). To download them, you need to run:
+
+```bash
+git lfs install
+git lfs pull
+```
+
 ### Environment Variables
 
 To configure the application, change directory to `/code`, then simply copy the example environment file and rename it:
@@ -53,7 +62,7 @@ Although the generated code is already in this repository, you might want to re-
 If you wish to generate code for a specific service, you can execute the script with the `-s` flag and give a service name:
 
 ```bash
-./generate-proto.sh -s <servive-name>
+./generate-proto.sh -s service-name
 ```
 
 ### Generate OpenAPI specifications
@@ -71,5 +80,5 @@ Then just like the generated Go code, follow the same logic and use the script `
 ```
 
 ```bash
-./generate-openapi.sh -s <servive-name>
+./generate-openapi.sh -s service-name
 ```

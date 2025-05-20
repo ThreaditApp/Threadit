@@ -9,6 +9,8 @@ import "google/api/annotations.proto";
 import "models.proto";
 
 service CommunityService {
+  rpc CheckHealth(google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc ListCommunities(ListCommunitiesRequest) returns (ListCommunitiesResponse) {
     option (google.api.http) = {
       get: "/communities"

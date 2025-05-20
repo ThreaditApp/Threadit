@@ -13,18 +13,20 @@ $ ./create-cluster.sh
 ```
 ### 2. Deployment 
 
-Builds and pushes Docker images to **Google Container Registry (GCR)**, and deploys all services to the cluster using `kubectl`
+Deploys all services and components to the cluster using `kubectl`.
 
 ```bash
 $ ./deploy.sh
 ```
 
-#### Optional: Skip Image Build & Push
+This will deploy using the latest available Docker images in **Google Container Registry (GCR)**.
 
-If you've already built and pushed your Docker images, you can skip that step to speed up re-deployments:
+#### Optional: Build & Push
+
+If you want to build and push the Docker images before deploying, use the --build flag:
 
 ```bash
-$ ./deploy.sh --skip-build
+$ ./deploy.sh --build
 ```
 
 ### 3. View Cluster Info
@@ -41,8 +43,8 @@ $ ./cluster-info.sh
 - `--pods` Shows the status and details of all pods running in the specified namespace.
 - `--services` Lists all services deployed in the specified namespace.
 - `--deployments` Shows deployment configurations and statuses for the namespace.
-- `--resource-pods` Displays real-time CPU and memory usage metrics for each pod.
-- `--resource-nodes` Displays real-time CPU and memory usage metrics for each node in the cluster.
+- `--resources-pods` Displays real-time CPU and memory usage metrics for each pod.
+- `--resources-nodes` Displays real-time CPU and memory usage metrics for each node in the cluster.
 - `--all` Runs all of the above commands to display full cluster info.
 
 ### 4. Delete Cluster

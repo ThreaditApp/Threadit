@@ -45,3 +45,13 @@ spec:
                 configMapKeyRef:
                   name: threadit-config
                   key: THREAD_SERVICE_PORT
+          readinessProbe:
+            tcpSocket:
+              port: 50054
+            initialDelaySeconds: 6
+            timeoutSeconds: 4
+          livenessProbe:
+            tcpSocket:
+              port: 50054
+            initialDelaySeconds: 6
+            timeoutSeconds: 4

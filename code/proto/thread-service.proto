@@ -9,6 +9,8 @@ import "google/api/annotations.proto";
 import "models.proto";
 
 service ThreadService {
+  rpc CheckHealth(google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc ListThreads (ListThreadsRequest) returns (ListThreadsResponse) {
     option (google.api.http) = {
       get: "/threads"
