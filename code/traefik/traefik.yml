@@ -3,63 +3,12 @@ global:
   sendAnonymousUsage: false
 
 api:
-  dashboard: true
   insecure: true
 
 entryPoints:
   web:
     address: ":80"
-    forwardedHeaders:
-      insecure: true
 
 providers:
-  docker:
-    exposedByDefault: false
   file:
     filename: "/etc/traefik/dynamic.yml"
-
-http:
-  middlewares:
-    cors-headers:
-      headers:
-        accessControlAllowMethods:
-          - GET
-          - POST
-          - PUT
-          - DELETE
-          - PATCH
-        accessControlAllowHeaders:
-          - "Authorization"
-          - "Content-Type"
-        accessControlAllowOriginList:
-          - "*"
-        accessControlMaxAge: 100
-        addVaryHeader: true
-
-  routers:
-    api:
-      rule: "PathPrefix(`/api/v1`)"
-      service: "grpc-gateway"
-      middlewares:
-        - "cors-headers"
-      entryPoints:
-        - "web"
-
-    keycloak:
-      rule: "PathPrefix(`/auth`)"
-      service: "keycloak"
-      middlewares:
-        - "cors-headers"
-      entryPoints:
-        - "web"
-
-  services:
-    grpc-gateway:
-      loadBalancer:
-        servers:
-          - url: "http://grpc-gateway:8080"
-
-    keycloak:
-      loadBalancer:
-        servers:
-          - url: "http://keycloak:8080"
