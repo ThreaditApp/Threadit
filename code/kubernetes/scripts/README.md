@@ -43,8 +43,8 @@ $ ./cluster-info.sh
 - `--pods` Shows the status and details of all pods running in the specified namespace.
 - `--services` Lists all services deployed in the specified namespace.
 - `--deployments` Shows deployment configurations and statuses for the namespace.
-- `--resource-pods` Displays real-time CPU and memory usage metrics for each pod.
-- `--resource-nodes` Displays real-time CPU and memory usage metrics for each node in the cluster.
+- `--resources-pods` Displays real-time CPU and memory usage metrics for each pod.
+- `--resources-nodes` Displays real-time CPU and memory usage metrics for each node in the cluster.
 - `--all` Runs all of the above commands to display full cluster info.
 
 ### 4. Delete Cluster
