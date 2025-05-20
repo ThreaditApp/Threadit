@@ -41,8 +41,10 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 50053
-            initialDelaySeconds: 5
+            initialDelaySeconds: 6
+            timeoutSeconds: 4
           livenessProbe:
             tcpSocket:
               port: 50053
-            initialDelaySeconds: 5
+            initialDelaySeconds: 6
+            timeoutSeconds: 4
