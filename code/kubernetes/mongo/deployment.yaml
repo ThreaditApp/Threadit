@@ -19,11 +19,11 @@ spec:
             - containerPort: 27017
           resources:
             requests:
-              cpu: "300m"
-              memory: "512Mi"
+              cpu: 150m
+              memory: 700Mi
             limits:
-              cpu: "700m"
-              memory: "1Gi"
+              cpu: 500m
+              memory: 1Gi
           env:
             - name: MONGO_INITDB_DATABASE
               valueFrom:

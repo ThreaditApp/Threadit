@@ -20,11 +20,11 @@ spec:
             - containerPort: 50051
           resources:
             requests:
-              cpu: "200m"
-              memory: "256Mi"
+              cpu: 10m
+              memory: 20Mi
             limits:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: 100m
+              memory: 200Mi
           env:
             - name: SERVICE_PORT
               valueFrom:

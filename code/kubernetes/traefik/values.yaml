@@ -1,12 +1,23 @@
-# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/VALUES.md
+# traefik/values.yaml
 
-# autoscaling: # TODO: If needed, uncomment and configure HPA settings
-#   enabled: true
-#   maxReplicas: 2
-#   metrics:
-#   - type: Resource
-#     resource:
-#       name: cpu
-#       target:
-#         type: Utilization
-#         averageUtilization: 60
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 20m
+    memory: 40Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+# TODO: If needed, uncomment and configure HPA settings
+#autoscaling:
+#  enabled: true
+#  maxReplicas: 2
+#  metrics:
+#  - type: Resource
+#    resource:
+#      name: cpu
+#      target:
+#        type: Utilization
+#        averageUtilization: 60
