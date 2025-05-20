@@ -20,11 +20,11 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "200m"
-            memory: "256Mi"
+            cpu: 30m
+            memory: 60Mi
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: 120m
+            memory: 240Mi
         env:
         - name: GRPC_GATEWAY_PORT
           valueFrom:
