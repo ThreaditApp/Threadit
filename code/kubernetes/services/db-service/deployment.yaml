@@ -35,6 +35,16 @@ spec:
             - mountPath: /var/secret/gcp/
               name: bucket-credentials
               readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 8
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 8
+            timeoutSeconds: 5
       volumes:
         - name: bucket-credentials
           secret:
