@@ -8,6 +8,8 @@ import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 
 service VoteService {
+  rpc CheckHealth(google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc UpvoteThread (VoteThreadRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/votes/thread/{thread_id}/up"

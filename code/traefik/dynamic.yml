@@ -61,6 +61,14 @@ http:
         - "cors"
         - "api-strip-prefix"
 
+    grpc-gateway:
+      rule: "PathPrefix(`/api`)"
+      service: "gprc-gateway"
+      entryPoints: ["web"]
+      middlewares:
+        - "cors"
+        - "api-strip-prefix"
+
   services:
     community-service:
       loadBalancer:
@@ -91,3 +99,8 @@ http:
       loadBalancer:
         servers:
           - url: "http://grpc-gateway:8080/popular"
+
+    gprc-gateway:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:8080"

@@ -11,6 +11,7 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -219,7 +220,7 @@ var File_popular_service_proto protoreflect.FileDescriptor
 
 const file_popular_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15popular-service.proto\x12\apopular\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"g\n" +
+	"\x15popular-service.proto\x12\apopular\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/api/annotations.proto\x1a\fmodels.proto\"g\n" +
 	"\x18GetPopularThreadsRequest\x12\x1b\n" +
 	"\x06offset\x18\x01 \x01(\x05H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
 	"\x05limit\x18\x02 \x01(\x05H\x01R\x05limit\x88\x01\x01B\t\n" +
@@ -233,8 +234,9 @@ const file_popular_service_proto_rawDesc = "" +
 	"\a_offsetB\b\n" +
 	"\x06_limit\"I\n" +
 	"\x1aGetPopularCommentsResponse\x12+\n" +
-	"\bcomments\x18\x01 \x03(\v2\x0f.models.CommentR\bcomments2\x80\x02\n" +
-	"\x0ePopularService\x12t\n" +
+	"\bcomments\x18\x01 \x03(\v2\x0f.models.CommentR\bcomments2\xbf\x02\n" +
+	"\x0ePopularService\x12=\n" +
+	"\vCheckHealth\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\x12t\n" +
 	"\x11GetPopularThreads\x12!.popular.GetPopularThreadsRequest\x1a\".popular.GetPopularThreadsResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/popular/threads\x12x\n" +
 	"\x12GetPopularComments\x12\".popular.GetPopularCommentsRequest\x1a#.popular.GetPopularCommentsResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/popular/commentsB\x1bZ\x19gen/popular-service/pb;pbb\x06proto3"
 
@@ -258,16 +260,19 @@ var file_popular_service_proto_goTypes = []any{
 	(*GetPopularCommentsResponse)(nil), // 3: popular.GetPopularCommentsResponse
 	(*pb.Thread)(nil),                  // 4: models.Thread
 	(*pb.Comment)(nil),                 // 5: models.Comment
+	(*emptypb.Empty)(nil),              // 6: google.protobuf.Empty
 }
 var file_popular_service_proto_depIdxs = []int32{
 	4, // 0: popular.GetPopularThreadsResponse.threads:type_name -> models.Thread
 	5, // 1: popular.GetPopularCommentsResponse.comments:type_name -> models.Comment
-	0, // 2: popular.PopularService.GetPopularThreads:input_type -> popular.GetPopularThreadsRequest
-	2, // 3: popular.PopularService.GetPopularComments:input_type -> popular.GetPopularCommentsRequest
-	1, // 4: popular.PopularService.GetPopularThreads:output_type -> popular.GetPopularThreadsResponse
-	3, // 5: popular.PopularService.GetPopularComments:output_type -> popular.GetPopularCommentsResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	6, // 2: popular.PopularService.CheckHealth:input_type -> google.protobuf.Empty
+	0, // 3: popular.PopularService.GetPopularThreads:input_type -> popular.GetPopularThreadsRequest
+	2, // 4: popular.PopularService.GetPopularComments:input_type -> popular.GetPopularCommentsRequest
+	6, // 5: popular.PopularService.CheckHealth:output_type -> google.protobuf.Empty
+	1, // 6: popular.PopularService.GetPopularThreads:output_type -> popular.GetPopularThreadsResponse
+	3, // 7: popular.PopularService.GetPopularComments:output_type -> popular.GetPopularCommentsResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name

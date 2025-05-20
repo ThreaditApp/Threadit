@@ -8,12 +8,17 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type PopularServer struct {
 	popularpb.UnimplementedPopularServiceServer
 	ThreadClient  threadpb.ThreadServiceClient
 	CommentClient commentpb.CommentServiceClient
+}
+
+func (s *PopularServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func (s *PopularServer) GetPopularThreads(ctx context.Context, req *popularpb.GetPopularThreadsRequest) (*popularpb.GetPopularThreadsResponse, error) {

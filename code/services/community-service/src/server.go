@@ -6,10 +6,11 @@ import (
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
 	threadpb "gen/thread-service/pb"
+	"math"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"math"
 )
 
 type CommunityServer struct {
@@ -22,6 +23,10 @@ const (
 	MinLength = 3
 	MaxLength = 50
 )
+
+func (s *CommunityServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
 
 func (s *CommunityServer) ListCommunities(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
 	// validate inputs

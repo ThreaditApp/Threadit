@@ -26,6 +26,10 @@ const (
 	MinContentLength = 3
 )
 
+func (s *ThreadServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
 func (s *ThreadServer) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
 	// validate inputs
 	if req.CommunityId != nil && req.GetCommunityId() == "" {

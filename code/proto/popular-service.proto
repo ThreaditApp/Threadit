@@ -4,15 +4,19 @@ package popular;
 
 option go_package = "gen/popular-service/pb;pb";
 
+import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 import "models.proto";
 
 service PopularService {
+  rpc CheckHealth(google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc GetPopularThreads(GetPopularThreadsRequest) returns (GetPopularThreadsResponse) {
     option (google.api.http) = {
       get: "/popular/threads"
     };
   }
+
   rpc GetPopularComments(GetPopularCommentsRequest) returns (GetPopularCommentsResponse) {
     option (google.api.http) = {
       get: "/popular/comments"
