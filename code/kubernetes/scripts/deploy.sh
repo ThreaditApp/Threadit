@@ -54,6 +54,7 @@ helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/value
 
 kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
 kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/ingress-routes.yaml
 
 # Deploy threadit application
 kubectl create secret generic "bucket-secret" \
@@ -68,8 +69,24 @@ kubectl create secret generic "mongo-secret" \
 kubectl apply -n $CLUSTER_NAME -f config.yaml
 kubectl apply -n $CLUSTER_NAME -f mongo/
 
+# Keycloak
+echo "Deploying Keycloak..."
+kubectl apply -n $CLUSTER_NAME -f keycloak/configmap.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/secrets.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/realm-configmap.yaml
+kubectl apply -n $CLUSTER_NAME -f keycloak/deployment.yaml
+
+# Services
 for SERVICE in "${SERVICES[@]}"; do
   kubectl apply -n $CLUSTER_NAME -f services/"$SERVICE-service"/
 done
 
+# gRPC Gateway
 kubectl apply -n $CLUSTER_NAME -f grpc-gateway/
+
+echo "Waiting for Keycloak to be ready..."
+kubectl wait --for=condition=ready pod -l app=keycloak -n $CLUSTER_NAME --timeout=300s
+
+echo "Deployment complete!"
+kubectl apply -n $CLUSTER_NAME -f grpc-gateway/
+
