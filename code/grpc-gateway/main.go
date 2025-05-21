@@ -18,6 +18,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"threadit/grpc-gateway/middleware"
 )
 
 func getGrpcServerAddress(hostEnvVar string, portEnvVar string) string {
@@ -108,8 +109,24 @@ func handleHealthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	gwmux := runtime.NewServeMux()
+	ctx := context.Background()
+	mux := runtime.NewServeMux()
 
+	// Initialize auth handler
+	authHandler := middleware.NewAuthHandler(
+		os.Getenv("KEYCLOAK_URL"),
+		os.Getenv("KEYCLOAK_CLIENT_ID"),
+		os.Getenv("KEYCLOAK_CLIENT_SECRET"),
+		os.Getenv("KEYCLOAK_REALM"),
+	)
+
+	// Create a new ServeMux for both gRPC-Gateway and auth routes
+	httpMux := http.NewServeMux()
+
+	// Register auth routes
+	authHandler.RegisterRoutes(httpMux)
+
+	// gRPC dial options with message size configurations
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
@@ -118,39 +135,23 @@ func main() {
 		),
 	}
 
-	err := communitypb.RegisterCommunityServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
+	// Register gRPC-Gateway routes with auth middleware
+	httpMux.Handle("/api", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Auth middleware for API routes
+		authMiddleware := middleware.NewAuthMiddleware(middleware.KeycloakConfig{
+			Realm:        os.Getenv("KEYCLOAK_REALM"),
+			ClientID:     os.Getenv("KEYCLOAK_CLIENT_ID"),
+			ClientSecret: os.Getenv("KEYCLOAK_CLIENT_SECRET"),
+			KeycloakURL:  os.Getenv("KEYCLOAK_URL"),
+		})
+
+		authMiddleware.Handler(mux).ServeHTTP(w, r)
+	}))
+
+	// Register service handlers
+	if err := registerServices(ctx, mux, opts); err != nil {
+		log.Fatalf("Failed to register services: %v", err)
 	}
-
-	err = threadpb.RegisterThreadServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
-	}
-
-	err = commentpb.RegisterCommentServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
-	}
-
-	err = votepb.RegisterVoteServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("VOTE_SERVICE_HOST", "VOTE_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
-	}
-
-	err = searchpb.RegisterSearchServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("SEARCH_SERVICE_HOST", "SEARCH_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
-	}
-
-	err = popularpb.RegisterPopularServiceHandlerFromEndpoint(context.Background(), gwmux, getGrpcServerAddress("POPULAR_SERVICE_HOST", "POPULAR_SERVICE_PORT"), opts)
-	if err != nil {
-		log.Fatalf("Failed to register gRPC gateway: %v", err)
-	}
-
-	http.HandleFunc("/health", handleHealthCheck)
-
-	http.Handle("/", gwmux)
 
 	port := os.Getenv("GRPC_GATEWAY_PORT")
 	if port == "" {
@@ -158,8 +159,56 @@ func main() {
 	}
 
 	log.Printf("gRPC Gateway server listening on :%s", port)
-	err = http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
-	if err != nil {
-		log.Fatalf("Failed to start HTTP server: %v", err)
+	if err := http.ListenAndServe(":"+port, httpMux); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
 	}
+}
+
+func registerServices(ctx context.Context, mux *runtime.ServeMux, opts []grpc.DialOption) error {
+	// Register Community Service
+	if err := communitypb.RegisterCommunityServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register community service: %v", err)
+	}
+
+	// Register Thread Service
+	if err := threadpb.RegisterThreadServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register thread service: %v", err)
+	}
+
+	// Register Comment Service
+	if err := commentpb.RegisterCommentServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register comment service: %v", err)
+	}
+
+	// Register Vote Service
+	if err := votepb.RegisterVoteServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("VOTE_SERVICE_HOST", "VOTE_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register vote service: %v", err)
+	}
+
+	http.HandleFunc("/health", handleHealthCheck)
+	http.Handle("/", mux)
+
+	// Register Search Service
+	if err := searchpb.RegisterSearchServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("SEARCH_SERVICE_HOST", "SEARCH_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register search service: %v", err)
+	}
+
+	// Register Popular Service
+	if err := popularpb.RegisterPopularServiceHandlerFromEndpoint(
+		ctx, mux, getGrpcServerAddress("POPULAR_SERVICE_HOST", "POPULAR_SERVICE_PORT"), opts,
+	); err != nil {
+		return fmt.Errorf("failed to register popular service: %v", err)
+	}
+
+	return nil
 }
