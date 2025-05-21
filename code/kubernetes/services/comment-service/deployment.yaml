@@ -18,6 +18,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 50054
+          resources:
+            requests:
+              cpu: 20m
+              memory: 40Mi
+            limits:
+              cpu: 100m
+              memory: 200Mi
           env:
             - name: SERVICE_PORT
               valueFrom:
@@ -48,3 +55,22 @@ spec:
               port: 50054
             initialDelaySeconds: 6
             timeoutSeconds: 4
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: comment-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: comment-service
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
