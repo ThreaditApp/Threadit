@@ -1,0 +1,116 @@
+name: Build and Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: threadit-api
+  CLUSTER_NAME: threadit-cluster
+  ZONE: europe-west1-b
+  GCS_KEY: gcs-key
+  SERVICES: db community thread comment vote search popular
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Check if GKE cluster exists
+        id: check-cluster
+        run: |
+          if gcloud container clusters describe $CLUSTER_NAME --zone $ZONE --project $PROJECT_ID; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Cluster does not exist"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up GKE credentials
+        if: steps.check-cluster.outputs.exists == 'true'
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          cluster_name: ${{ env.CLUSTER_NAME }}
+          location: ${{ env.ZONE }}
+
+      - name: Cluster not created. Skip deployment
+        if: steps.check-cluster.outputs.exists == 'false'
+        run: |
+          echo "Cluster doesn't exist — skipping deployment."
+          exit 0
+
+      - name: Configure Docker for GCR
+        run: |
+          gcloud auth configure-docker --quiet
+
+      - name: Build and push images to GCR
+        working-directory: code/kubernetes
+        run: |
+          for SERVICE in $SERVICES; do
+            docker build -t gcr.io/$PROJECT_ID/${SERVICE}-service:latest -f services/${SERVICE}-service/Dockerfile .
+            docker push gcr.io/$PROJECT_ID/${SERVICE}-service:latest
+          done
+          
+          docker build -t gcr.io/$PROJECT_ID/grpc-gateway:latest -f grpc-gateway/Dockerfile .
+          docker push gcr.io/$PROJECT_ID/grpc-gateway:latest
+
+      - name: Deploy Traefik
+        working-directory: code/kubernetes
+        run: |
+          helm repo add traefik https://traefik.github.io/charts
+          helm repo update
+          helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
+
+          kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
+          kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+
+      - name: Create Kubernetes secrets
+        run: |
+          BUCKET_SECRET=$(gcloud secrets versions access latest --secret=$GCS_KEY)
+          MONGO_USER=$(gcloud secrets versions access latest --secret="mongo-user")
+          MONGO_PASS=$(gcloud secrets versions access latest --secret="mongo-pass")
+
+          kubectl create secret generic "bucket-secret" \
+            --from-literal="$GCS_KEY.json=$BUCKET_SECRET" \
+            -n $CLUSTER_NAME --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl create secret generic "mongo-secret" \
+            --from-literal="MONGO_INITDB_ROOT_USERNAME=$MONGO_USER" \
+            --from-literal="MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASS" \
+            -n $CLUSTER_NAME --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy configuration and Mongo
+        working-directory: code/kubernetes
+        run: |
+          kubectl apply -n $CLUSTER_NAME -f config.yaml
+          kubectl apply -n $CLUSTER_NAME -f mongo/
+
+      - name: Deploy services
+        working-directory: code/kubernetes
+        run: |
+          for SERVICE in $SERVICES; do
+            kubectl apply -n $CLUSTER_NAME -f services/${SERVICE}-service/
+          done
+          
+          kubectl apply -n $CLUSTER_NAME -f grpc-gateway/

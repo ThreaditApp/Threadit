@@ -6,14 +6,20 @@ import (
 	models "gen/models/pb"
 	searchpb "gen/search-service/pb"
 	threadpb "gen/thread-service/pb"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type SearchServer struct {
 	searchpb.UnimplementedSearchServiceServer
 	CommunityClient communitypb.CommunityServiceClient
 	ThreadClient    threadpb.ThreadServiceClient
+}
+
+func (s *SearchServer) CheckHealth(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func (s *SearchServer) GlobalSearch(ctx context.Context, req *searchpb.SearchRequest) (*searchpb.GlobalSearchResponse, error) {

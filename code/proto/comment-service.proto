@@ -9,6 +9,8 @@ import "google/api/annotations.proto";
 import "models.proto";
 
 service CommentService {
+  rpc CheckHealth(google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {
     option (google.api.http) = {
       get: "/comments"
