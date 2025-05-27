@@ -65,7 +65,7 @@ jobs:
           gcloud auth configure-docker --quiet
 
       - name: Build and push images to GCR
-        working-directory: code/kubernetes
+        working-directory: code
         run: |
           for SERVICE in $SERVICES; do
             docker build -t gcr.io/$PROJECT_ID/${SERVICE}-service:latest -f services/${SERVICE}-service/Dockerfile .
