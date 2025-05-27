@@ -19,7 +19,7 @@ spec:
             - containerPort: 27017
           resources:
             requests:
-              cpu: 150m
+              cpu: 200m
               memory: 700Mi
             limits:
               cpu: 500m
@@ -49,7 +49,7 @@ spec:
                 - mongosh
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 15
+            initialDelaySeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             exec:
@@ -57,7 +57,7 @@ spec:
                 - mongosh
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 15
+            initialDelaySeconds: 20
             timeoutSeconds: 5
       volumes:
         - name: mongodb-data

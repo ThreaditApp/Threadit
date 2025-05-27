@@ -20,8 +20,8 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            cpu: 30m
-            memory: 60Mi
+            cpu: 40m
+            memory: 80Mi
           limits:
             cpu: 120m
             memory: 240Mi
@@ -83,7 +83,7 @@ spec:
           httpGet:
             path: /health
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           timeoutSeconds: 5
 ---
 apiVersion: autoscaling/v2

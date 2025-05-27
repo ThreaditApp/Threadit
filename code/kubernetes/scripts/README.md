@@ -45,6 +45,7 @@ $ ./cluster-info.sh
 - `--deployments` Shows deployment configurations and statuses for the namespace.
 - `--resources-pods` Displays real-time CPU and memory usage metrics for each pod.
 - `--resources-nodes` Displays real-time CPU and memory usage metrics for each node in the cluster.
+- `--hpa` Shows all Horizontal Pod Autoscalers in the namespace, including current and target scaling metrics.
 - `--all` Runs all of the above commands to display full cluster info.
 
 ### 4. Delete Cluster
