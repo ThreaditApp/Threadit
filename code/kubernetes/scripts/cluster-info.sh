@@ -11,6 +11,7 @@ SHOW_SERVICES=false
 SHOW_DEPLOYMENTS=false
 SHOW_RESOURCES_PODS=false
 SHOW_RESOURCES_NODES=false
+SHOW_HPA=false
 
 if [[ $# -eq 0 ]]; then
   SHOW_NAMESPACES=true
@@ -19,6 +20,7 @@ if [[ $# -eq 0 ]]; then
   SHOW_DEPLOYMENTS=true
   SHOW_RESOURCES_PODS=true
   SHOW_RESOURCES_NODES=true
+  SHOW_HPA=true
 fi
 
 # Parse flags
@@ -30,6 +32,7 @@ while [[ "$#" -gt 0 ]]; do
     --deployments) SHOW_DEPLOYMENTS=true ;;
     --resources-pods) SHOW_RESOURCES_PODS=true ;;
     --resources-nodes) SHOW_RESOURCES_NODES=true ;;
+    --hpa) SHOW_HPA=true ;;
     --all)
       SHOW_NAMESPACES=true
       SHOW_PODS=true
@@ -37,6 +40,7 @@ while [[ "$#" -gt 0 ]]; do
       SHOW_DEPLOYMENTS=true
       SHOW_RESOURCES_PODS=true
       SHOW_RESOURCES_NODES=true
+      SHOW_HPA=true
       ;;
     *) echo "❌ Unknown flag: $1"; exit 1 ;;
   esac
@@ -53,3 +57,4 @@ $SHOW_SERVICES && echo -e "\n🔁 Services:" && kubectl get svc -n $CLUSTER_NAME
 $SHOW_DEPLOYMENTS && echo -e "\n📂 Deployments:" && kubectl get deployments -n $CLUSTER_NAME
 $SHOW_RESOURCES_PODS && echo -e "\n📊 Resource Usage (Pods):" && kubectl top pods -n $CLUSTER_NAME
 $SHOW_RESOURCES_NODES && echo -e "\n🖥️ Resource Usage (Nodes):" && kubectl top nodes
+$SHOW_HPA && echo -e "\n📌 Horizontal Pod Autoscalers:" && kubectl get hpa -n $CLUSTER_NAME
