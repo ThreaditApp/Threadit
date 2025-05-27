@@ -36,12 +36,29 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
+      - name: Check if GKE cluster exists
+        id: check-cluster
+        run: |
+          if gcloud container clusters describe $CLUSTER_NAME --zone $ZONE --project $PROJECT_ID; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Cluster does not exist"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up GKE credentials
+        if: steps.check-cluster.outputs.exists == 'true'
         uses: google-github-actions/get-gke-credentials@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
           cluster_name: ${{ env.CLUSTER_NAME }}
           location: ${{ env.ZONE }}
+
+      - name: Cluster not created. Skip deployment
+        if: steps.check-cluster.outputs.exists == 'false'
+        run: |
+          echo "Cluster doesn't exist — skipping deployment."
+          exit 0
 
       - name: Configure Docker for GCR
         run: |
