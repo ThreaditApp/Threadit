@@ -13,24 +13,25 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/grpc"
 )
 
 type MockThreadClient struct {
 	threadpb.ThreadServiceClient
-	UpdateThreadFunc func(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error)
+	UpdateThreadFunc func(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockThreadClient) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
-	return m.UpdateThreadFunc(ctx, req)
+func (m *MockThreadClient) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateThreadFunc(ctx, req, opts...)
 }
 
 type MockCommentClient struct {
 	commentpb.CommentServiceClient
-	UpdateCommentFunc func(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error)
+	UpdateCommentFunc func(ctx context.Context, req *commentpb.UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockCommentClient) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
-	return m.UpdateCommentFunc(ctx, req)
+func (m *MockCommentClient) UpdateComment(ctx context.Context, req *commentpb.UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateCommentFunc(ctx, req, opts...)
 }
 
 func TestUpvoteThread_Validation(t *testing.T) {
@@ -57,7 +58,7 @@ func TestUpvoteThread_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.VoteServer{
 				ThreadClient: &MockThreadClient{
-					UpdateThreadFunc: func(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
+					UpdateThreadFunc: func(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 						return &emptypb.Empty{}, nil
 					},
 				},
@@ -97,9 +98,13 @@ func TestUpvoteComment_Validation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.VoteServer{
-				ThreadClient: &MockThreadClient{},
+				ThreadClient: &MockThreadClient{
+					UpdateThreadFunc: func(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+						return &emptypb.Empty{}, nil
+					},
+				},
 				CommentClient: &MockCommentClient{
-					UpdateCommentFunc: func(ctx context.Context, req *commentpb.UpdateCommentRequest) (*emptypb.Empty, error) {
+					UpdateCommentFunc: func(ctx context.Context, req *commentpb.UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 						return &emptypb.Empty{}, nil
 					},
 				},

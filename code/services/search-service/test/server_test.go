@@ -13,24 +13,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/grpc"
 )
 
 type MockCommunityClient struct {
 	communitypb.CommunityServiceClient
-	ListCommunitiesFunc func(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error)
+	ListCommunitiesFunc func(ctx context.Context, req *communitypb.ListCommunitiesRequest, opts ...grpc.CallOption) (*communitypb.ListCommunitiesResponse, error)
 }
 
-func (m *MockCommunityClient) ListCommunities(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
-	return m.ListCommunitiesFunc(ctx, req)
+func (m *MockCommunityClient) ListCommunities(ctx context.Context, req *communitypb.ListCommunitiesRequest, opts ...grpc.CallOption) (*communitypb.ListCommunitiesResponse, error) {
+	return m.ListCommunitiesFunc(ctx, req, opts...)
 }
 
 type MockThreadClient struct {
 	threadpb.ThreadServiceClient
-	ListThreadsFunc func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error)
+	ListThreadsFunc func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error)
 }
 
-func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
-	return m.ListThreadsFunc(ctx, req)
+func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
+	return m.ListThreadsFunc(ctx, req, opts...)
 }
 
 func TestGlobalSearch_Validation(t *testing.T) {
@@ -75,14 +76,14 @@ func TestGlobalSearch_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.SearchServer{
 				CommunityClient: &MockCommunityClient{
-					ListCommunitiesFunc: func(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
+					ListCommunitiesFunc: func(ctx context.Context, req *communitypb.ListCommunitiesRequest, opts ...grpc.CallOption) (*communitypb.ListCommunitiesResponse, error) {
 						return &communitypb.ListCommunitiesResponse{
 							Communities: []*models.Community{},
 						}, nil
 					},
 				},
 				ThreadClient: &MockThreadClient{
-					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
+					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
 						return &threadpb.ListThreadsResponse{
 							Threads: []*models.Thread{},
 						}, nil
@@ -142,7 +143,7 @@ func TestCommunitySearch_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.SearchServer{
 				CommunityClient: &MockCommunityClient{
-					ListCommunitiesFunc: func(ctx context.Context, req *communitypb.ListCommunitiesRequest) (*communitypb.ListCommunitiesResponse, error) {
+					ListCommunitiesFunc: func(ctx context.Context, req *communitypb.ListCommunitiesRequest, opts ...grpc.CallOption) (*communitypb.ListCommunitiesResponse, error) {
 						return &communitypb.ListCommunitiesResponse{
 							Communities: []*models.Community{},
 						}, nil
@@ -202,7 +203,7 @@ func TestThreadSearch_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.SearchServer{
 				ThreadClient: &MockThreadClient{
-					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
+					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
 						return &threadpb.ListThreadsResponse{
 							Threads: []*models.Thread{},
 						}, nil

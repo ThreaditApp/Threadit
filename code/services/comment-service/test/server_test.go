@@ -11,6 +11,7 @@ import (
 	threadpb "gen/thread-service/pb"
 
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -18,40 +19,40 @@ import (
 
 type MockDBClient struct {
 	dbpb.DBServiceClient
-	ListCommentsFunc  func(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error)
-	CreateCommentFunc func(ctx context.Context, req *dbpb.CreateCommentRequest) (*dbpb.CreateCommentResponse, error)
-	GetCommentFunc    func(ctx context.Context, req *dbpb.GetCommentRequest) (*models.Comment, error)
-	UpdateCommentFunc func(ctx context.Context, req *dbpb.UpdateCommentRequest) (*emptypb.Empty, error)
-	DeleteCommentFunc func(ctx context.Context, req *dbpb.DeleteCommentRequest) (*emptypb.Empty, error)
+	ListCommentsFunc  func(ctx context.Context, req *dbpb.ListCommentsRequest, opts ...grpc.CallOption) (*dbpb.ListCommentsResponse, error)
+	CreateCommentFunc func(ctx context.Context, req *dbpb.CreateCommentRequest, opts ...grpc.CallOption) (*dbpb.CreateCommentResponse, error)
+	GetCommentFunc    func(ctx context.Context, req *dbpb.GetCommentRequest, opts ...grpc.CallOption) (*models.Comment, error)
+	UpdateCommentFunc func(ctx context.Context, req *dbpb.UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteCommentFunc func(ctx context.Context, req *dbpb.DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockDBClient) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest) (*dbpb.ListCommentsResponse, error) {
-	return m.ListCommentsFunc(ctx, req)
+func (m *MockDBClient) ListComments(ctx context.Context, req *dbpb.ListCommentsRequest, opts ...grpc.CallOption) (*dbpb.ListCommentsResponse, error) {
+	return m.ListCommentsFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) CreateComment(ctx context.Context, req *dbpb.CreateCommentRequest) (*dbpb.CreateCommentResponse, error) {
-	return m.CreateCommentFunc(ctx, req)
+func (m *MockDBClient) CreateComment(ctx context.Context, req *dbpb.CreateCommentRequest, opts ...grpc.CallOption) (*dbpb.CreateCommentResponse, error) {
+	return m.CreateCommentFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) GetComment(ctx context.Context, req *dbpb.GetCommentRequest) (*models.Comment, error) {
-	return m.GetCommentFunc(ctx, req)
+func (m *MockDBClient) GetComment(ctx context.Context, req *dbpb.GetCommentRequest, opts ...grpc.CallOption) (*models.Comment, error) {
+	return m.GetCommentFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentRequest) (*emptypb.Empty, error) {
-	return m.UpdateCommentFunc(ctx, req)
+func (m *MockDBClient) UpdateComment(ctx context.Context, req *dbpb.UpdateCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateCommentFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentRequest) (*emptypb.Empty, error) {
-	return m.DeleteCommentFunc(ctx, req)
+func (m *MockDBClient) DeleteComment(ctx context.Context, req *dbpb.DeleteCommentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.DeleteCommentFunc(ctx, req, opts...)
 }
 
 type MockThreadClient struct {
 	threadpb.ThreadServiceClient
-	UpdateThreadFunc func(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error)
+	UpdateThreadFunc func(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockThreadClient) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
-	return m.UpdateThreadFunc(ctx, req)
+func (m *MockThreadClient) UpdateThread(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateThreadFunc(ctx, req, opts...)
 }
 
 func TestCreateComment_Validation(t *testing.T) {
@@ -95,14 +96,14 @@ func TestCreateComment_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.CommentServer{
 				DBClient: &MockDBClient{
-					CreateCommentFunc: func(ctx context.Context, req *dbpb.CreateCommentRequest) (*dbpb.CreateCommentResponse, error) {
+					CreateCommentFunc: func(ctx context.Context, req *dbpb.CreateCommentRequest, opts ...grpc.CallOption) (*dbpb.CreateCommentResponse, error) {
 						return &dbpb.CreateCommentResponse{
 							Id: "123",
 						}, nil
 					},
 				},
 				ThreadClient: &MockThreadClient{
-					UpdateThreadFunc: func(ctx context.Context, req *threadpb.UpdateThreadRequest) (*emptypb.Empty, error) {
+					UpdateThreadFunc: func(ctx context.Context, req *threadpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 						return &emptypb.Empty{}, nil
 					},
 				},
@@ -142,7 +143,7 @@ func TestGetComment_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.CommentServer{
 				DBClient: &MockDBClient{
-					GetCommentFunc: func(ctx context.Context, req *dbpb.GetCommentRequest) (*models.Comment, error) {
+					GetCommentFunc: func(ctx context.Context, req *dbpb.GetCommentRequest, opts ...grpc.CallOption) (*models.Comment, error) {
 						return &models.Comment{
 							Id:      "123",
 							Content: "test comment",

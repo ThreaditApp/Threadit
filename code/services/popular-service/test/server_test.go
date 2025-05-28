@@ -13,24 +13,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/grpc"
 )
 
 type MockThreadClient struct {
 	threadpb.ThreadServiceClient
-	ListThreadsFunc func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error)
+	ListThreadsFunc func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error)
 }
 
-func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
-	return m.ListThreadsFunc(ctx, req)
+func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
+	return m.ListThreadsFunc(ctx, req, opts...)
 }
 
 type MockCommentClient struct {
 	commentpb.CommentServiceClient
-	ListCommentsFunc func(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error)
+	ListCommentsFunc func(ctx context.Context, req *commentpb.ListCommentsRequest, opts ...grpc.CallOption) (*commentpb.ListCommentsResponse, error)
 }
 
-func (m *MockCommentClient) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
-	return m.ListCommentsFunc(ctx, req)
+func (m *MockCommentClient) ListComments(ctx context.Context, req *commentpb.ListCommentsRequest, opts ...grpc.CallOption) (*commentpb.ListCommentsResponse, error) {
+	return m.ListCommentsFunc(ctx, req, opts...)
 }
 
 func TestGetPopularThreads_Validation(t *testing.T) {
@@ -74,7 +75,7 @@ func TestGetPopularThreads_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.PopularServer{
 				ThreadClient: &MockThreadClient{
-					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
+					ListThreadsFunc: func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
 						return &threadpb.ListThreadsResponse{
 							Threads: []*models.Thread{},
 						}, nil
@@ -135,7 +136,7 @@ func TestGetPopularComments_Validation(t *testing.T) {
 			server := &src.PopularServer{
 				ThreadClient: &MockThreadClient{},
 				CommentClient: &MockCommentClient{
-					ListCommentsFunc: func(ctx context.Context, req *commentpb.ListCommentsRequest) (*commentpb.ListCommentsResponse, error) {
+					ListCommentsFunc: func(ctx context.Context, req *commentpb.ListCommentsRequest, opts ...grpc.CallOption) (*commentpb.ListCommentsResponse, error) {
 						return &commentpb.ListCommentsResponse{
 							Comments: []*models.Comment{},
 						}, nil

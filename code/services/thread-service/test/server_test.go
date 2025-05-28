@@ -14,44 +14,50 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/grpc"
 )
 
 type MockDBClient struct {
 	dbpb.DBServiceClient
-	ListThreadsFunc  func(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error)
-	CreateThreadFunc func(ctx context.Context, req *dbpb.CreateThreadRequest) (*dbpb.CreateThreadResponse, error)
-	GetThreadFunc    func(ctx context.Context, req *dbpb.GetThreadRequest) (*models.Thread, error)
-	UpdateThreadFunc func(ctx context.Context, req *dbpb.UpdateThreadRequest) (*emptypb.Empty, error)
-	DeleteThreadFunc func(ctx context.Context, req *dbpb.DeleteThreadRequest) (*emptypb.Empty, error)
+	ListThreadsFunc  func(ctx context.Context, req *dbpb.ListThreadsRequest, opts ...grpc.CallOption) (*dbpb.ListThreadsResponse, error)
+	CreateThreadFunc func(ctx context.Context, req *dbpb.CreateThreadRequest, opts ...grpc.CallOption) (*dbpb.CreateThreadResponse, error)
+	GetThreadFunc    func(ctx context.Context, req *dbpb.GetThreadRequest, opts ...grpc.CallOption) (*models.Thread, error)
+	UpdateThreadFunc func(ctx context.Context, req *dbpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteThreadFunc func(ctx context.Context, req *dbpb.DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockDBClient) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
-	return m.ListThreadsFunc(ctx, req)
+func (m *MockDBClient) ListThreads(ctx context.Context, req *dbpb.ListThreadsRequest, opts ...grpc.CallOption) (*dbpb.ListThreadsResponse, error) {
+	return m.ListThreadsFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) CreateThread(ctx context.Context, req *dbpb.CreateThreadRequest) (*dbpb.CreateThreadResponse, error) {
-	return m.CreateThreadFunc(ctx, req)
+func (m *MockDBClient) CreateThread(ctx context.Context, req *dbpb.CreateThreadRequest, opts ...grpc.CallOption) (*dbpb.CreateThreadResponse, error) {
+	return m.CreateThreadFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) GetThread(ctx context.Context, req *dbpb.GetThreadRequest) (*models.Thread, error) {
-	return m.GetThreadFunc(ctx, req)
+func (m *MockDBClient) GetThread(ctx context.Context, req *dbpb.GetThreadRequest, opts ...grpc.CallOption) (*models.Thread, error) {
+	return m.GetThreadFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadRequest) (*emptypb.Empty, error) {
-	return m.UpdateThreadFunc(ctx, req)
+func (m *MockDBClient) UpdateThread(ctx context.Context, req *dbpb.UpdateThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateThreadFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadRequest) (*emptypb.Empty, error) {
-	return m.DeleteThreadFunc(ctx, req)
+func (m *MockDBClient) DeleteThread(ctx context.Context, req *dbpb.DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.DeleteThreadFunc(ctx, req, opts...)
 }
 
 type MockCommunityClient struct {
 	communitypb.CommunityServiceClient
-	GetCommunityFunc func(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error)
+	GetCommunityFunc    func(ctx context.Context, req *communitypb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error)
+	UpdateCommunityFunc func(ctx context.Context, req *communitypb.UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockCommunityClient) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error) {
-	return m.GetCommunityFunc(ctx, req)
+func (m *MockCommunityClient) GetCommunity(ctx context.Context, req *communitypb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error) {
+	return m.GetCommunityFunc(ctx, req, opts...)
+}
+
+func (m *MockCommunityClient) UpdateCommunity(ctx context.Context, req *communitypb.UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateCommunityFunc(ctx, req, opts...)
 }
 
 func TestCreateThread_Validation(t *testing.T) {
@@ -95,14 +101,22 @@ func TestCreateThread_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.ThreadServer{
 				DBClient: &MockDBClient{
-					CreateThreadFunc: func(ctx context.Context, req *dbpb.CreateThreadRequest) (*dbpb.CreateThreadResponse, error) {
-						return &dbpb.CreateThreadResponse{
-							Id: "123",
+					CreateThreadFunc: func(ctx context.Context, req *dbpb.CreateThreadRequest, opts ...grpc.CallOption) (*dbpb.CreateThreadResponse, error) {
+						return &dbpb.CreateThreadResponse{Id: "123"}, nil
+					},
+				},
+				CommunityClient: &MockCommunityClient{
+					GetCommunityFunc: func(ctx context.Context, req *communitypb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error) {
+						return &models.Community{
+							Id:   "123",
+							Name: "test-community",
 						}, nil
+					},
+					UpdateCommunityFunc: func(ctx context.Context, req *communitypb.UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+						return &emptypb.Empty{}, nil
 					},
 				},
 			}
-
 			_, err := server.CreateThread(context.Background(), tt.req)
 			if tt.wantErr != nil {
 				assert.Equal(t, tt.wantErr.Error(), err.Error())
@@ -137,7 +151,7 @@ func TestGetThread_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.ThreadServer{
 				DBClient: &MockDBClient{
-					GetThreadFunc: func(ctx context.Context, req *dbpb.GetThreadRequest) (*models.Thread, error) {
+					GetThreadFunc: func(ctx context.Context, req *dbpb.GetThreadRequest, opts ...grpc.CallOption) (*models.Thread, error) {
 						return &models.Thread{
 							Id:          "123",
 							CommunityId: "456",
@@ -175,19 +189,19 @@ func TestListThreads_Validation(t *testing.T) {
 			wantErr: status.Error(codes.InvalidArgument, "Title cannot be empty"),
 		},
 		{
-			name:    "negative offset",
-			req:     &threadpb.ListThreadsRequest{Offset: int32Ptr(-1)},
-			wantErr: status.Error(codes.InvalidArgument, "Offset cannot be negative"),
+			name:    "negative_offset",
+			req:     &threadpb.ListThreadsRequest{CommunityId: strPtr("123"), Offset: int32Ptr(-1), Limit: int32Ptr(10), SortBy: strPtr("new")},
+			wantErr: status.Error(codes.InvalidArgument, "Offset must be a positive integer"),
 		},
 		{
-			name:    "zero limit",
-			req:     &threadpb.ListThreadsRequest{Limit: int32Ptr(0)},
-			wantErr: status.Error(codes.InvalidArgument, "Limit must be positive"),
+			name:    "zero_limit",
+			req:     &threadpb.ListThreadsRequest{CommunityId: strPtr("123"), Offset: int32Ptr(0), Limit: int32Ptr(0), SortBy: strPtr("new")},
+			wantErr: status.Error(codes.InvalidArgument, "Limit must be a positive integer"),
 		},
 		{
-			name:    "empty sort",
-			req:     &threadpb.ListThreadsRequest{SortBy: strPtr("")},
-			wantErr: status.Error(codes.InvalidArgument, "Sort by cannot be empty"),
+			name:    "empty_sort",
+			req:     &threadpb.ListThreadsRequest{CommunityId: strPtr("123"), Offset: int32Ptr(0), Limit: int32Ptr(10), SortBy: strPtr("")},
+			wantErr: status.Error(codes.InvalidArgument, "Sort cannot be empty"),
 		},
 		{
 			name: "valid request",
@@ -206,14 +220,14 @@ func TestListThreads_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.ThreadServer{
 				DBClient: &MockDBClient{
-					ListThreadsFunc: func(ctx context.Context, req *dbpb.ListThreadsRequest) (*dbpb.ListThreadsResponse, error) {
+					ListThreadsFunc: func(ctx context.Context, req *dbpb.ListThreadsRequest, opts ...grpc.CallOption) (*dbpb.ListThreadsResponse, error) {
 						return &dbpb.ListThreadsResponse{
 							Threads: []*models.Thread{},
 						}, nil
 					},
 				},
 				CommunityClient: &MockCommunityClient{
-					GetCommunityFunc: func(ctx context.Context, req *communitypb.GetCommunityRequest) (*models.Community, error) {
+					GetCommunityFunc: func(ctx context.Context, req *communitypb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error) {
 						return &models.Community{
 							Id:   "123",
 							Name: "test-community",

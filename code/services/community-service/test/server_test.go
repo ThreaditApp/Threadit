@@ -14,49 +14,50 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/grpc"
 )
 
 type MockDBClient struct {
 	dbpb.DBServiceClient
-	ListCommunitiesFunc func(ctx context.Context, req *dbpb.ListCommunitiesRequest) (*dbpb.ListCommunitiesResponse, error)
-	CreateCommunityFunc func(ctx context.Context, req *dbpb.CreateCommunityRequest) (*dbpb.CreateCommunityResponse, error)
-	GetCommunityFunc    func(ctx context.Context, req *dbpb.GetCommunityRequest) (*models.Community, error)
-	UpdateCommunityFunc func(ctx context.Context, req *dbpb.UpdateCommunityRequest) (*emptypb.Empty, error)
-	DeleteCommunityFunc func(ctx context.Context, req *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error)
+	ListCommunitiesFunc  func(ctx context.Context, req *dbpb.ListCommunitiesRequest, opts ...grpc.CallOption) (*dbpb.ListCommunitiesResponse, error)
+	CreateCommunityFunc  func(ctx context.Context, req *dbpb.CreateCommunityRequest, opts ...grpc.CallOption) (*dbpb.CreateCommunityResponse, error)
+	GetCommunityFunc     func(ctx context.Context, req *dbpb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error)
+	UpdateCommunityFunc  func(ctx context.Context, req *dbpb.UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteCommunityFunc  func(ctx context.Context, req *dbpb.DeleteCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockDBClient) ListCommunities(ctx context.Context, req *dbpb.ListCommunitiesRequest) (*dbpb.ListCommunitiesResponse, error) {
-	return m.ListCommunitiesFunc(ctx, req)
+func (m *MockDBClient) ListCommunities(ctx context.Context, req *dbpb.ListCommunitiesRequest, opts ...grpc.CallOption) (*dbpb.ListCommunitiesResponse, error) {
+	return m.ListCommunitiesFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) CreateCommunity(ctx context.Context, req *dbpb.CreateCommunityRequest) (*dbpb.CreateCommunityResponse, error) {
-	return m.CreateCommunityFunc(ctx, req)
+func (m *MockDBClient) CreateCommunity(ctx context.Context, req *dbpb.CreateCommunityRequest, opts ...grpc.CallOption) (*dbpb.CreateCommunityResponse, error) {
+	return m.CreateCommunityFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) GetCommunity(ctx context.Context, req *dbpb.GetCommunityRequest) (*models.Community, error) {
-	return m.GetCommunityFunc(ctx, req)
+func (m *MockDBClient) GetCommunity(ctx context.Context, req *dbpb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error) {
+	return m.GetCommunityFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) UpdateCommunity(ctx context.Context, req *dbpb.UpdateCommunityRequest) (*emptypb.Empty, error) {
-	return m.UpdateCommunityFunc(ctx, req)
+func (m *MockDBClient) UpdateCommunity(ctx context.Context, req *dbpb.UpdateCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.UpdateCommunityFunc(ctx, req, opts...)
 }
 
-func (m *MockDBClient) DeleteCommunity(ctx context.Context, req *dbpb.DeleteCommunityRequest) (*emptypb.Empty, error) {
-	return m.DeleteCommunityFunc(ctx, req)
+func (m *MockDBClient) DeleteCommunity(ctx context.Context, req *dbpb.DeleteCommunityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.DeleteCommunityFunc(ctx, req, opts...)
 }
 
 type MockThreadClient struct {
 	threadpb.ThreadServiceClient
-	ListThreadsFunc  func(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error)
-	DeleteThreadFunc func(ctx context.Context, req *threadpb.DeleteThreadRequest) (*emptypb.Empty, error)
+	ListThreadsFunc   func(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error)
+	DeleteThreadFunc  func(ctx context.Context, req *threadpb.DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest) (*threadpb.ListThreadsResponse, error) {
-	return m.ListThreadsFunc(ctx, req)
+func (m *MockThreadClient) ListThreads(ctx context.Context, req *threadpb.ListThreadsRequest, opts ...grpc.CallOption) (*threadpb.ListThreadsResponse, error) {
+	return m.ListThreadsFunc(ctx, req, opts...)
 }
 
-func (m *MockThreadClient) DeleteThread(ctx context.Context, req *threadpb.DeleteThreadRequest) (*emptypb.Empty, error) {
-	return m.DeleteThreadFunc(ctx, req)
+func (m *MockThreadClient) DeleteThread(ctx context.Context, req *threadpb.DeleteThreadRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	return m.DeleteThreadFunc(ctx, req, opts...)
 }
 
 func TestCreateCommunity_Validation(t *testing.T) {
@@ -97,7 +98,7 @@ func TestCreateCommunity_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.CommunityServer{
 				DBClient: &MockDBClient{
-					CreateCommunityFunc: func(ctx context.Context, req *dbpb.CreateCommunityRequest) (*dbpb.CreateCommunityResponse, error) {
+					CreateCommunityFunc: func(ctx context.Context, req *dbpb.CreateCommunityRequest, opts ...grpc.CallOption) (*dbpb.CreateCommunityResponse, error) {
 						return &dbpb.CreateCommunityResponse{
 							Id: "123",
 						}, nil
@@ -140,7 +141,7 @@ func TestGetCommunity_Validation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := &src.CommunityServer{
 				DBClient: &MockDBClient{
-					GetCommunityFunc: func(ctx context.Context, req *dbpb.GetCommunityRequest) (*models.Community, error) {
+					GetCommunityFunc: func(ctx context.Context, req *dbpb.GetCommunityRequest, opts ...grpc.CallOption) (*models.Community, error) {
 						return &models.Community{
 							Id:   "123",
 							Name: "test-community",
