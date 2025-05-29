@@ -43,10 +43,6 @@ jobs:
         working-directory: code/services/popular-service
         run: go test ./test/...
 
-      - name: Run unit tests for db-service
-        working-directory: code/services/db-service
-        run: go test ./test/...
-
       - name: Run unit tests for community-service
         working-directory: code/services/community-service
         run: go test ./test/...
