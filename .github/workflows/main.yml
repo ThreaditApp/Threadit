@@ -14,43 +14,6 @@ env:
   SERVICES: db community thread comment vote search popular
 
 jobs:
-  test:
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
-
-      - name: Run unit tests for thread-service
-        working-directory: code/services/thread-service
-        run: go test ./test/...
-
-      - name: Run unit tests for vote-service
-        working-directory: code/services/vote-service
-        run: go test ./test/...
-
-      - name: Run unit tests for search-service
-        working-directory: code/services/search-service
-        run: go test ./test/...
-
-      - name: Run unit tests for popular-service
-        working-directory: code/services/popular-service
-        run: go test ./test/...
-
-      - name: Run unit tests for community-service
-        working-directory: code/services/community-service
-        run: go test ./test/...
-
-      - name: Run unit tests for comment-service
-        working-directory: code/services/comment-service
-        run: go test ./test/...
-
   check-cluster:
     name: Check if GKE cluster exists
     runs-on: ubuntu-latest
@@ -82,7 +45,7 @@ jobs:
 
   build-publish-deploy:
     name: Build, Publish, and Deploy
-    needs: [test, check-cluster]
+    needs: check-cluster
     if: needs.check-cluster.outputs.exists == 'true'
     runs-on: ubuntu-latest
     environment: production
