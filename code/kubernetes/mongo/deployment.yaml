@@ -22,8 +22,8 @@ spec:
               cpu: 200m
               memory: 700Mi
             limits:
-              cpu: 500m
-              memory: 1Gi
+              cpu: 800m
+              memory: 1.2Gi
           env:
             - name: MONGO_INITDB_DATABASE
               valueFrom:
