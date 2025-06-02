@@ -1,0 +1,11 @@
+# Resource configuration for traefik
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 40m
+    memory: 80Mi
+  limits:
+    cpu: 120m
+    memory: 240Mi
