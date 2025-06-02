@@ -50,10 +50,10 @@ cd "$SCRIPT_DIR/.." || exit 1
 # Deploy traefik
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
-helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/values.yaml
 
-kubectl apply -n $CLUSTER_NAME -f traefik/cors.yaml
-kubectl apply -n $CLUSTER_NAME -f traefik/strip-prefix.yaml
+helm upgrade --install traefik traefik/traefik -n $CLUSTER_NAME -f traefik/resources.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/ingress.yaml
+kubectl apply -n $CLUSTER_NAME -f traefik/hpa-config.yaml
 
 # Deploy threadit application
 kubectl create secret generic "bucket-secret" \
