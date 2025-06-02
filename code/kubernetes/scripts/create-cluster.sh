@@ -11,7 +11,7 @@ gcloud config set project $PROJECT_ID
 gcloud container clusters create $CLUSTER_NAME \
   --num-nodes=3 \
   --enable-autoscaling \
-  --min-nodes=1 \
+  --min-nodes=3 \
   --max-nodes=5 \
   --machine-type=$MACHINE_TYPE \
   --zone=$ZONE \
