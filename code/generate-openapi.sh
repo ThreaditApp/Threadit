@@ -19,7 +19,7 @@ generate_openapi_for_service() {
   PROTO_DIR="$SCRIPT_DIR/proto"
   GOOGLE_API_DIR="$PROTO_DIR/google/api"
   PROTO_FILE="$PROTO_DIR/${SERVICE_NAME}.proto"
-  OUT_DIR="$SCRIPT_DIR/../docs/openapi/gen"
+  OUT_DIR="$SCRIPT_DIR/../docs/openapi"
 
   # check if the .proto file exists
   if [ ! -f "$PROTO_FILE" ]; then
@@ -32,9 +32,6 @@ generate_openapi_for_service() {
   # create output directory if it doesn't exist
   mkdir -p "$OUT_DIR"
 
-  # clean up existing generated OpenAPI file
-  rm -f "$OUT_DIR/${SERVICE_NAME}.swagger.json"
-
   # run protoc with grpc-gateway's OpenAPI plugin (Swagger 2.0)
   protoc \
     --openapiv2_out="$OUT_DIR" \
@@ -46,8 +43,8 @@ generate_openapi_for_service() {
   # Convert Swagger 2.0 JSON to OpenAPI 3.1.0 YAML using swagger2openapi
   swagger2openapi -o "$OUT_DIR/${SERVICE_NAME}.yaml" "$OUT_DIR/${SERVICE_NAME}.swagger.json"
 
-  # Optionally, remove the JSON file if it's no longer needed
-  rm "$OUT_DIR/${SERVICE_NAME}.swagger.json"
+  # Remove the JSON file
+  rm -f "$OUT_DIR/${SERVICE_NAME}.swagger.json"
 
   echo "✅ OpenAPI spec generated at docs/openapi/gen/${SERVICE_NAME}.yaml"
 }
