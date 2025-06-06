@@ -171,6 +171,24 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 		return nil, err
 	}
 
+	// find all comments from thread
+	comments, err := s.DBClient.ListComments(ctx, &dbpb.ListCommentsRequest{
+		ThreadId: &req.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	
+	// delete comments
+	for _, comment := range comments.Comments {
+		_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
+			Id: comment.Id,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	
 	// delete thread
 	_, err = s.DBClient.DeleteThread(ctx, &dbpb.DeleteThreadRequest{
 		Id: req.Id,
