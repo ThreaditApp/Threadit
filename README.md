@@ -24,13 +24,12 @@ Reddit Clone REST API with Microservices Architecture Using gRPC
 ## 🚀 Overview
 
 *Threadit* is cloud native application that offers a set of services that provide users the ability to connect, share and engage in discussions within communities through a REST API.
-Its architecture follows a microservices model with gRPC communication and will be deployed on Google Cloud Platform (GCP) with Kubernetes.
+Its architecture follows a microservices model with gRPC communication and can be deployed on Google Cloud Platform (GCP) with Kubernetes.
 
 ## 🌐 API Description
 
-Threadit provides a set of endpoints to interact with communities, threads, comments and more. A detailed documentation of all endpoints can be found [here](./docs/openapi).
-
-We also make available a [collection](https://grupo-8-0813.postman.co/workspace/f8d9d9ba-0d5a-42e6-851c-c4c77649f095/collection/34079154-e136d7b1-05c1-4e8f-bcf9-00d6b3f6b65c) in postman to make it easier to test the API.
+The OpenAPI specification of all microservices can be found [here](./docs/openapi).
+We also made available a [Postman collection](https://grupo-8-0813.postman.co/workspace/f8d9d9ba-0d5a-42e6-851c-c4c77649f095/collection/34079154-e136d7b1-05c1-4e8f-bcf9-00d6b3f6b65c) for testing the REST API.
 
 ## 📦 Application Architecture
 
