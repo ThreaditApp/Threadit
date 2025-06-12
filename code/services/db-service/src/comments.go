@@ -16,7 +16,7 @@ func (s *DBServer) ListComments(ctx context.Context, req *dbpb.ListCommentsReque
 	collection := s.Mongo.Collection("comments")
 	filter := bson.M{}
 	if req.GetThreadId() != "" {
-		filter["thread_id"] = req.GetThreadId()
+		filter["parent_id"] = req.GetThreadId()
 	}
 	cursor, err := collection.Find(ctx, filter, getFindOptions(req.Offset, req.Limit, req.GetSortBy()))
 	if err != nil {
