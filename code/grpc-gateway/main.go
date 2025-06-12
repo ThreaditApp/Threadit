@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	gorun "runtime"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -108,6 +109,9 @@ func handleHealthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	gorun.GOMAXPROCS(gorun.NumCPU())
+
 	gwmux := runtime.NewServeMux()
 
 	opts := []grpc.DialOption{
