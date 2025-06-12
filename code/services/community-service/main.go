@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"runtime"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,6 +39,9 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// connect to services
 	dbConn := connectGrpcClient("DB_SERVICE_HOST", "DB_SERVICE_PORT")
 	defer dbConn.Close()

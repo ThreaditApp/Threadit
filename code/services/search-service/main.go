@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"runtime"
 	server "search-service/src"
 
 	"google.golang.org/grpc"
@@ -38,6 +39,9 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// connect to other services
 	communityConn := connectGrpcClient("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT")
 	defer communityConn.Close()

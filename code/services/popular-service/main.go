@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	server "popular-service/src"
+	"runtime"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,6 +39,9 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// Connect to other services
 	threadConn := connectGrpcClient("THREAD_SERVICE_HOST", "THREAD_SERVICE_PORT")
 	defer threadConn.Close()

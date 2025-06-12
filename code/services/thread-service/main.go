@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"runtime"
 	server "thread-service/src"
 
 	"google.golang.org/grpc"
@@ -39,6 +40,9 @@ func connectGrpcClient(hostEnvVar string, portEnvVar string) *grpc.ClientConn {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// connect to database service
 	dbConn := connectGrpcClient("DB_SERVICE_HOST", "DB_SERVICE_PORT")
 	defer dbConn.Close()
