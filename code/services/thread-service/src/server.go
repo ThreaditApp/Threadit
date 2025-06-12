@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	commentpb "gen/comment-service/pb"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	models "gen/models/pb"
@@ -17,6 +18,7 @@ type ThreadServer struct {
 	threadpb.UnimplementedThreadServiceServer
 	CommunityClient communitypb.CommunityServiceClient
 	DBClient        dbpb.DBServiceClient
+	CommentClient   commentpb.CommentServiceClient
 }
 
 const (
@@ -169,6 +171,24 @@ func (s *ThreadServer) DeleteThread(ctx context.Context, req *threadpb.DeleteThr
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	// find all comments from thread
+	comments, err := s.CommentClient.ListComments(ctx, &commentpb.ListCommentsRequest{
+		ThreadId: &req.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// delete comments
+	for _, comment := range comments.Comments {
+		_, err = s.CommentClient.DeleteComment(ctx, &commentpb.DeleteCommentRequest{
+			Id: comment.Id,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// delete thread

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	commentpb "gen/comment-service/pb"
 	communitypb "gen/community-service/pb"
 	dbpb "gen/db-service/pb"
 	threadpb "gen/thread-service/pb"
@@ -47,10 +47,15 @@ func main() {
 	communityConn := connectGrpcClient("COMMUNITY_SERVICE_HOST", "COMMUNITY_SERVICE_PORT")
 	defer communityConn.Close()
 
+	// connect to comment service
+	commentConn := connectGrpcClient("COMMENT_SERVICE_HOST", "COMMENT_SERVICE_PORT")
+	defer commentConn.Close()
+
 	// create thread service with database service
 	threadService := &server.ThreadServer{
 		DBClient:        dbpb.NewDBServiceClient(dbConn),
 		CommunityClient: communitypb.NewCommunityServiceClient(communityConn),
+		CommentClient:   commentpb.NewCommentServiceClient(commentConn),
 	}
 
 	// get env port
@@ -70,13 +75,6 @@ func main() {
 		grpc.MaxSendMsgSize(1024*1024*500), // 500MB
 	)
 	threadpb.RegisterThreadServiceServer(grpcServer, threadService)
-
-	// hardcode a thread creation
-	threadService.CreateThread(context.Background(), &threadpb.CreateThreadRequest{
-		CommunityId: "1",
-		Title:       "Hello World",
-		Content:     "This is a test thread",
-	})
 
 	log.Printf("gRPC server is listening on :%s", port)
 	if err := grpcServer.Serve(lis); err != nil {
