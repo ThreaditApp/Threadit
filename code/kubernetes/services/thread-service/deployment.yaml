@@ -45,6 +45,13 @@ spec:
                 configMapKeyRef:
                   name: threadit-config
                   key: COMMUNITY_SERVICE_PORT
+            - name: COMMENT_SERVICE_HOST
+              value: "comment-service"
+            - name: COMMENT_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMENT_SERVICE_PORT
           readinessProbe:
             tcpSocket:
               port: 50053
