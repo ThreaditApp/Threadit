@@ -33,7 +33,7 @@ We also made available a [Postman collection](https://grupo-8-0813.postman.co/wo
 
 ## 📦 Application Architecture
 
-![application architecture](./docs/images/architecture.png)
+![application architecture](./docs/images/application-architecture.png)
 
 ## 🔍 Development Phases
 
