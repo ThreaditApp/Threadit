@@ -41,4 +41,4 @@
 
 ### 📦 Application Architecture
 
-![Application architecture](../images/architecture.png)
+![Application architecture](../images/application-architecture.png)
