@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	gorun "runtime"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -109,8 +110,20 @@ func handleHealthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// Set maximum number of CPUs to use
+	gorun.GOMAXPROCS(gorun.NumCPU())
+
+	gwmux := runtime.NewServeMux()
 	ctx := context.Background()
-	mux := runtime.NewServeMux()
+
+	// gRPC dial options with message size configurations
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(1024*1024*500), // 500MB
+			grpc.MaxCallSendMsgSize(1024*1024*500), // 500MB
+		),
+	}
 
 	// Initialize auth handler
 	authHandler := middleware.NewAuthHandler(
@@ -126,15 +139,6 @@ func main() {
 	// Register auth routes
 	authHandler.RegisterRoutes(httpMux)
 
-	// gRPC dial options with message size configurations
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(1024*1024*500), // 500MB
-			grpc.MaxCallSendMsgSize(1024*1024*500), // 500MB
-		),
-	}
-
 	// Register gRPC-Gateway routes with auth middleware
 	httpMux.Handle("/api", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Auth middleware for API routes
@@ -145,11 +149,11 @@ func main() {
 			KeycloakURL:  os.Getenv("KEYCLOAK_URL"),
 		})
 
-		authMiddleware.Handler(mux).ServeHTTP(w, r)
+		authMiddleware.Handler(gwmux).ServeHTTP(w, r)
 	}))
 
 	// Register service handlers
-	if err := registerServices(ctx, mux, opts); err != nil {
+	if err := registerServices(ctx, gwmux, opts); err != nil {
 		log.Fatalf("Failed to register services: %v", err)
 	}
 
@@ -193,9 +197,6 @@ func registerServices(ctx context.Context, mux *runtime.ServeMux, opts []grpc.Di
 		return fmt.Errorf("failed to register vote service: %v", err)
 	}
 
-	http.HandleFunc("/health", handleHealthCheck)
-	http.Handle("/", mux)
-
 	// Register Search Service
 	if err := searchpb.RegisterSearchServiceHandlerFromEndpoint(
 		ctx, mux, getGrpcServerAddress("SEARCH_SERVICE_HOST", "SEARCH_SERVICE_PORT"), opts,
@@ -209,6 +210,9 @@ func registerServices(ctx context.Context, mux *runtime.ServeMux, opts []grpc.Di
 	); err != nil {
 		return fmt.Errorf("failed to register popular service: %v", err)
 	}
+
+	http.HandleFunc("/health", handleHealthCheck)
+	http.Handle("/", mux)
 
 	return nil
 }

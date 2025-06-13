@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"runtime"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,6 +17,9 @@ import (
 )
 
 func main() {
+	// Set maximum number of CPUs to use
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	mongoURI := os.Getenv("MONGO_URI")
 	if mongoURI == "" {
 		log.Fatalf("missing MONGO_URI env var")

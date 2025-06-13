@@ -18,6 +18,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 50053
+          resources:
+            requests:
+              cpu: 20m
+              memory: 40Mi
+            limits:
+              cpu: 60m
+              memory: 120Mi
           env:
             - name: SERVICE_PORT
               valueFrom:
@@ -38,13 +45,39 @@ spec:
                 configMapKeyRef:
                   name: threadit-config
                   key: COMMUNITY_SERVICE_PORT
+            - name: COMMENT_SERVICE_HOST
+              value: "comment-service"
+            - name: COMMENT_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: threadit-config
+                  key: COMMENT_SERVICE_PORT
           readinessProbe:
             tcpSocket:
               port: 50053
-            initialDelaySeconds: 6
-            timeoutSeconds: 4
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
           livenessProbe:
             tcpSocket:
               port: 50053
-            initialDelaySeconds: 6
-            timeoutSeconds: 4
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: thread-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: thread-service
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80

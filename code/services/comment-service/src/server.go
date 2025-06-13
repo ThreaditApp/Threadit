@@ -160,6 +160,24 @@ func (s *CommentServer) DeleteComment(ctx context.Context, req *commentpb.Delete
 		return nil, err
 	}
 
+	// find all child comments
+	comments, err := s.ListComments(ctx, &commentpb.ListCommentsRequest{
+		ThreadId: &res.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// delete child comments
+	for _, comment := range comments.Comments {
+		_, err = s.DeleteComment(ctx, &commentpb.DeleteCommentRequest{
+			Id: comment.Id,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// delete comment
 	_, err = s.DBClient.DeleteComment(ctx, &dbpb.DeleteCommentRequest{
 		Id: req.Id,

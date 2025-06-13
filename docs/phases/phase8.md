@@ -1,3 +1,3 @@
 ## 🔍 Phase 8 - Automation with CI/CD
 
-TODO
+The CI/CD workflow can be found [here](../../.github/workflows).

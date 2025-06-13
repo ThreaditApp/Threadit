@@ -18,6 +18,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 50051
+          resources:
+            requests:
+              cpu: 100m
+              memory: 250Mi
+            limits:
+              cpu: 300m
+              memory: 2Gi
           env:
             - name: SERVICE_PORT
               valueFrom:
@@ -35,16 +42,21 @@ spec:
             - mountPath: /var/secret/gcp/
               name: bucket-credentials
               readOnly: true
-          readinessProbe:
-            tcpSocket:
-              port: 50051
-            initialDelaySeconds: 8
-            timeoutSeconds: 5
           livenessProbe:
             tcpSocket:
               port: 50051
-            initialDelaySeconds: 8
-            timeoutSeconds: 5
+            initialDelaySeconds: 60
+            timeoutSeconds: 4
+          readinessProbe:
+            tcpSocket:
+              port: 50051
+            initialDelaySeconds: 30
+            timeoutSeconds: 4
+          startupProbe:
+            tcpSocket:
+              port: 50051
+            periodSeconds: 2
+            failureThreshold: 90
       volumes:
         - name: bucket-credentials
           secret:
@@ -52,3 +64,22 @@ spec:
             items:
               - key: gcs-key.json
                 path: gcs-key.json
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: db-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: db-service
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
