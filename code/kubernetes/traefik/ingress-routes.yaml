@@ -1,0 +1,54 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-headers
+  namespace: threadit
+spec:
+  headers:
+    accessControlAllowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    accessControlAllowHeaders:
+      - "Authorization"
+      - "Content-Type"
+    accessControlAllowOriginList:
+      - "*"
+    accessControlMaxAge: 100
+    addVaryHeader: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api
+  namespace: threadit
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/api/v1`)
+      kind: Rule
+      services:
+        - name: grpc-gateway
+          port: 8080
+      middlewares:
+        - name: cors-headers
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: keycloak
+  namespace: threadit
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/auth`)
+      kind: Rule
+      services:
+        - name: keycloak
+          port: 8080
+      middlewares:
+        - name: cors-headers
