@@ -2,13 +2,10 @@
 
 ## 1. Planned Improvements
 
-### 1.1 Ingress/API Gateway Configuration
+### 1.1 API Gateway Configuration
 
-Currently, we are using Traefik with a basic IngressRoute and minimal configuration. To improve flexibility and take advantage of Kubernetes-native features, we will explore two alternatives:
-
-- **Kubernetes Ingress with Traefik:** This allows using standard Ingress resources with Traefik's CRDs for fine-grained traffic routing, TLS termination, and middleware chaining.
-
-- **Kubernetes Gateway API:** A more expressive and extensible alternative to the Ingress API, which decouples traffic routing from infrastructure. We'll experiment with it alongside Traefik's Gateway API support to modernize our networking layer.
+The application will use a Traefik instance installed and configured via Helm. 
+An IngressRoute and some Middlewares will be defined to ensure that Traefik routes the incoming requests to the gRPC Gateway.
 
 ### 1.2 Liveness and Readiness Probes
 To improve fault tolerance and enable better self-healing behavior in Kubernetes, we will define:
@@ -21,9 +18,6 @@ We will benchmark services to determine ideal values for:
 
 * **CPU and memory resource requests/limits**.
 * **Horizontal Pod Autoscaling (HPA)** thresholds based on real traffic patterns to ensure scalability.
-
-### 1.4 Authentication & Authorization with Keycloak
-We will introduce authentication and authorization by integrating [Keycloak](https://www.keycloak.org/) as the Identity Provider. Keycloak will manage user sessions, tokens (OIDC) and Role-Based Access Control (RBAC) across the services.
 
 ### 1.5 Secret management
 
@@ -49,18 +43,20 @@ A continuous integration and deployment (CI/CD) pipeline will be implemented usi
 | --------------- | -------------------------------------------------------------------------- |
 | Scalability     | Use HPA to autoscale services based on CPU usage.                          |
 | Availability    | Configure liveness/readiness probes and multiple replicas where necessary. |
-| Security        | Enforce authentication and authorization via Keycloak.                     |
 | Maintainability | Implement CI/CD for consistent, automated deployments.                     |
 
 ## 3. Deployment Plan
-| Step                            | Tool/Technology       |
-| ------------------------------- | --------------------- |
-| Containerization                | Docker                |
-| Cluster Orchestration           | Kubernetes (GKE)      |
-| Ingress Management              | GKE Native Ingress    |
-| Identity and Access Management  | Keycloak (OIDC, RBAC) |
-| CI/CD                           | GitHub Actions + GKE  |
-| Autoscaling                     | Kubernetes HPA        |
+| Step                            | Tool/Technology            |
+| ------------------------------- |----------------------------|
+| Containerization                | Docker                     |
+| Cluster Orchestration           | Kubernetes (GKE)           |
+| Ingress Management              | Traefik Ingress Controller |
+| CI/CD                           | GitHub Actions             |
+| Autoscaling                     | Kubernetes HPA             |
 
 ## 4. Architecture Diagram
-![application architecture](../images/architecture.png)
+![Application architecture](../images/application-architecture.png)
+
+## 5. Technical Architecture
+
+![Technical architecture](../images/technical-architecture.png)
